@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eruru.ChatRobotRPC", "Eruru.ChatRobotRPC\Eruru.ChatRobotRPC.csproj", "{4B3BEA7B-BD81-4069-8A46-91E410AF6CE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{09F7502A-1705-45C0-AF73-65BC30F2E0FA}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Eruru.ChatRobotRPC For Shared Project", "Eruru.ChatRobotRPC For Shared Project\Eruru.ChatRobotRPC For Shared Project.shproj", "{3392FF2B-E20A-4E86-BDF9-447267FF096A}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Eruru.ChatRobotRPC For Shared Project\Eruru.ChatRobotRPC For Shared Project.projitems*{3392ff2b-e20a-4e86-bdf9-447267ff096a}*SharedItemsImports = 13
+		Eruru.ChatRobotRPC For Shared Project\Eruru.ChatRobotRPC For Shared Project.projitems*{4b3bea7b-bd81-4069-8a46-91e410af6ce5}*SharedItemsImports = 5
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4B3BEA7B-BD81-4069-8A46-91E410AF6CE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B3BEA7B-BD81-4069-8A46-91E410AF6CE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B3BEA7B-BD81-4069-8A46-91E410AF6CE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B3BEA7B-BD81-4069-8A46-91E410AF6CE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09F7502A-1705-45C0-AF73-65BC30F2E0FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09F7502A-1705-45C0-AF73-65BC30F2E0FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09F7502A-1705-45C0-AF73-65BC30F2E0FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09F7502A-1705-45C0-AF73-65BC30F2E0FA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C041F053-F09D-4C2E-B269-C8A6268DE4BA}
+	EndGlobalSection
+EndGlobal

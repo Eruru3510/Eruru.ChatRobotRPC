@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>3392ff2b-e20a-4e86-bdf9-447267ff096a</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Eruru.ChatRobotRPC_For_Shared_Project</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotAPI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotFriendInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotFriendListInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotGiftInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotGroupAddRequestType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotGroupInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotGroupMemberInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotGroupMemberJoinType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotGroupMemberListInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotLevelInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotMessageType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotSendMessageType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotStateInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WaitSystem.cs" />
+  </ItemGroup>
+</Project>
