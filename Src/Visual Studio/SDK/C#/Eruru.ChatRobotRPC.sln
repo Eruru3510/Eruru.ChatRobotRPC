@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eruru.ChatRobotRPC", "Eruru.ChatRobotRPC\Eruru.ChatRobotRPC.csproj", "{4B3BEA7B-BD81-4069-8A46-91E410AF6CE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eruru.ChatRobotRPC", "Eruru.ChatRobotRPC\Eruru.ChatRobotRPC.csproj", "{4B3BEA7B-BD81-4069-8A46-91E410AF6CE5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{09F7502A-1705-45C0-AF73-65BC30F2E0FA}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Eruru.ChatRobotRPC For Shared Project", "Eruru.ChatRobotRPC For Shared Project\Eruru.ChatRobotRPC For Shared Project.shproj", "{3392FF2B-E20A-4E86-BDF9-447267FF096A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{87D28816-D06F-4B1A-B9A5-2D43D910BF2F}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -27,6 +29,10 @@ Global
 		{09F7502A-1705-45C0-AF73-65BC30F2E0FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09F7502A-1705-45C0-AF73-65BC30F2E0FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09F7502A-1705-45C0-AF73-65BC30F2E0FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87D28816-D06F-4B1A-B9A5-2D43D910BF2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87D28816-D06F-4B1A-B9A5-2D43D910BF2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87D28816-D06F-4B1A-B9A5-2D43D910BF2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87D28816-D06F-4B1A-B9A5-2D43D910BF2F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
