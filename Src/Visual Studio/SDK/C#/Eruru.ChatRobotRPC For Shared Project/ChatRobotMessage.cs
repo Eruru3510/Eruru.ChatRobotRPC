@@ -100,6 +100,10 @@ namespace Eruru.ChatRobotAPI {
 			Send (type, robot, message?.ToString (), group, qq, sendType);
 		}
 
+		public override string ToString () {
+			return Text;
+		}
+
 		void Reply (string message, ChatRobotSendMessageType type) {
 			Send (Type, Robot, message, Group, QQ, type);
 		}
