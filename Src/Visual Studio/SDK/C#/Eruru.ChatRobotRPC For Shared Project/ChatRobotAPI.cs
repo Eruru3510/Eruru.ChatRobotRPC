@@ -3,11 +3,27 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Text;
 
-namespace Eruru.ChatRobotAPI {
+namespace Eruru.ChatRobotRPC {
 
 	public delegate void ChatRobotAction ();
+	/// <summary>
+	/// 群添加请求
+	/// </summary>
+	/// <param name="type">请求类型</param>
+	/// <param name="robot">机器人QQ</param>
+	/// <param name="group">群</param>
+	/// <param name="qq">申请者QQ</param>
+	/// <param name="inviterQQ">邀请者QQ</param>
+	/// <param name="sign">请求标记</param>
+	/// <param name="message">附加消息</param>
 	public delegate void ChatRobotGroupAddRequestEventHandler (ChatRobotGroupAddRequestType type, long robot, long group, long qq, long inviterQQ, long sign, string message);
 	public delegate void ChatRobotFriendAddResponseEventHandler (bool agree, long robot, long qq, string message);
+	/// <summary>
+	/// 好友添加请求
+	/// </summary>
+	/// <param name="robot">机器人QQ</param>
+	/// <param name="qq">申请者QQ</param>
+	/// <param name="message">附加消息</param>
 	public delegate void ChatRobotFriendAddRequestEventHandler (long robot, long qq, string message);
 	public delegate void ChatRobotGroupMessageRevokedEventHandler (long robot, long group, long qq, long messageNumber, long messageID);
 	public delegate void ChatRobotGroupAnonymousSwitchedEventHandler (bool enable, long robot, long group, long qq);
@@ -27,8 +43,14 @@ namespace Eruru.ChatRobotAPI {
 		public static Action<string> OnReceived { get; set; }
 		public static Action<string> OnSent { get; set; }
 		public static Action<ChatRobotMessage> OnReceivedMessage { get; set; }
+		/// <summary>
+		/// 收到群添加请求（使用ChatRobotAPI.HandleGroupAddRequest处理）
+		/// </summary>
 		public static ChatRobotGroupAddRequestEventHandler OnReceivedGroupAddRequest { get; set; }
 		public static ChatRobotFriendAddResponseEventHandler OnReceivedFriendAddResponse { get; set; }
+		/// <summary>
+		/// 收到好友添加请求（使用ChatRobotAPI.HandleFriendAddRequest处理）
+		/// </summary>
 		public static ChatRobotFriendAddRequestEventHandler OnReceivedFriendAddRequest { get; set; }
 		public static ChatRobotGroupMessageRevokedEventHandler OnGroupMessageRevoked { get; set; }
 		public static ChatRobotGroupAnonymousSwitchedEventHandler OnGroupAnonymousSwitched { get; set; }
@@ -50,6 +72,7 @@ namespace Eruru.ChatRobotAPI {
 			set => Client.HeartbeatPacketSendIntervalBySeconds = value;
 
 		}
+		public static string ProtocolVersision { get; } = "1.0.0.0";
 
 		static readonly WaitSystem WaitSystem = new WaitSystem ();
 		static readonly Client Client = new Client () {
@@ -66,6 +89,15 @@ namespace Eruru.ChatRobotAPI {
 				{ "Password", password }
 			});
 		}
+
+#if DEBUG
+		public static void Test (long robot) {
+			ClientBeginSend (new JObject () {
+				{ "Type", "Test" },
+				{ "Robot",robot  }
+			});
+		}
+#endif
 
 		public static string TEAEncryption (string content, string key) {
 			return WaitSystemGet<string> (new JObject () {
@@ -108,25 +140,44 @@ namespace Eruru.ChatRobotAPI {
 			});
 		}
 
-		public static void HandleFriendAddRequest (long robot, long qq, long treatmentMethod, string information) {
+		/// <summary>
+		/// 处理好友添加请求
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="qq">申请者QQ</param>
+		/// <param name="treatmentMethod">处理方式</param>
+		/// <param name="information">拒绝时的附加信息</param>
+		public static void HandleFriendAddRequest (long robot, long qq, ChatRobotRequestType treatmentMethod, string information) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (HandleFriendAddRequest) },
 				{ "Robot", robot },
 				{ "QQ", qq },
-				{ "TreatmentMethod", treatmentMethod },
+				{ "TreatmentMethod", (int)treatmentMethod },
 				{ "Information", information }
 			});
 		}
 
-		public static void HandleGroupAddRequest (long robot, long requestType, long qq, long group, long tag, long treatmentMethod, string information) {
+		/// <summary>
+		/// 处理群添加请求
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="requestType">请求类型</param>
+		/// <param name="qq">申请者QQ</param>
+		/// <param name="group">群</param>
+		/// <param name="sign">请求标记</param>
+		/// <param name="treatmentMethod">处理方式</param>
+		/// <param name="information">拒绝时的附加信息</param>
+		public static void HandleGroupAddRequest (long robot, ChatRobotGroupAddRequestType requestType, long qq, long group, long sign,
+			ChatRobotRequestType treatmentMethod, string information
+		) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (HandleGroupAddRequest) },
 				{ "Robot", robot },
-				{ "RequestType", requestType },
+				{ "RequestType", (int)requestType },
 				{ "QQ", qq },
 				{ "Group", group },
-				{ "Tag", tag },
-				{ "TreatmentMethod", treatmentMethod },
+				{ "Tag", sign },
+				{ "TreatmentMethod", (int)treatmentMethod },
 				{ "Information", information }
 			});
 		}
@@ -565,7 +616,9 @@ namespace Eruru.ChatRobotAPI {
 			});
 		}
 
-		public static ChatRobotGroupMemberListInformation GetGroupMemberListInformation (long robot, long group, out ChatRobotGroupMemberInformation[] groupMemberInformations) {
+		public static ChatRobotGroupMemberListInformation GetGroupMemberListInformation (long robot, long group,
+			out ChatRobotGroupMemberInformation[] groupMemberInformations
+		) {
 			return WaitSystemGet<ChatRobotGroupMemberListInformation, ChatRobotGroupMemberInformation[]> (new JObject () {
 				{ "Type", nameof (GetGroupMemberListInformation) },
 				{ "Robot", robot },
@@ -1075,6 +1128,13 @@ namespace Eruru.ChatRobotAPI {
 			OnReceived?.Invoke (text);
 			JObject jObject = JObject.Parse (text);
 			switch (jObject.Value<string> ("Type")) {
+				case "Protocol": {
+					string targetProtocolVersion = jObject.Value<string> ("Version");
+					if (targetProtocolVersion != ProtocolVersision) {
+						throw new Exception ($"SDK协议版本：{ProtocolVersision} 与机器人框架插件的协议版本：{targetProtocolVersion}不符");
+					}
+					break;
+				}
 				case "Return":
 					WaitSystem.Set (jObject.Value<long> ("ID"), jObject.Value<string> ("Result"));
 					break;
@@ -1148,7 +1208,7 @@ namespace Eruru.ChatRobotAPI {
 						jObject.Value<long> ("QQ"),
 					asyncResult => OnGroupBannedSpeak.EndInvoke (asyncResult), null);
 					break;
-				case "GroupAdministratorChange":
+				case "GroupAdminChange":
 					OnGroupAdministratorChanged?.BeginInvoke (
 						jObject.Value<bool> ("Enable"),
 						jObject.Value<long> ("Robot"),

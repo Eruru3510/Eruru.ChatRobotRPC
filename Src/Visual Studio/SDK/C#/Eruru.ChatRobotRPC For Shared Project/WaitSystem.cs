@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Eruru.ChatRobotAPI {
+namespace Eruru.ChatRobotRPC {
 
 	class WaitSystem : IDisposable {
 

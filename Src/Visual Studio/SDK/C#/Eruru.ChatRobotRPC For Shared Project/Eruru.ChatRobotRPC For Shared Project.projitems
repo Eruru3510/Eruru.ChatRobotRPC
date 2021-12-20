@@ -6,25 +6,30 @@
     <SharedGUID>3392ff2b-e20a-4e86-bdf9-447267ff096a</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Eruru.ChatRobotRPC_For_Shared_Project</Import_RootNamespace>
+    <Import_RootNamespace>Eruru.ChatRobotRPC</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ChatRobotAPI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ChatRobotCode.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotFriendInformation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotFriendListInformation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotGiftInformation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotGroupAddRequestType.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotGroupInformation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotGroupMemberInformation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotGroupMemberJoinType.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotGroupMemberListInformation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotLevelInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enums\ChatRobotRequestType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Informations\ChatRobotFriendInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Informations\ChatRobotFriendListInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Informations\ChatRobotGiftInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enums\ChatRobotGroupAddRequestType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Informations\ChatRobotGroupInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Informations\ChatRobotGroupMemberInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enums\ChatRobotGroupMemberJoinType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Informations\ChatRobotGroupMemberListInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Informations\ChatRobotLevelInformation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ChatRobotMessage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotMessageType.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotSendMessageType.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChatRobotStateInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enums\ChatRobotMessageType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enums\ChatRobotSendMessageType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Informations\ChatRobotStateInformation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Client.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitSystem.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Informations\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Enums\" />
   </ItemGroup>
 </Project>

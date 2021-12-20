@@ -1,4 +1,4 @@
-﻿namespace Eruru.ChatRobotAPI {
+﻿namespace Eruru.ChatRobotRPC {
 
 	public class ChatRobotStateInformation {
 
