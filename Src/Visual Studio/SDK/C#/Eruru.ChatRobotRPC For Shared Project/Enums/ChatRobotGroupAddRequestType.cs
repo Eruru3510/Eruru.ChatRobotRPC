@@ -1,17 +1,20 @@
 ﻿namespace Eruru.ChatRobotRPC {
 
+	/// <summary>
+	/// 群添加请求类型
+	/// </summary>
 	public enum ChatRobotGroupAddRequestType {
 
 		/// <summary>
-		/// 主动申请加群
+		/// 有人申请加群
 		/// </summary>
 		Request = 1,
 		/// <summary>
-		/// 有人邀请我加群
+		/// 某人邀请我加群
 		/// </summary>
 		InviteMe,
 		/// <summary>
-		/// 被群成员邀请加群
+		/// 群员邀请某人加群
 		/// </summary>
 		MemberInvite
 

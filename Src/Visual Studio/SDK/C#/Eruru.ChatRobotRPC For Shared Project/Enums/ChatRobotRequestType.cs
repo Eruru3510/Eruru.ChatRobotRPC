@@ -1,5 +1,8 @@
 ﻿namespace Eruru.ChatRobotRPC {
 
+	/// <summary>
+	/// 请求类型
+	/// </summary>
 	public enum ChatRobotRequestType {
 
 		/// <summary>
@@ -7,7 +10,7 @@
 		/// </summary>
 		Ignore = 30,
 		/// <summary>
-		/// 同意
+		/// 通过
 		/// </summary>
 		Agree = 10,
 		/// <summary>

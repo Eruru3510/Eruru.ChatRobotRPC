@@ -1,17 +1,20 @@
 ﻿namespace Eruru.ChatRobotRPC {
 
+	/// <summary>
+	/// 群成员加入类型
+	/// </summary>
 	public enum ChatRobotGroupMemberJoinType {
 
 		/// <summary>
-		/// 被批准进群
+		/// 某人被批准加入
 		/// </summary>
 		Approve = 1,
 		/// <summary>
-		/// 我自己加入
+		/// 我加入某个群
 		/// </summary>
 		IJoin,
 		/// <summary>
-		/// 被邀请加入
+		/// 某人被邀请加入了群
 		/// </summary>
 		Invite
 

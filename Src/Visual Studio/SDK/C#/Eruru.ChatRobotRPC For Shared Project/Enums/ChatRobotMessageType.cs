@@ -1,21 +1,24 @@
 ﻿namespace Eruru.ChatRobotRPC {
 
+	/// <summary>
+	/// 消息类型
+	/// </summary>
 	public enum ChatRobotMessageType {
 
 		/// <summary>
-		/// 好友私聊
+		/// 好友
 		/// </summary>
 		Friend = 1,
 		/// <summary>
-		/// 群临时会话
+		/// 群临时
 		/// </summary>
 		GroupTemp,
 		/// <summary>
-		/// 讨论组临时会话
+		/// 讨论组临时
 		/// </summary>
 		DiscussTemp,
 		/// <summary>
-		/// 网页临时会话
+		/// 网页临时
 		/// </summary>
 		WebpageTemp,
 		/// <summary>
@@ -23,11 +26,11 @@
 		/// </summary>
 		FriendVerificationReply,
 		/// <summary>
-		/// 群消息
+		/// 群
 		/// </summary>
 		Group,
 		/// <summary>
-		/// 讨论组消息
+		/// 讨论组
 		/// </summary>
 		Discuss,
 

@@ -1,17 +1,20 @@
 ﻿namespace Eruru.ChatRobotRPC {
 
+	/// <summary>
+	/// 发送消息类型
+	/// </summary>
 	public enum ChatRobotSendMessageType {
 
 		/// <summary>
-		/// 普通文本消息
+		/// 文本
 		/// </summary>
 		Text,
 		/// <summary>
-		/// Json格式特殊消息
+		/// Json
 		/// </summary>
 		Json,
 		/// <summary>
-		/// Xml格式特殊消息
+		/// Xml
 		/// </summary>
 		Xml
 
