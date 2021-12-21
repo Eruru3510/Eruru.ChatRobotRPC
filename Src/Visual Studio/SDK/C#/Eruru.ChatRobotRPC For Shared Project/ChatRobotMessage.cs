@@ -2,8 +2,15 @@
 
 namespace Eruru.ChatRobotRPC {
 
+	/// <summary>
+	/// 聊天机器人消息
+	/// </summary>
 	public class ChatRobotMessage {
 
+		/// <summary>
+		/// 所属实例
+		/// </summary>
+		public ChatRobot ChatRobot { get; set; }
 		/// <summary>
 		/// 来源
 		/// </summary>
@@ -37,7 +44,8 @@ namespace Eruru.ChatRobotRPC {
 		/// </summary>
 		public DateTime DateTime { get; set; }
 
-		public ChatRobotMessage (ChatRobotMessageType type, long robot, long group, long qq, string text, long number, long id, DateTime dateTime) {
+		public ChatRobotMessage (ChatRobot chatRobot, ChatRobotMessageType type, long robot, long group, long qq, string text, long number, long id, DateTime dateTime) {
+			ChatRobot = chatRobot;
 			Type = type;
 			Robot = robot;
 			QQ = qq;
@@ -47,8 +55,8 @@ namespace Eruru.ChatRobotRPC {
 			ID = id;
 			DateTime = dateTime;
 		}
-		public ChatRobotMessage (ChatRobotMessageType type, long robot, long group, long qq, string text, long number, long id)
-			: this (type, robot, group, qq, text, number, id, DateTime.Now
+		public ChatRobotMessage (ChatRobot chatRobot, ChatRobotMessageType type, long robot, long group, long qq, string text, long number, long id)
+			: this (chatRobot, type, robot, group, qq, text, number, id, DateTime.Now
 		) {
 
 		}
@@ -101,24 +109,25 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// 发送消息
 		/// </summary>
+		/// <param name="chatRobot">调用实例</param>
 		/// <param name="type">目标类型</param>
 		/// <param name="robot">机器人</param>
 		/// <param name="message">内容</param>
 		/// <param name="group">目标群</param>
 		/// <param name="qq">目标QQ</param>
 		/// <param name="sendType">文本、Json、Xml消息</param>
-		public static void Send (ChatRobotMessageType type, long robot, string message, long group = default, long qq = default, ChatRobotSendMessageType sendType = ChatRobotSendMessageType.Text) {
+		public static void Send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, string message, long group = default, long qq = default, ChatRobotSendMessageType sendType = ChatRobotSendMessageType.Text) {
 			switch (type) {
 				case ChatRobotMessageType.Friend:
 					switch (sendType) {
 						case ChatRobotSendMessageType.Text:
-							ChatRobotAPI.SendFriendMessage (robot, qq, message);
+							chatRobot.SendFriendMessage (robot, qq, message);
 							break;
 						case ChatRobotSendMessageType.Json:
-							ChatRobotAPI.SendFriendJsonMessage (robot, qq, message);
+							chatRobot.SendFriendJsonMessage (robot, qq, message);
 							break;
 						case ChatRobotSendMessageType.Xml:
-							ChatRobotAPI.SendFriendXmlMessage (robot, qq, message);
+							chatRobot.SendFriendXmlMessage (robot, qq, message);
 							break;
 						default:
 							throw new NotImplementedException (sendType.ToString ());
@@ -127,13 +136,13 @@ namespace Eruru.ChatRobotRPC {
 				case ChatRobotMessageType.Group:
 					switch (sendType) {
 						case ChatRobotSendMessageType.Text:
-							ChatRobotAPI.SendGroupMessage (robot, group, message);
+							chatRobot.SendGroupMessage (robot, group, message);
 							break;
 						case ChatRobotSendMessageType.Json:
-							ChatRobotAPI.SendGroupJsonMessage (robot, group, message);
+							chatRobot.SendGroupJsonMessage (robot, group, message);
 							break;
 						case ChatRobotSendMessageType.Xml:
-							ChatRobotAPI.SendGroupXmlMessage (robot, group, message);
+							chatRobot.SendGroupXmlMessage (robot, group, message);
 							break;
 						default:
 							throw new NotImplementedException (sendType.ToString ());
@@ -142,13 +151,13 @@ namespace Eruru.ChatRobotRPC {
 				case ChatRobotMessageType.Discuss:
 					switch (sendType) {
 						case ChatRobotSendMessageType.Text:
-							ChatRobotAPI.SendDiscussMessage (robot, group, message);
+							chatRobot.SendDiscussMessage (robot, group, message);
 							break;
 						case ChatRobotSendMessageType.Json:
-							ChatRobotAPI.SendDiscussJsonMessage (robot, group, message);
+							chatRobot.SendDiscussJsonMessage (robot, group, message);
 							break;
 						case ChatRobotSendMessageType.Xml:
-							ChatRobotAPI.SendDiscussXmlMessage (robot, group, message);
+							chatRobot.SendDiscussXmlMessage (robot, group, message);
 							break;
 						default:
 							throw new NotImplementedException (sendType.ToString ());

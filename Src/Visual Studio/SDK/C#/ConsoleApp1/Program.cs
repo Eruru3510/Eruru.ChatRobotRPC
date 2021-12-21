@@ -1,28 +1,22 @@
 ﻿using Eruru.ChatRobotRPC;
-using Eruru.Html;
-using Eruru.Http;
 using Eruru.TextCommand;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
+using System.Net.Sockets;
 
 namespace ConsoleApp1 {
 
 	class Program {
+
+		static readonly ChatRobot ChatRobot = new ChatRobot ();
 
 		static void Main (string[] args) {
 			Console.Title = string.Empty;
 			TextCommandSystem<ChatRobotMessage> textCommandSystem = new TextCommandSystem<ChatRobotMessage> ();
 			textCommandSystem.Register<Program> ();
 			textCommandSystem.MatchParameterType = false;
-			ChatRobotAPI.OnReceived = message => Console.WriteLine ($"收到消息：{message}");
-			ChatRobotAPI.OnSent = message => Console.WriteLine ($"发送消息：{message}");
-			ChatRobotAPI.OnReceivedMessage = message => {
+			ChatRobot.OnReceived = message => Console.WriteLine ($"收到消息：{message}");
+			ChatRobot.OnSent = message => Console.WriteLine ($"发送消息：{message}");
+			ChatRobot.OnReceivedMessage = message => {
 				switch (message.Type) {
 					case ChatRobotMessageType.Friend:
 						break;
@@ -37,19 +31,32 @@ namespace ConsoleApp1 {
 				}
 				textCommandSystem.Execute (message.Text, message);
 			};
-			ChatRobotAPI.OnReceivedFriendAddResponse = (agree, robot, qq, message) => {
+			ChatRobot.OnReceivedFriendAddResponse = (agree, robot, qq, message) => {
 				Console.WriteLine ($"{agree} {robot} {qq} {message}");
 			};
-			ChatRobotAPI.OnDisconnected = () => Console.WriteLine ("连接断开");
-			Console.WriteLine ("开始连接");
-			ChatRobotAPI.Connect ("127.0.0.1", 19730, "root", "root");
-			Console.WriteLine ("连接成功");
+			ChatRobot.OnDisconnected = () => {
+				Console.WriteLine ("连接断开");
+				Connect ();
+			};
+			Connect ();
 			Console.ReadLine ();
+		}
+
+		static void Connect () {
+			try {
+				Console.WriteLine ("开始连接");
+				ChatRobot.Connect ("127.0.0.1", 19730, "root", "root");
+			} catch (SocketException socketException) {
+				Console.WriteLine (socketException);
+				Connect ();
+				return;
+			}
+			Console.WriteLine ("连接成功");
 		}
 
 		[TextCommand ("测试")]
 		static void Test (ChatRobotMessage message) {
-
+			Console.WriteLine (message.ChatRobot.GetFriendAge (message.Robot, 1633756198));
 		}
 
 	}

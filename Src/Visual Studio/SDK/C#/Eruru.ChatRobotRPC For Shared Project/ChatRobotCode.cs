@@ -2,6 +2,9 @@
 
 namespace Eruru.ChatRobotRPC {
 
+	/// <summary>
+	/// 聊天机器人码
+	/// </summary>
 	public class ChatRobotCode {
 
 		/// <summary>

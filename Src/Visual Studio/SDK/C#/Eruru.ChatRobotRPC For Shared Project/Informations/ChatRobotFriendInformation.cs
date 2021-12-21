@@ -5,6 +5,9 @@
 	/// </summary>
 	public class ChatRobotFriendInformation {
 
+		/// <summary>
+		/// 好友QQ
+		/// </summary>
 		public long QQ { get; set; }
 		/// <summary>
 		/// 昵称

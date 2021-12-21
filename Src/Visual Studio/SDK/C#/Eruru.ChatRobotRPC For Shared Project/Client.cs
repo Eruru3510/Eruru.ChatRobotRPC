@@ -49,6 +49,9 @@ namespace Eruru.ChatRobotRPC {
 			}, null);
 		}
 		public void BeginSend (string text) {
+			if (Socket == null) {
+				return;
+			}
 			OnSent?.Invoke (text);
 			BeginSend (Encoding.GetBytes (text));
 		}
@@ -64,7 +67,7 @@ namespace Eruru.ChatRobotRPC {
 				Socket = null;
 				Buffer.Clear ();
 				PacketBodyLength = -1;
-				OnDisconnected?.BeginInvoke (asyncResult => OnDisconnected.EndInvoke (asyncResult), null);
+				OnDisconnected?.Invoke ();
 			}
 		}
 
@@ -108,7 +111,7 @@ namespace Eruru.ChatRobotRPC {
 							bytes[i] = Buffer.Dequeue ();
 						}
 						PacketBodyLength = -1;
-						OnReceived?.BeginInvoke (bytes, innerAsyncResult => OnReceived.EndInvoke (innerAsyncResult), null);
+						OnReceived?.Invoke (bytes);
 					}
 				}
 				BeginReceive ();

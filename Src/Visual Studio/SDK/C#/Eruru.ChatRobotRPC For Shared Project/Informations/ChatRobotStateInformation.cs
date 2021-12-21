@@ -5,6 +5,9 @@
 	/// </summary>
 	public class ChatRobotStateInformation {
 
+		/// <summary>
+		/// 机器人QQ
+		/// </summary>
 		public long QQ { get; set; }
 		/// <summary>
 		/// 昵称

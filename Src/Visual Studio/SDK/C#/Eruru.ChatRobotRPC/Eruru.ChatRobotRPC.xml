@@ -1,0 +1,1601 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Eruru.ChatRobotRPC</name>
+    </assembly>
+    <members>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobot">
+            <summary>
+            聊天机器人
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnReceived">
+            <summary>
+            收到消息（底层协议消息）
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnSent">
+            <summary>
+            发送消息（底层协议消息）
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnReceivedMessage">
+            <summary>
+            收到消息（好友或群等，统一入口，可用ChatRobot.UseAsyncReceive决定是否异步处理消息）
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnReceivedGroupAddRequest">
+            <summary>
+            收到群添加请求（使用ChatRobot.HandleGroupAddRequest处理）
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnReceivedFriendAddResponse">
+            <summary>
+            收到好友添加响应
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnReceivedFriendAddRequest">
+            <summary>
+            收到好友添加请求（使用ChatRobot.HandleFriendAddRequest处理）
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnGroupMessageRevoked">
+            <summary>
+            群消息撤回
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnGroupAnonymousSwitched">
+            <summary>
+            群匿名开关
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnGroupNameChanged">
+            <summary>
+            群名改变
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnGroupBannedSpeak">
+            <summary>
+            群禁言
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnGroupAdministratorChanged">
+            <summary>
+            群管理员改变
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnGroupMemberBusinessCardChanged">
+            <summary>
+            群成员名片改变
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnGroupMemberLeaved">
+            <summary>
+            群成员离开
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnGroupMemberBannedSpeak">
+            <summary>
+            群成员禁言
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnGroupMemberJoined">
+            <summary>
+            群成员加入
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnGroupDisbanded">
+            <summary>
+            群被解散
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnFriendStateChanged">
+            <summary>
+            好友状态改变
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnWasRemoveByFriend">
+            <summary>
+            被好友删除
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnDisconnected">
+            <summary>
+            与机器人框架RPC插件断开了连接
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.HeartbeatPacketSendIntervalBySeconds">
+            <summary>
+            心跳包发送间隔（秒）
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.ProtocolVersision">
+            <summary>
+            协议版本
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.UseAsyncReceive">
+            <summary>
+            是否使用异步接收并处理消息
+            </summary>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.#ctor">
+            <summary>
+            默认构造函数
+            </summary>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.Connect(System.String,System.Int32,System.String,System.String)">
+            <summary>
+            连接机器人框架RPC插件（使用ChatRobot.OnDisconnected事件获知断开连接）
+            </summary>
+            <param name="ip"></param>
+            <param name="port"></param>
+            <param name="account"></param>
+            <param name="password"></param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.TEAEncryption(System.String,System.String)">
+            <summary>
+            Tea加密
+            </summary>
+            <param name="content">需加密的内容</param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.TEADecryption(System.String,System.String)">
+            <summary>
+            Tea解密
+            </summary>
+            <param name="content">需解密的内容</param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.QueryGroupGiftInformations(System.Int64)">
+            <summary>
+            查询我的群礼物 QQMini Pro才可用 返回礼物数量
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <returns>礼物列表</returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.RevokeGroupMessage(System.Int64,System.Int64,System.Int64,System.Int64)">
+            <summary>
+            撤回群消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">需撤回消息群号</param>
+            <param name="messageNumber">需撤回消息序号</param>
+            <param name="messageID">需撤回消息ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.DrawGroupGift(System.Int64,System.Int64)">
+            <summary>
+            抽取群礼物
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">目标群号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.HandleFriendAddRequest(System.Int64,System.Int64,Eruru.ChatRobotRPC.ChatRobotRequestType,System.String)">
+            <summary>
+            处理好友添加请求
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">请求添加好友人QQ</param>
+            <param name="treatmentMethod">处理方式</param>
+            <param name="information">拒绝添加好友 附加信息</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.HandleGroupAddRequest(System.Int64,Eruru.ChatRobotRPC.ChatRobotGroupAddRequestType,System.Int64,System.Int64,System.Int64,Eruru.ChatRobotRPC.ChatRobotRequestType,System.String)">
+            <summary>
+            处理群添加请求
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="requestType">请求类型</param>
+            <param name="qq">申请入群 被邀请人 （当请求类型为某人被邀请时这里为邀请人QQ）</param>
+            <param name="group">收到请求群号</param>
+            <param name="sign">需要处理请求的标记</param>
+            <param name="treatmentMethod">处理方式</param>
+            <param name="information">拒绝入群 附加信息</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.CreateDiscuss(System.Int64,System.Int64)">
+            <summary>
+            创建一个讨论组 成功返回讨论组ID 失败返回原因
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">被邀请对象QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.LoginRobot(System.Int64)">
+            <summary>
+            登录指定QQ，应确保QQ号码在列表中已存在
+            </summary>
+            <param name="robot">机器人QQ</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.Like(System.Int64,System.Int64)">
+            <summary>
+            调用一次点一下，成功返回空，失败返回理由如：每天最多给他点十个赞哦，调用此Api时应注意频率，每人每日可被赞10次，每日每Q最多可赞50人
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">填写被赞人QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.PublishGroupAnnouncement(System.Int64,System.Int64,System.String,System.String)">
+            <summary>
+            发布群公告，调用此API应保证响应QQ为管理员 成功返回空,失败返回错误信息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">欲发布公告的群号</param>
+            <param name="title">公告标题</param>
+            <param name="content">公告内容</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.PublishGroupJob(System.Int64,System.Int64,System.String,System.String,System.String)">
+            <summary>
+            QQ群作业发布
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">需要发布的群号</param>
+            <param name="name">作业名</param>
+            <param name="title">作业标题</param>
+            <param name="content">作业内容</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendFriendJsonMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送好友JSON消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">好友的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendFriendXmlMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送好友XML消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">好友的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendFriendWindowJitter(System.Int64,System.Int64)">
+            <summary>
+            向好友发起窗口抖动，调用此Api腾讯会限制频率
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">接收抖动消息的QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendFriendMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送好友普通文本消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">好友的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendFriendVerificationReplyJsonMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送好友验证回复JSON消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">对方的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendFriendVerificationReplyXmlMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送好友验证回复XML消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">对方的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendFriendVerificationReplyMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送好友验证回复普通文本消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">对方的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendFriendVoice(System.Int64,System.Int64,System.Byte[])">
+            <summary>
+            好友语音上传并发送 （成功返回真 失败返回假） QQMini Pro才可用
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">要发送的QQ号</param>
+            <param name="data">语音字节集数据（AMR Silk编码）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendGroupJsonMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送群JSON消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">要发送消息的群号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendGroupXmlMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送群XML消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">要发送消息的群号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendGroupGift(System.Int64,System.Int64,System.Int64,System.Int64)">
+            <summary>
+            送群礼物 成功返回真 失败返回假
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">需送礼物群号</param>
+            <param name="qq">赠予礼物对象</param>
+            <param name="gift">礼物id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendGroupTempJsonMessage(System.Int64,System.Int64,System.Int64,System.String)">
+            <summary>
+            发送群临时JSON消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">对方所在群号</param>
+            <param name="qq">对方的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendGroupTempXmlMessage(System.Int64,System.Int64,System.Int64,System.String)">
+            <summary>
+            发送群临时XML消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">对方所在群号</param>
+            <param name="qq">对方的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendGroupTempMessage(System.Int64,System.Int64,System.Int64,System.String)">
+            <summary>
+            发送群临时普通文本消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">对方所在群号</param>
+            <param name="qq">对方的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendGroupSignIn(System.Int64,System.Int64,System.String,System.String)">
+            <summary>
+            QQ群签到（成功返回真 失败返回假
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">QQ群号</param>
+            <param name="place">签到地名（Pro可自定义）</param>
+            <param name="content">想发表的内容</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendGroupMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送群普通文本消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">要发送消息的群号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendData(System.Int64,System.String)">
+            <summary>
+            向服务器发送原始封包（成功返回服务器返回的包 失败返回空）
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="data">封包内容</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendDiscussTempJsonMessage(System.Int64,System.Int64,System.Int64,System.String)">
+            <summary>
+            发送讨论组临时JSON消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">对方所在讨论组号</param>
+            <param name="qq">对方的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendDiscussJsonMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送讨论组JSON消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">讨论组号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendDiscussTempXmlMessage(System.Int64,System.Int64,System.Int64,System.String)">
+            <summary>
+            发送讨论组临时XML消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">对方所在讨论组号</param>
+            <param name="qq">对方的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendDiscussXmlMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送讨论组XML消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">讨论组号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendDiscussTempMessage(System.Int64,System.Int64,System.Int64,System.String)">
+            <summary>
+            发送讨论组临时普通文本消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">对方所在讨论组号</param>
+            <param name="qq">对方的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendDiscussMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送讨论组普通文本消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">讨论组号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendWebpageTempJsonMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送网页临时JSON消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">对方的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendWebpageTempXmlMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送网页临时XML消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">对方的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendWebpageTempMessage(System.Int64,System.Int64,System.String)">
+            <summary>
+            发送网页临时普通文本消息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">对方的QQ号</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.JoinDiscussByUrl(System.Int64,System.String)">
+            <summary>
+            通过连接加入讨论组
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="url">讨论组链接</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.DisablePlugin">
+            <summary>
+            请求禁用插件自身
+            </summary>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetBkn(System.Int64)">
+            <summary>
+            取得机器人网页操作用参数Bkn或G_tk Pro可用
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetClientKey(System.Int64)">
+            <summary>
+            取得机器人网页操作用的Clientkey Pro可用
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetCookies(System.Int64)">
+            <summary>
+            取得机器人网页操作用的Cookies Pro可用
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetPSKey(System.Int64,System.String)">
+            <summary>
+            取得机器人网页操作用的P_skey Pro可用
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="domainName">t.qq.com；qzone.qq.com；qun.qq.com；ke.qq.com</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetSessionKey(System.Int64)">
+            <summary>
+            获取会话SessionKey密钥 Pro可用
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetLongBkn(System.Int64)">
+            <summary>
+            取得机器人网页操作用参数长Bkn或长G_tk Pro可用
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetLongClientKey(System.Int64)">
+            <summary>
+            取得机器人网页操作用的长Clientkey Pro可用
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetLongLdw(System.Int64)">
+            <summary>
+            取得机器人网页操作用参数长Ldw Pro可用
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetMemberGroupChatLevel(System.Int64,System.Int64,System.Int64)">
+            <summary>
+            查询对象或自身群聊等级
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">查询群号</param>
+            <param name="qq">需查询对象或机器人QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetCurrentTimeStamp">
+            <summary>
+            取当前框架内部时间戳
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.TryGetLevel(System.Int64,Eruru.ChatRobotRPC.ChatRobotLevelInformation@)">
+            <summary>
+            获取等级 活跃天数 升级剩余活跃天数	
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="levelInformation">等级信息</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFriendQQMasterDays(System.Int64,System.Int64)">
+            <summary>
+            查询对象或自身QQ达人天数（返回实际天数 失败返回-1）
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">需查询对象或机器人QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFriendQAge(System.Int64,System.Int64)">
+            <summary>
+            取Q龄 成功返回Q龄 失败返回-1
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">好友QQ号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFriendNotes(System.Int64,System.Int64)">
+            <summary>
+            取好友备注姓名（成功返回备注，失败或无备注返回空）
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">需获取对象好友QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFriendLevel(System.Int64,System.Int64)">
+            <summary>
+            返回好友等级
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">好友QQ号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFriendPersonalDescription(System.Int64,System.Int64)">
+            <summary>
+            取个人说明
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">好友QQ号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFriendPersonalSignature(System.Int64,System.Int64)">
+            <summary>
+            取个人签名
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">好友QQ号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFriendListInformations(System.Int64)">
+            <summary>
+            取好友信息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFriendAge(System.Int64,System.Int64)">
+            <summary>
+            取 成功返回年龄 失败返回-1
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">好友QQ号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.IsFriendOnline(System.Int64,System.Int64)">
+            <summary>
+            查询对象是否在线
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">需获取对象QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.TryGetFriendInformation(System.Int64,System.Int64,Eruru.ChatRobotRPC.ChatRobotFriendInformation@)">
+            <summary>
+            获取好友资料 此方式为http，调用时应自行注意控制频率
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">好友QQ号</param>
+            <param name="friendInformation">好友信息</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFriendGender(System.Int64,System.Int64)">
+            <summary>
+            取对象性别 1男 2女 未知或失败返回-1
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">好友QQ号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFriendEmail(System.Int64,System.Int64)">
+            <summary>
+            取邮箱，获取对象QQ资料内邮箱栏为邮箱时返回
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">好友QQ号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFriendOnlineState(System.Int64,System.Int64)">
+            <summary>
+            查询对象在线状态 返回 #状态_ 常量 离线或隐身都返回#状态_隐身
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">需获取对象QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFriends(System.Int64)">
+            <summary>
+            取好友账号
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.TryGetRobotStateInformation(System.Int64,Eruru.ChatRobotRPC.ChatRobotStateInformation@)">
+            <summary>
+            获取机器人状态信息，成功返回真，失败返回假
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="robotStateInformation">返回状态信息</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFrameVersionNumber">
+            <summary>
+            取框架版本号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFrameVersionName">
+            <summary>
+            取框架版本名，返回QQMini Air或QQMini Pro
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetOfflineRobots">
+            <summary>
+            取框架离线QQ账号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetRobots">
+            <summary>
+            取框架所有QQ账号 包括未登录以及登录失败的QQ
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetFrameLog">
+            <summary>
+            取框架日志
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetOnlineRobots">
+            <summary>
+            取框架在线可用的QQ账号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetTargetFriendAddMethod(System.Int64,System.Int64)">
+            <summary>
+            取对象好友添加验证方式 返回常量 #验证_
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">需获取对象QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetGroupID(System.Int64)">
+            <summary>
+            群号转群ID
+            </summary>
+            <param name="group"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetGroupMemberListInformation(System.Int64,System.Int64,Eruru.ChatRobotRPC.ChatRobotGroupMemberInformation[]@)">
+            <summary>
+            取群成员列表信息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">指定群号</param>
+            <param name="groupMemberInformations">群成员信息</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetGroupMemberBusinessCard(System.Int64,System.Int64,System.Int64)">
+            <summary>
+            取对象群名片
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">QQ群号</param>
+            <param name="qq">欲取得群名片的群成员QQ号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.IsGroupMemberBanSpeak(System.Int64,System.Int64,System.Int64)">
+            <summary>
+            根据群号+QQ判断指定群员是否被禁言 获取失败的情况下亦会返回假
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">要查询的群号</param>
+            <param name="qq">要查询的QQ号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetGroupMembers(System.Int64,System.Int64)">
+            <summary>
+            取群成员账号
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">指定群号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetGroupAnnouncement(System.Int64,System.Int64)">
+            <summary>
+            取群公告
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group"> 欲取得公告的群号 </param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetGroupAdministrators(System.Int64,System.Int64)">
+            <summary>
+            取群管理员QQ（包含群主）
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">指定群号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetGroupQQ(System.Int64)">
+            <summary>
+            群ID转群号
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetGroups(System.Int64)">
+            <summary>
+            取群号
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetGroupInformations(System.Int64)">
+            <summary>
+            取群信息
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetGroupName(System.Int64,System.Int64)">
+            <summary>
+            取群名
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">QQ群号</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetGroupMemberNumber(System.Int64,System.Int64,System.Int64@)">
+            <summary>
+            查询对象群当前人数和上限人数
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">需查询的群号</param>
+            <param name="maxMemberNumber">群人数上限</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.Disconnect">
+            <summary>
+            断开与机器人框架RPC插件的连接
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotAction">
+            <summary>
+            无参委托
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupAddRequestEventHandler">
+            <summary>
+            群添加请求
+            </summary>
+            <param name="type">请求类型</param>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="group">申请要加入的群号</param>
+            <param name="qq">申请或被邀请加入群组者的QQ号.</param>
+            <param name="inviterQQ">邀请者的QQ号。</param>
+            <param name="sign">唯一表示本次请求,用于处理请求</param>
+            <param name="message">附加理由</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotFriendAddResponseEventHandler">
+            <summary>
+            好友添加响应
+            </summary>
+            <param name="agree">是否同意</param>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="qq">同意或拒绝添加响应QQ的QQ号</param>
+            <param name="message">拒绝好友时的附加消息/目前暂不支持</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotFriendAddRequestEventHandler">
+            <summary>
+            好友添加请求
+            </summary>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="qq">请求添加响应QQ好友的QQ号</param>
+            <param name="message">请求添加好友的附加消息</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupMessageRevokedEventHandler">
+            <summary>
+            群消息撤回
+            </summary>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="group">撤回消息的来源群号</param>
+            <param name="qq">撤回消息的QQ号</param>
+            <param name="messageNumber">被撤回消息的序号</param>
+            <param name="messageID">被撤回消息的标识</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupAnonymousSwitchedEventHandler">
+            <summary>
+            群匿名开关
+            </summary>
+            <param name="enable">群匿名是否开启</param>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="group">发生事件的群号</param>
+            <param name="qq">更改群匿名状态的管理员QQ号</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupBannedSpeakEventHandler">
+            <summary>
+            群禁言
+            </summary>
+            <param name="enable">全群禁言是否开启</param>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="group">开启或关闭群体禁言的群号</param>
+            <param name="qq">开启或关闭群体禁言的QQ号</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupNameChangedEventHandler">
+            <summary>
+            群名改变
+            </summary>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="group">改名的群号</param>
+            <param name="name">改完的群名</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupAdministratorChangedEventHandler">
+            <summary>
+            群管理员改变
+            </summary>
+            <param name="enable">是否成为管理</param>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="group">管理员改变的群号</param>
+            <param name="qq">成为或被取消管理员的QQ号</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupMemberBusinessCardChangedEventHandler">
+            <summary>
+            群成员名片改变
+            </summary>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="group">群成员名片改的群号</param>
+            <param name="qq">改变名片的人的QQ号</param>
+            <param name="businessCard">修改完的群名片</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupMemberLeavedEventHandler">
+            <summary>
+            群成员离开
+            </summary>
+            <param name="kick">是否是被踢</param>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="group">离开的群号</param>
+            <param name="qq">退出或被移出群组的QQ号</param>
+            <param name="operatorQQ">移除QQ的操作者QQ（如果是自己退群，则为-1）</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupMemberBannedSpeakEventHandler">
+            <summary>
+            群成员禁言
+            </summary>
+            <param name="enable">是否被禁言</param>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="group">发生事件的群号</param>
+            <param name="qq">被禁止发言的QQ号</param>
+            <param name="operatorQQ">设置禁言的QQ号 (管理员或群主)</param>
+            <param name="seconds">禁言时长, 单位: 秒, 范围: 1秒-30天</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupMemberJoinedEventHandler">
+            <summary>
+            群成员加入
+            </summary>
+            <param name="type">加入类型</param>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="group">加入的群号</param>
+            <param name="qq">被批准或邀请加入群组的QQ号</param>
+            <param name="operatorQQ">邀请或批准请求的管理QQ</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupDisbandedEventHandler">
+            <summary>
+            群被解散
+            </summary>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="group">被解散的群号</param>
+            <param name="qq">解散群组的群主QQ</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotFriendStateChangedEventHandler">
+            <summary>
+            好友状态改变
+            </summary>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="qq">改变状态的人的QQ号</param>
+            <param name="state">在线状态</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotOnWasRemoveByFriendEventHandler">
+            <summary>
+            被好友删除
+            </summary>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="qq">将响应QQ从好友列表中删除的QQ号</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotAPI">
+            <summary>
+            聊天机器人API
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotCode">
+            <summary>
+            聊天机器人码
+            </summary>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.At(System.Int64,System.Boolean)">
+            <summary>
+            群内@人（[@1633756198]）
+            </summary>
+            <param name="qq">-1为全体</param>
+            <param name="hasSpace">是否带空格</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.AtALL(System.Boolean)">
+            <summary>
+            群内@全体（[@all]）
+            </summary>
+            <param name="hasSpace">是否带空格</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.Emoji(System.String)">
+            <summary>
+            [emoji=F09F988A]
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.Face(System.Int32)">
+            <summary>
+            表情（[Face21.gif]）
+            </summary>
+            <param name="id">0-170共计171个表情（2014年8月28日为止 将来腾讯方面还会继续添加）</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.QQ">
+            <summary>
+            用于消息中表示当前对象QQ（[QQ]）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.Split">
+            <summary>
+            如:早上好[next]吃过早饭了吗？ 将会分成两条信息分别发送 每条信息最多允许使用10个分句标识
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.NewLine">
+            <summary>
+            表示换行,也可直接使用\r\n或\n（[换行]）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.Bubble(System.Int32)">
+            <summary>
+            自定义本条信息气泡（[气泡10]）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.Group">
+            <summary>
+            用于群消息中表示当前群名（[gname]）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.TimeInterval">
+            <summary>
+            表示 上午/下午/中午（[TimePer]）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.Random">
+            <summary>
+            表示一个0-100的随机数（[r]）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.Picture(System.String)">
+            <summary>
+            发送图片（[pic=XXXXXXX]）
+            </summary>
+            <param name="pathOrURL">本地绝对路径或网络直链路径</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.Font(System.Int32,System.Int32)">
+            <summary>
+            自定义单条信息字体（[字体[颜色=10,大小=14]]）
+            </summary>
+            <param name="color">字体颜色</param>
+            <param name="size">字体大小</param>
+            <returns></returns>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotFriendAddMethod">
+            <summary>
+            好友添加方式
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotFriendAddMethod.AllowAny">
+            <summary>
+            允许任何人
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotFriendAddMethod.NeedValidation">
+            <summary>
+            需要验证
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotFriendAddMethod.NeedRightAnswer">
+            <summary>
+            需要正确答案
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotFriendAddMethod.NeedAnswerQuestion">
+            <summary>
+            需要回答问题
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotFriendAddMethod.AlreadyFriend">
+            <summary>
+            已经是好友
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGender">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotGender.Male">
+            <summary>
+            男
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotGender.Female">
+            <summary>
+            女
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotGender.Hide">
+            <summary>
+            隐藏
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotRequestType">
+            <summary>
+            请求类型
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotRequestType.Ignore">
+            <summary>
+            忽略
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotRequestType.Agree">
+            <summary>
+            通过
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotRequestType.Refuse">
+            <summary>
+            拒绝
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotFriendInformation">
+            <summary>
+            好友信息
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotFriendInformation.QQ">
+            <summary>
+            好友QQ
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotFriendInformation.Name">
+            <summary>
+            昵称
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotFriendInformation.Gender">
+            <summary>
+            性别（255隐藏 0男 1女）
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotFriendInformation.Age">
+            <summary>
+            年龄
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotFriendInformation.Country">
+            <summary>
+            国家
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotFriendInformation.Province">
+            <summary>
+            省份
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotFriendInformation.City">
+            <summary>
+            城市
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotFriendInformation.AvatarURL">
+            <summary>
+            头像URL
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotFriendListInformation">
+            <summary>
+            好友列表信息
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotFriendListInformation.QQ">
+            <summary>
+            好友QQ
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotFriendListInformation.Notes">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotFriendListInformation.Group">
+            <summary>
+            所在分组
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGiftInformation">
+            <summary>
+            礼物信息
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGiftInformation.ID">
+            <summary>
+            礼物ID
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGiftInformation.Name">
+            <summary>
+            礼物名称
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGiftInformation.Value">
+            <summary>
+            礼物价值
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGiftInformation.GetTimeStamp">
+            <summary>
+            礼物获得时间戳
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGiftInformation.ExpirationTimeStamp">
+            <summary>
+            礼物过期时间戳
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupAddRequestType">
+            <summary>
+            群添加请求类型
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotGroupAddRequestType.Request">
+            <summary>
+            有人申请加群
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotGroupAddRequestType.InviteMe">
+            <summary>
+            某人邀请我加群
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotGroupAddRequestType.MemberInvite">
+            <summary>
+            群员邀请某人加群
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupInformation">
+            <summary>
+            群信息
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupInformation.Group">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupInformation.Name">
+            <summary>
+            群名
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupInformation.Master">
+            <summary>
+            群主QQ
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupInformation.IsAdministrator">
+            <summary>
+            是否是管理员（群主时也为真,可通过群主QQ区分）
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupMemberInformation">
+            <summary>
+            群成员信息
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupMemberInformation.QQ">
+            <summary>
+            群成员QQ
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupMemberInformation.Name">
+            <summary>
+            昵称
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupMemberInformation.BusinessCard">
+            <summary>
+            群名片
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupMemberInformation.ActiveIntegral">
+            <summary>
+            群活跃积分
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupMemberInformation.ActiveLevel">
+            <summary>
+            群活跃等级
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupMemberInformation.JoinTimeStamp">
+            <summary>
+            加群时间戳（10位）
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupMemberInformation.LastSpeakTimeStamp">
+            <summary>
+            最后发言时间戳（10位）
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupMemberInformation.BanSpeakSeconds">
+            <summary>
+            禁言时间（距禁言结束时间,秒）
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupMemberInformation.IsFriend">
+            <summary>
+            是否是好友
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupMemberJoinType">
+            <summary>
+            群成员加入类型
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotGroupMemberJoinType.Approve">
+            <summary>
+            某人被批准加入
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotGroupMemberJoinType.IJoin">
+            <summary>
+            我加入某个群
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotGroupMemberJoinType.Invite">
+            <summary>
+            某人被邀请加入了群
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupMemberListInformation">
+            <summary>
+            群成员列表信息
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupMemberListInformation.MemberNumber">
+            <summary>
+            群人数
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupMemberListInformation.MaxMemberNumber">
+            <summary>
+            群人数上限
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupMemberListInformation.Master">
+            <summary>
+            群主QQ
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotGroupMemberListInformation.Administrators">
+            <summary>
+            群管理员
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotLevelInformation">
+            <summary>
+            等级信息
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotLevelInformation.VIP">
+            <summary>
+            会员
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotLevelInformation.Level">
+            <summary>
+            等级
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotLevelInformation.ActiveDays">
+            <summary>
+            活跃天数
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotLevelInformation.DaysRemainingForUpgrade">
+            <summary>
+            升级剩余天数
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotMessage">
+            <summary>
+            聊天机器人消息
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotMessage.ChatRobot">
+            <summary>
+            所属实例
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotMessage.Type">
+            <summary>
+            来源
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotMessage.Robot">
+            <summary>
+            机器人
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotMessage.QQ">
+            <summary>
+            发送者
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotMessage.Group">
+            <summary>
+            来源群
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotMessage.Text">
+            <summary>
+            内容
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotMessage.Number">
+            <summary>
+            与ID配合用于防撤回
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotMessage.ID">
+            <summary>
+            与Number配合用于防撤回
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotMessage.DateTime">
+            <summary>
+            发送时间
+            </summary>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.Reply(System.String)">
+            <summary>
+            回复消息
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.Reply(System.Object)">
+            <summary>
+            回复消息
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.ReplyJson(System.String)">
+            <summary>
+            回复Json消息
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.ReplyJson(System.Object)">
+            <summary>
+            回复Json消息
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.ReplyXml(System.String)">
+            <summary>
+            回复Xml消息
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.ReplyXml(System.Object)">
+            <summary>
+            回复Xml消息
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.Send(Eruru.ChatRobotRPC.ChatRobot,Eruru.ChatRobotRPC.ChatRobotMessageType,System.Int64,System.String,System.Int64,System.Int64,Eruru.ChatRobotRPC.ChatRobotSendMessageType)">
+            <summary>
+            发送消息
+            </summary>
+            <param name="chatRobot">调用实例</param>
+            <param name="type">目标类型</param>
+            <param name="robot">机器人</param>
+            <param name="message">内容</param>
+            <param name="group">目标群</param>
+            <param name="qq">目标QQ</param>
+            <param name="sendType">文本、Json、Xml消息</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.Send(Eruru.ChatRobotRPC.ChatRobotMessageType,System.Int64,System.Object,System.Int64,System.Int64,Eruru.ChatRobotRPC.ChatRobotSendMessageType)">
+            <summary>
+            发送消息
+            </summary>
+            <param name="type">目标类型</param>
+            <param name="robot">机器人</param>
+            <param name="message">内容</param>
+            <param name="group">目标群</param>
+            <param name="qq">目标QQ</param>
+            <param name="sendType">文本、Json、Xml消息</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.ToString">
+            <summary>
+            返回消息内容
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotMessageType">
+            <summary>
+            消息类型
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotMessageType.Friend">
+            <summary>
+            好友
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotMessageType.GroupTemp">
+            <summary>
+            群临时
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotMessageType.DiscussTemp">
+            <summary>
+            讨论组临时
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotMessageType.WebpageTemp">
+            <summary>
+            网页临时
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotMessageType.FriendVerificationReply">
+            <summary>
+            好友验证回复
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotMessageType.Group">
+            <summary>
+            群
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotMessageType.Discuss">
+            <summary>
+            讨论组
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotSendMessageType">
+            <summary>
+            发送消息类型
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotSendMessageType.Text">
+            <summary>
+            文本
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotSendMessageType.Json">
+            <summary>
+            Json
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotSendMessageType.Xml">
+            <summary>
+            Xml
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotStateInformation">
+            <summary>
+            状态信息
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotStateInformation.QQ">
+            <summary>
+            机器人QQ
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotStateInformation.Name">
+            <summary>
+            昵称
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotStateInformation.State">
+            <summary>
+            在线状态
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotStateInformation.MessageSpeed">
+            <summary>
+            消息速度
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotStateInformation.ReceiveMessageNumber">
+            <summary>
+            接收消息数
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotStateInformation.SendMessageNumber">
+            <summary>
+            发送消息数
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotStateInformation.OnlineTime">
+            <summary>
+            在线时间
+            </summary>
+        </member>
+    </members>
+</doc>

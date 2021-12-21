@@ -5,6 +5,9 @@
 	/// </summary>
 	public class ChatRobotGroupMemberInformation {
 
+		/// <summary>
+		/// 群成员QQ
+		/// </summary>
 		public long QQ { get; set; }
 		/// <summary>
 		/// 昵称
