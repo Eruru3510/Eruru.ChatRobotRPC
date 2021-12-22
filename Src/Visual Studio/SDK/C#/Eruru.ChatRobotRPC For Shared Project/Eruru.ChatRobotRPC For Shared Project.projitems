@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Enums\ChatRobotFriendAddMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enums\ChatRobotGender.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enums\ChatRobotRequestType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enums\ChatRobotState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Informations\ChatRobotFriendInformation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Informations\ChatRobotFriendListInformation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Informations\ChatRobotGiftInformation.cs" />

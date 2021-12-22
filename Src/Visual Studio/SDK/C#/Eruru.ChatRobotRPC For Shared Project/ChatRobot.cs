@@ -11,6 +11,10 @@ namespace Eruru.ChatRobotRPC {
 	public class ChatRobot {
 
 		/// <summary>
+		/// 协议版本
+		/// </summary>
+		public string ProtocolVersision { get; } = "1.0.0.1";
+		/// <summary>
 		/// 收到消息（底层协议消息）
 		/// </summary>
 		public Action<string> OnReceived { get; set; }
@@ -96,10 +100,6 @@ namespace Eruru.ChatRobotRPC {
 			set => Client.HeartbeatPacketSendIntervalBySeconds = value;
 
 		}
-		/// <summary>
-		/// 协议版本
-		/// </summary>
-		public string ProtocolVersision { get; } = "1.0.0.0";
 		/// <summary>
 		/// 是否使用异步接收并处理消息
 		/// </summary>
@@ -426,6 +426,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="data">语音字节集数据（AMR Silk编码）</param>
 		/// <returns></returns>
 		public bool SendFriendVoice (long robot, long qq, byte[] data) {
+			throw new NotImplementedException ();
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (SendFriendVoice) },
 				{ "Robot", robot },
@@ -440,8 +441,9 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="robot">机器人QQ</param>
 		/// <param name="group">要发送消息的群号</param>
 		/// <param name="message">信息内容</param>
-		public void SendGroupJsonMessage (long robot, long group, string message) {
-			SendGroupMessage ("SendGroupJsonMessage", robot, group, message);
+		/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
+		public void SendGroupJsonMessage (long robot, long group, string message, bool isAnonymous = false) {
+			SendGroupMessage ("SendGroupJsonMessage", robot, group, message, isAnonymous);
 		}
 
 		/// <summary>
@@ -450,8 +452,9 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="robot">机器人QQ</param>
 		/// <param name="group">要发送消息的群号</param>
 		/// <param name="message">信息内容</param>
-		public void SendGroupXmlMessage (long robot, long group, string message) {
-			SendGroupMessage ("SendGroupXmlMessage", robot, group, message);
+		/// 	/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
+		public void SendGroupXmlMessage (long robot, long group, string message, bool isAnonymous = false) {
+			SendGroupMessage ("SendGroupXmlMessage", robot, group, message, isAnonymous);
 		}
 
 		/// <summary>
@@ -529,8 +532,9 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="robot">机器人QQ</param>
 		/// <param name="group">要发送消息的群号</param>
 		/// <param name="message">信息内容</param>
-		public void SendGroupMessage (long robot, long group, string message) {
-			SendGroupMessage ("SendGroupMessage", robot, group, message);
+		/// 	/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
+		public void SendGroupMessage (long robot, long group, string message, bool isAnonymous = false) {
+			SendGroupMessage ("SendGroupMessage", robot, group, message, isAnonymous);
 		}
 
 		/// <summary>
@@ -565,7 +569,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="group">讨论组号</param>
 		/// <param name="message">信息内容</param>
 		public void SendDiscussJsonMessage (long robot, long group, string message) {
-			SendGroupMessage ("SendDiscussJsonMessage", robot, group, message);
+			SendGroupMessage ("SendDiscussJsonMessage", robot, group, message, false);
 		}
 
 		/// <summary>
@@ -586,7 +590,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="group">讨论组号</param>
 		/// <param name="message">信息内容</param>
 		public void SendDiscussXmlMessage (long robot, long group, string message) {
-			SendGroupMessage ("SendDiscussXmlMessage", robot, group, message);
+			SendGroupMessage ("SendDiscussXmlMessage", robot, group, message, false);
 		}
 
 		/// <summary>
@@ -607,7 +611,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="group">讨论组号</param>
 		/// <param name="message">信息内容</param>
 		public void SendDiscussMessage (long robot, long group, string message) {
-			SendGroupMessage ("SendDiscussMessage", robot, group, message);
+			SendGroupMessage ("SendDiscussMessage", robot, group, message, false);
 		}
 
 		/// <summary>
@@ -638,6 +642,20 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="message">信息内容</param>
 		public void SendWebpageTempMessage (long robot, long qq, string message) {
 			SendFriendMessage ("SendWebpageTempMessage", robot, qq, message);
+		}
+
+		/// <summary>
+		/// 把好友图片的GUID转换成群聊可用的GUID
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="picture">例：[pic={30055346-3524074609-441EE15D1D802AA41D0396A7C303CD93}.jpg]</param>
+		/// <returns></returns>
+		public string FriendPictureToGroupPicture (long robot, string picture) {
+			return WaitSystemGet<string> (new JObject () {
+				{ "Type", nameof (FriendPictureToGroupPicture) },
+				{ "Robot", robot },
+				{ "Picture", picture }
+			});
 		}
 
 		/// <summary>
@@ -1248,6 +1266,24 @@ namespace Eruru.ChatRobotRPC {
 			}, out maxMemberNumber);
 		}
 
+		/// <summary>
+		/// 取群是否支持匿名
+		/// </summary>
+		/// <returns></returns>
+		public bool IsGroupAnonymousEnabled (long robot, long group) {
+			return WaitSystemGet<bool> (new JObject () {
+				{ "Type", nameof (IsGroupAnonymousEnabled) },
+				{ "Robot", robot },
+				{ "Group", group }
+			});
+		}
+
+		/// <summary>
+		/// 取讨论组成员QQ
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="discuss">讨论组号</param>
+		/// <returns></returns>
 		public long[] GetDiscussMembers (long robot, long discuss) {
 			return WaitSystemGet<long[]> (new JObject () {
 				{ "Type", nameof (GetDiscussMembers) },
@@ -1256,6 +1292,11 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 取讨论组号
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <returns></returns>
 		public long[] GetDiscusss (long robot) {
 			return WaitSystemGet<long[]> (new JObject () {
 				{ "Type", nameof (GetDiscusss) },
@@ -1263,6 +1304,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 通过讨论组号获取加群连接
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="discuss">需执行的讨论组ID</param>
+		/// <returns></returns>
 		public string GetDiscussURL (long robot, long discuss) {
 			return WaitSystemGet<string> (new JObject () {
 				{ "Type", nameof (GetDiscussURL) },
@@ -1271,6 +1318,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 取讨论组名称
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="discuss">需执行的讨论组ID</param>
+		/// <returns></returns>
 		public string GetDiscussName (long robot, long discuss) {
 			return WaitSystemGet<string> (new JObject () {
 				{ "Type", nameof (GetDiscussName) },
@@ -1279,6 +1332,13 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 根据图片码取得图片下载连接
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">指定的群号或讨论组号,临时会话和好友不填</param>
+		/// <param name="code">例如[pic={xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}.jpg]</param>
+		/// <returns></returns>
 		public string GetImageURL (long robot, long group, string code) {
 			return WaitSystemGet<string> (new JObject () {
 				{ "Type", nameof (GetImageURL) },
@@ -1288,6 +1348,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 取语音下载地址
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="code">例如[Voi={xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx}.amr]</param>
+		/// <returns></returns>
 		public string GetVoiceURL (long robot, string code) {
 			return WaitSystemGet<string> (new JObject () {
 				{ "Type", nameof (GetVoiceURL) },
@@ -1296,6 +1362,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 取用户名
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="qq">欲取得的QQ的号码</param>
+		/// <returns></returns>
 		public string GetName (long robot, long qq) {
 			return WaitSystemGet<string> (new JObject () {
 				{ "Type", nameof (GetName) },
@@ -1304,6 +1376,26 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 把群图片的GUID转换成好友可用的GUID
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="picture">例：[pic={441EE15D-1D80-2AA4-1D03-96A7C303CD93}.jpg]</param>
+		/// <returns></returns>
+		public string GroupPictureToFriendPicture (long robot, string picture) {
+			return WaitSystemGet<string> (new JObject () {
+				{ "Type", nameof (GroupPictureToFriendPicture) },
+				{ "Robot", robot },
+				{ "Picture", picture }
+			});
+		}
+
+		/// <summary>
+		/// 删除好友 成功返回真 失败返回假
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="qq">好友QQ号</param>
+		/// <returns></returns>
 		public bool RemoveFriend (long robot, long qq) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (RemoveFriend) },
@@ -1312,6 +1404,13 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 把好友删除为单项，或从对方列表删除自己 Pro可用
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="qq">欲操作的目标</param>
+		/// <param name="operatorType">1为在对方的列表删除我(双向) 2为在我的列表删除对方(单项) 默认为2</param>
+		/// <returns></returns>
 		public bool RemoveFriendByOneWay (long robot, long qq, long operatorType) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (RemoveFriendByOneWay) },
@@ -1321,6 +1420,10 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 删除框架帐号列表内指定QQ，不可在执行登录过程中删除QQ否则有几率引起错误 QQMini Pro才可用
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
 		public void RemoveRobot (long robot) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (RemoveRobot) },
@@ -1328,6 +1431,13 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 上传群或讨论组图片（通过读入字节集方式），可使用网页链接或本地读入，成功返回该图片GUID，失败返回空
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">要上传的群号或讨论组号</param>
+		/// <param name="base64">图片base64文本</param>
+		/// <returns></returns>
 		public string UploadGroupChatImage (long robot, long group, string base64) {
 			return WaitSystemGet<string> (new JObject () {
 				{ "Type", nameof (UploadGroupChatImage) },
@@ -1336,11 +1446,37 @@ namespace Eruru.ChatRobotRPC {
 				{ "Data", base64 }
 			});
 		}
+		/// <summary>
+		/// 上传群或讨论组图片（通过读入字节集方式），可使用网页链接或本地读入，成功返回该图片GUID，失败返回空
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">要上传的群号或讨论组号</param>
+		/// <param name="data">图片字节集数据</param>
+		/// <returns></returns>
 		public string UploadGroupChatImage (long robot, long group, byte[] data) {
 			return UploadGroupChatImage (robot, group, Convert.ToBase64String (data));
 		}
 
+		/// <summary>
+		/// 成功返回真 失败返回假 Pro可用
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">要发送的群号</param>
+		/// <param name="filePath">文件路径</param>
+		/// <returns></returns>
+		public bool UploadGroupFile (long robot, long group, string filePath) {
+			throw new NotImplementedException ();
+		}
+
+		/// <summary>
+		/// 上传QQ语音，成功返回语音GUID 失败返回空
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">要上传的群号</param>
+		/// <param name="base64">语音字节集数据（AMR Silk编码）</param>
+		/// <returns></returns>
 		public string UploadGroupChatVoice (long robot, long group, string base64) {
+			throw new NotImplementedException ();
 			return WaitSystemGet<string> (new JObject () {
 				{ "Type", nameof (UploadGroupChatVoice) },
 				{ "Robot", robot },
@@ -1348,10 +1484,25 @@ namespace Eruru.ChatRobotRPC {
 				{ "Data", base64 }
 			});
 		}
+		/// <summary>
+		/// 上传QQ语音，成功返回语音GUID 失败返回空
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">要上传的群号</param>
+		/// <param name="data">语音字节集数据（AMR Silk编码）</param>
+		/// <returns></returns>
 		public string UploadGroupChatVoice (long robot, long group, byte[] data) {
+			throw new NotImplementedException ();
 			return UploadGroupChatVoice (robot, group, Convert.ToBase64String (data));
 		}
 
+		/// <summary>
+		/// 上传好友或临时会话图片（通过读入字节集方式），可使用网页链接或本地读入，成功返回该图片GUID，失败返回空
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="qq">要上传的QQ号</param>
+		/// <param name="base64">图片base64文本</param>
+		/// <returns></returns>
 		public string UploadPrivateChatImage (long robot, long qq, string base64) {
 			return WaitSystemGet<string> (new JObject () {
 				{ "Type", nameof (UploadPrivateChatImage) },
@@ -1360,10 +1511,24 @@ namespace Eruru.ChatRobotRPC {
 				{ "Data",base64 }
 			});
 		}
+		/// <summary>
+		/// 上传好友或临时会话图片（通过读入字节集方式），可使用网页链接或本地读入，成功返回该图片GUID，失败返回空
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="qq">要上传的QQ号</param>
+		/// <param name="data">图片字节集数据</param>
+		/// <returns></returns>
 		public string UploadPrivateChatImage (long robot, long qq, byte[] data) {
 			return UploadPrivateChatImage (robot, qq, Convert.ToBase64String (data));
 		}
 
+		/// <summary>
+		/// 主动加好友 成功返回真 失败返回假 当对象设置需要正确回答问题或不允许任何人添加时无条件失败 QQMini Pro才可用
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="qq">要添加的好友QQ号</param>
+		/// <param name="message">加好友提交的理由</param>
+		/// <returns></returns>
 		public string RequestAddFriend (long robot, long qq, string message) {
 			return WaitSystemGet<string> (new JObject () {
 				{ "Type", nameof (RequestAddFriend) },
@@ -1373,6 +1538,13 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 申请加群.为了避免广告、群发行为。出现验证码时将会直接失败不处理 QQMini Pro才可用
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">欲申请加入的群号</param>
+		/// <param name="message">附加理由，可留空（需回答正确问题时，请填写问题答案）</param>
+		/// <returns></returns>
 		public string RequestAddGroup (long robot, long group, string message) {
 			return WaitSystemGet<string> (new JObject () {
 				{ "Type", nameof (RequestAddGroup) },
@@ -1382,6 +1554,11 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 获取机器人QQ是否被屏蔽消息发送状态（真屏蔽 假未屏蔽）
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <returns></returns>
 		public bool IsMaskSendMessage (long robot) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (IsMaskSendMessage) },
@@ -1389,12 +1566,22 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 取得插件自身启用状态，启用真 禁用假
+		/// </summary>
+		/// <returns></returns>
 		public bool IsEnable () {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (IsEnable) }
 			});
 		}
 
+		/// <summary>
+		/// 是否QQ好友（双向） 好友返回真 非好友或获取失败返回假
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="qq">需获取对象QQ</param>
+		/// <returns></returns>
 		public bool IsFriend (long robot, long qq) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (IsFriend) },
@@ -1403,6 +1590,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 查询群是否支持群私聊功能 Pro可用
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">要查询的群号</param>
+		/// <returns></returns>
 		public bool IsAllowGroupTempMessage (long robot, long group) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (IsAllowGroupTempMessage) },
@@ -1411,6 +1604,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 查询对方是否允许网页咨询发起的临时会话消息（非讨论组和群临时）
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="qq">需获取对象QQ</param>
+		/// <returns></returns>
 		public bool IsAllowWebpageTempMessage (long robot, long qq) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (IsAllowWebpageTempMessage) },
@@ -1419,6 +1618,13 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 向框架帐号列表添加一个Q.当该Q已存在时则覆盖密码 QQMini Pro才可用
+		/// </summary>
+		/// <param name="robot">机器人QQ </param>
+		/// <param name="password">机器人密码 </param>
+		/// <param name="autoLogin">运行框架时是否自动登录该Q.若添加后需要登录该Q则需要通过API登录账号操作</param>
+		/// <returns></returns>
 		public bool AddRobot (long robot, string password, bool autoLogin) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (AddRobot) },
@@ -1428,6 +1634,11 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 退群
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">欲退出的群号</param>
 		public void RemoveGroup (long robot, long group) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (RemoveGroup) },
@@ -1436,6 +1647,11 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 退出讨论组
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="discuss">需退出的讨论组ID</param>
 		public void RemoveDiscuss (long robot, long discuss) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (RemoveDiscuss) },
@@ -1444,6 +1660,10 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 令指定QQ下线，应确保QQ号码已在列表中且在线
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
 		public void LogoutRobot (long robot) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (LogoutRobot) },
@@ -1451,6 +1671,13 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 邀请对象加入讨论组 成功返回空 失败返回理由
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="discuss">需执行的讨论组ID</param>
+		/// <param name="qq">被邀请对象QQ</param>
+		/// <returns></returns>
 		public bool InviteFriendJoinDiscuss (long robot, long discuss, long qq) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (InviteFriendJoinDiscuss) },
@@ -1460,6 +1687,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 管理员邀请对象入群，频率过快会失败
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">被邀请加入的群号</param>
+		/// <param name="qq">被邀请人QQ号码</param>
 		public void InviteFriendJoinGroupByAdministrator (long robot, long group, long qq) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (InviteFriendJoinGroupByAdministrator) },
@@ -1469,6 +1702,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 非管理员邀请对象入群，频率过快会失败
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">被邀请加入的群号</param>
+		/// <param name="qq">被邀请人QQ号码</param>
 		public void InviteFriendJoinGroupNonAdministrator (long robot, long group, long qq) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (InviteFriendJoinGroupNonAdministrator) },
@@ -1478,6 +1717,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 上传封面（通过读入字节集方式）成功真 失败假
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="base64">图片base64文本</param>
+		/// <returns></returns>
 		public bool SetCover (long robot, string base64) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (SetCover) },
@@ -1485,10 +1730,21 @@ namespace Eruru.ChatRobotRPC {
 				{ "Data", base64 }
 			});
 		}
+		/// <summary>
+		/// 上传封面（通过读入字节集方式）成功真 失败假
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="data">图片数据</param>
+		/// <returns></returns>
 		public bool SetCover (long robot, byte[] data) {
 			return SetCover (robot, Convert.ToBase64String (data));
 		}
 
+		/// <summary>
+		/// 设置个人签名
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="personalSignature">签名</param>
 		public void SetPersonalSignature (long robot, string personalSignature) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (SetPersonalSignature) },
@@ -1497,6 +1753,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 修改好友备注姓名
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="qq">需获取对象好友QQ</param>
+		/// <param name="notes">需要修改的备注姓名</param>
 		public void SetFriendNotes (long robot, long qq, string notes) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (SetFriendNotes) },
@@ -1506,6 +1768,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 将好友拉入黑名单或解除
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="qq">要拉黑的好友QQ号</param>
+		/// <param name="enable">真拉黑,假取消拉黑</param>
 		public void SetFriendBlacklist (long robot, long qq, bool enable) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (SetFriendBlacklist) },
@@ -1515,16 +1783,29 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
-		public bool SetFriendAuthenticationMethod (long robot, long VerificationMethod, string question, string answer) {
+		/// <summary>
+		/// 设置本机器人好友验证方式，可重复调用 Pro可用
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="VerificationMethod">验证方式</param>
+		/// <param name="question">需要回答的问题,不需要可空</param>
+		/// <param name="answer">设置的问题答案,不需要可空</param>
+		/// <returns></returns>
+		public bool SetFriendAuthenticationMethod (long robot, ChatRobotFriendAddMethod VerificationMethod, string question, string answer) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (SetFriendAuthenticationMethod) },
 				{ "Robot", robot },
-				{ "VerificationMethod", VerificationMethod },
+				{ "VerificationMethod", (int)VerificationMethod },
 				{ "Question", question },
 				{ "Answer", answer }
 			});
 		}
 
+		/// <summary>
+		/// 设置机器人性别
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="gender">1为男 2为女</param>
 		public void SetRobotGender (long robot, long gender) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (SetRobotGender) },
@@ -1533,6 +1814,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 设置机器人在线状态+附加信息
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="state">在线状态</param>
+		/// <param name="information">最大255字节</param>
 		public void SetRobotState (long robot, long state, string information) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (SetRobotState) },
@@ -1542,6 +1829,11 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 设置机器人昵称
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="name">需要设置的昵称</param>
 		public void SetRobotName (long robot, string name) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (SetRobotName) },
@@ -1550,6 +1842,31 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 禁言/解禁匿名成员
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">禁言对象所在群.</param>
+		/// <param name="anonymousInformation">收到匿名消息时返回的Flag 例：[AnonyMsg,Name=小遮拦,Fkey=AB4A9698AA5C3D17A173D0F7C89B8675758534099F1477206EDF559D3E3A1DD964EC71B34F9B6B77]</param>
+		/// <param name="duration">单位:秒 最大为1个月. 为零解除对象禁言</param>
+		/// <returns></returns>
+		public bool SetAnonymousMemberBanSpeak (long robot, long group, string anonymousInformation, long duration) {
+			return WaitSystemGet<bool> (new JObject () {
+				{ "Type", nameof (SetAnonymousMemberBanSpeak) },
+				{ "Robot", robot },
+				{ "Group", group },
+				{ "AnonymousInformation", anonymousInformation },
+				{ "Duration", duration }
+			});
+		}
+
+		/// <summary>
+		/// 禁言群
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">要禁言的群号</param>
+		/// <param name="enable">为真开启禁言. 为假解除</param>
+		/// <returns></returns>
 		public bool SetGroupBanSpeak (long robot, long group, bool enable) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (SetGroupBanSpeak) },
@@ -1559,6 +1876,14 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 禁言群成员
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">要禁言的群号</param>
+		/// <param name="qq">要禁言的QQ号</param>
+		/// <param name="seconds">单位:秒 最大为1个月. 为零解除</param>
+		/// <returns></returns>
 		public bool SetGroupMemberBanSpeak (long robot, long group, long qq, long seconds) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (SetGroupMemberBanSpeak) },
@@ -1569,6 +1894,14 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 修改对象群名片 成功返回真 失败返回假
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">对象所处群号</param>
+		/// <param name="qq">被修改名片人QQ</param>
+		/// <param name="businessCard">需要修改的名片</param>
+		/// <returns></returns>
 		public bool SetGroupMemberBusinessCard (long robot, long group, long qq, string businessCard) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (SetGroupMemberBusinessCard) },
@@ -1579,6 +1912,13 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 将对象移除群
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">被执行群号</param>
+		/// <param name="qq">被执行对象</param>
+		/// <param name="noLongerAccept">真为不再接收，假为接收，默认为假</param>
 		public void KickGroupMember (long robot, long group, long qq, bool noLongerAccept) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (KickGroupMember) },
@@ -1589,6 +1929,14 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 设置或取消群管理员 成功返回真 失败返回假
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">指定群号</param>
+		/// <param name="qq">群员QQ号</param>
+		/// <param name="enable">真 为设置管理 假为取消管理</param>
+		/// <returns></returns>
 		public bool SetGroupAdministrator (long robot, long group, long qq, bool enable) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (SetGroupAdministrator) },
@@ -1599,6 +1947,13 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 开关群匿名消息发送功能 成功返回真 失败返回假
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">需开关群匿名功能群号</param>
+		/// <param name="enable">真开 假关</param>
+		/// <returns></returns>
 		public bool SetGroupAnonymousEnable (long robot, long group, bool enable) {
 			return WaitSystemGet<bool> (new JObject () {
 				{ "Type", nameof (SetGroupAnonymousEnable) },
@@ -1608,6 +1963,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 屏蔽或接收某群消息
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">指定群号</param>
+		/// <param name="enable">真 为屏蔽接收 假为接收并提醒</param>
 		public void SetMaskGroupMessage (long robot, long group, bool enable) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (SetMaskGroupMessage) },
@@ -1617,6 +1978,10 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 在框架记录页输出一行信息
+		/// </summary>
+		/// <param name="content">输出的内容</param>
 		public void Log (string content) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (Log) },
@@ -1624,6 +1989,11 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 置正在输入状态（发送消息后会打断状态）
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="qq">置正在输入状态接收对象QQ号</param>
 		public void SetInputting (long robot, long qq) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (SetInputting) },
@@ -1632,6 +2002,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 将对象移除讨论组
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="discuss">需执行的讨论组ID</param>
+		/// <param name="qq">被执行对象</param>
 		public void KickDiscussMember (long robot, long discuss, long qq) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (KickDiscussMember) },
@@ -1641,6 +2017,12 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 修改讨论组名称
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="discuss">需执行的讨论组ID</param>
+		/// <param name="name">需修改的名称</param>
 		public void SetDiscussName (long robot, long discuss, string name) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (SetDiscussName) },
@@ -1650,6 +2032,11 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		/// <summary>
+		/// 上传头像（通过读入字节集方式）成功真 失败假
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="base64">图片base64文本</param>
 		public void SetAvatar (long robot, string base64) {
 			ClientBeginSend (new JObject () {
 				{ "Type", nameof (SetAvatar) },
@@ -1657,6 +2044,11 @@ namespace Eruru.ChatRobotRPC {
 				{ "Data", base64 }
 			});
 		}
+		/// <summary>
+		/// 上传头像（通过读入字节集方式）成功真 失败假
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="data">图片数据</param>
 		public void SetAvatar (long robot, byte[] data) {
 			SetAvatar (robot, Convert.ToBase64String (data));
 		}
@@ -1671,156 +2063,160 @@ namespace Eruru.ChatRobotRPC {
 
 		void Received (byte[] data) {
 			string text = Encoding.UTF8.GetString (data);
-			OnReceived?.Invoke (text);
-			JObject jObject = JObject.Parse (text);
-			switch (jObject.Value<string> ("Type")) {
-				case "Protocol": {
-					string targetProtocolVersion = jObject.Value<string> ("Version");
-					if (targetProtocolVersion != ProtocolVersision) {
-						throw new Exception ($"SDK协议版本：{ProtocolVersision} 与机器人框架插件的协议版本：{targetProtocolVersion}不符");
+			try {
+				OnReceived?.Invoke (text);
+				JObject jObject = JObject.Parse (text);
+				switch (jObject.Value<string> ("Type")) {
+					case "Protocol": {
+						string targetProtocolVersion = jObject.Value<string> ("Version");
+						if (targetProtocolVersion != ProtocolVersision) {
+							throw new Exception ($"SDK协议版本：{ProtocolVersision} 与机器人框架插件的协议版本：{targetProtocolVersion}不符");
+						}
+						break;
 					}
-					break;
+					case "Return":
+						WaitSystem.Set (jObject.Value<long> ("ID"), jObject.Value<string> ("Result"));
+						break;
+					case "Message":
+						OnReceivedMessage?.Invoke (new ChatRobotMessage (
+							this,
+							EnumParse<ChatRobotMessageType> (jObject.Value<string> ("SubType")),
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("Group"),
+							jObject.Value<long> ("QQ"),
+							jObject.Value<string> ("Message"),
+							jObject.Value<long> ("MessageNumber"),
+							jObject.Value<long> ("MessageID")
+						));
+						break;
+					case "GroupAddRequest":
+						OnReceivedGroupAddRequest?.Invoke (
+							EnumParse<ChatRobotGroupAddRequestType> (jObject.Value<string> ("SubType")),
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("Group"),
+							jObject.Value<long> ("QQ"),
+							jObject.Value<long> ("InviterQQ"),
+							jObject.Value<long> ("Sign"),
+							jObject.Value<string> ("Message")
+						);
+						break;
+					case "FriendAddResponse":
+						OnReceivedFriendAddResponse?.Invoke (
+							jObject.Value<bool> ("Agree"),
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("QQ"),
+							jObject.Value<string> ("Message")
+						);
+						break;
+					case "FriendAddRequest":
+						OnReceivedFriendAddRequest?.Invoke (
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("QQ"),
+							jObject.Value<string> ("Message")
+						);
+						break;
+					case "GroupMessageRevoke":
+						OnGroupMessageRevoked?.Invoke (
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("Group"),
+							jObject.Value<long> ("QQ"),
+							jObject.Value<long> ("MessageNumber"),
+							jObject.Value<long> ("MessageID")
+						);
+						break;
+					case "GroupAnonymousSwitch":
+						OnGroupAnonymousSwitched?.Invoke (
+							jObject.Value<bool> ("Enable"),
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("Group"),
+							jObject.Value<long> ("QQ")
+						);
+						break;
+					case "GroupNameChange":
+						OnGroupNameChanged?.Invoke (
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("Group"),
+							jObject.Value<string> ("Name")
+						);
+						break;
+					case "GroupBanSpeak":
+						OnGroupBannedSpeak?.Invoke (
+							jObject.Value<bool> ("Enable"),
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("Group"),
+							jObject.Value<long> ("QQ")
+						);
+						break;
+					case "GroupAdminChange":
+						OnGroupAdministratorChanged?.Invoke (
+							jObject.Value<bool> ("Enable"),
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("Group"),
+							jObject.Value<long> ("QQ")
+						);
+						break;
+					case "GroupMemberBusinessCardChange":
+						OnGroupMemberBusinessCardChanged?.Invoke (
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("Group"),
+							jObject.Value<long> ("QQ"),
+							jObject.Value<string> ("BusinessCard")
+						);
+						break;
+					case "GroupMemberLeave":
+						OnGroupMemberLeaved?.Invoke (
+							jObject.Value<bool> ("Kick"),
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("Group"),
+							jObject.Value<long> ("QQ"),
+							jObject.Value<long> ("OperatorQQ")
+						);
+						break;
+					case "GroupMemberBanSpeak":
+						OnGroupMemberBannedSpeak?.Invoke (
+							jObject.Value<bool> ("Enable"),
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("Group"),
+							jObject.Value<long> ("QQ"),
+							jObject.Value<long> ("OperatorQQ"),
+							jObject.Value<long> ("Seconds")
+						);
+						break;
+					case "GroupMemberJoin":
+						OnGroupMemberJoined?.Invoke (
+							EnumParse<ChatRobotGroupMemberJoinType> (jObject.Value<string> ("SubType")),
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("Group"),
+							jObject.Value<long> ("QQ"),
+							jObject.Value<long> ("OperatorQQ")
+						);
+						break;
+					case "GroupDisband":
+						OnGroupDisbanded?.Invoke (
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("Group"),
+							jObject.Value<long> ("QQ")
+						);
+						break;
+					case "FriendStateChange":
+						OnFriendStateChanged?.Invoke (
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("QQ"),
+							jObject.Value<string> ("State")
+						);
+						break;
+					case "WasRemoveByFriend":
+						OnWasRemoveByFriend?.Invoke (
+							jObject.Value<long> ("Robot"),
+							jObject.Value<long> ("QQ")
+						);
+						break;
+					default:
+						Console.WriteLine ($"未知的消息类型：{jObject.Value<string> ("Type")}");
+						break;
 				}
-				case "Return":
-					WaitSystem.Set (jObject.Value<long> ("ID"), jObject.Value<string> ("Result"));
-					break;
-				case "Message":
-					OnReceivedMessage?.Invoke (new ChatRobotMessage (
-						this,
-						EnumParse<ChatRobotMessageType> (jObject.Value<string> ("SubType")),
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("Group"),
-						jObject.Value<long> ("QQ"),
-						jObject.Value<string> ("Message"),
-						jObject.Value<long> ("MessageNumber"),
-						jObject.Value<long> ("MessageID")
-					));
-					break;
-				case "GroupAddRequest":
-					OnReceivedGroupAddRequest?.Invoke (
-						EnumParse<ChatRobotGroupAddRequestType> (jObject.Value<string> ("SubType")),
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("Group"),
-						jObject.Value<long> ("QQ"),
-						jObject.Value<long> ("InviterQQ"),
-						jObject.Value<long> ("Sign"),
-						jObject.Value<string> ("Message")
-					);
-					break;
-				case "FriendAddResponse":
-					OnReceivedFriendAddResponse?.Invoke (
-						jObject.Value<bool> ("Agree"),
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("QQ"),
-						jObject.Value<string> ("Message")
-					);
-					break;
-				case "FriendAddRequest":
-					OnReceivedFriendAddRequest?.Invoke (
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("QQ"),
-						jObject.Value<string> ("Message")
-					);
-					break;
-				case "GroupMessageRevoke":
-					OnGroupMessageRevoked?.Invoke (
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("Group"),
-						jObject.Value<long> ("QQ"),
-						jObject.Value<long> ("MessageNumber"),
-						jObject.Value<long> ("MessageID")
-					);
-					break;
-				case "GroupAnonymousSwitch":
-					OnGroupAnonymousSwitched?.Invoke (
-						jObject.Value<bool> ("Enable"),
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("Group"),
-						jObject.Value<long> ("QQ")
-					);
-					break;
-				case "GroupNameChange":
-					OnGroupNameChanged?.Invoke (
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("Group"),
-						jObject.Value<string> ("Name")
-					);
-					break;
-				case "GroupBanSpeak":
-					OnGroupBannedSpeak?.Invoke (
-						jObject.Value<bool> ("Enable"),
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("Group"),
-						jObject.Value<long> ("QQ")
-					);
-					break;
-				case "GroupAdminChange":
-					OnGroupAdministratorChanged?.Invoke (
-						jObject.Value<bool> ("Enable"),
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("Group"),
-						jObject.Value<long> ("QQ")
-					);
-					break;
-				case "GroupMemberBusinessCardChange":
-					OnGroupMemberBusinessCardChanged?.Invoke (
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("Group"),
-						jObject.Value<long> ("QQ"),
-						jObject.Value<string> ("BusinessCard")
-					);
-					break;
-				case "GroupMemberLeave":
-					OnGroupMemberLeaved?.Invoke (
-						jObject.Value<bool> ("Kick"),
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("Group"),
-						jObject.Value<long> ("QQ"),
-						jObject.Value<long> ("OperatorQQ")
-					);
-					break;
-				case "GroupMemberBanSpeak":
-					OnGroupMemberBannedSpeak?.Invoke (
-						jObject.Value<bool> ("Enable"),
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("Group"),
-						jObject.Value<long> ("QQ"),
-						jObject.Value<long> ("OperatorQQ"),
-						jObject.Value<long> ("Seconds")
-					);
-					break;
-				case "GroupMemberJoin":
-					OnGroupMemberJoined?.Invoke (
-						EnumParse<ChatRobotGroupMemberJoinType> (jObject.Value<string> ("SubType")),
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("Group"),
-						jObject.Value<long> ("QQ"),
-						jObject.Value<long> ("OperatorQQ")
-					);
-					break;
-				case "GroupDisband":
-					OnGroupDisbanded?.Invoke (
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("Group"),
-						jObject.Value<long> ("QQ")
-					);
-					break;
-				case "FriendStateChange":
-					OnFriendStateChanged?.Invoke (
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("QQ"),
-						jObject.Value<string> ("State")
-					);
-					break;
-				case "WasRemoveByFriend":
-					OnWasRemoveByFriend?.Invoke (
-						jObject.Value<long> ("Robot"),
-						jObject.Value<long> ("QQ")
-					);
-					break;
-				default:
-					Console.WriteLine ($"未知的消息类型：{jObject.Value<string> ("Type")}");
-					break;
+			} catch (Exception exception) {
+				Console.WriteLine ($"{DateTime.Now} 处理消息：{text} 时出现异常：{exception}");
 			}
 		}
 
@@ -1828,12 +2224,13 @@ namespace Eruru.ChatRobotRPC {
 			OnSent?.Invoke (text);
 		}
 
-		void SendGroupMessage (string type, long robot, long group, string message) {
+		void SendGroupMessage (string type, long robot, long group, string message, bool isAnonymous) {
 			ClientBeginSend (new JObject () {
 				{ "Type", type },
 				{ "Robot", robot },
 				{ "Group", group },
-				{ "Message", message }
+				{ "Message", message },
+				{ "IsAnonymous", isAnonymous }
 			});
 		}
 

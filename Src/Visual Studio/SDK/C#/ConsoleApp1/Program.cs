@@ -1,6 +1,7 @@
 ﻿using Eruru.ChatRobotRPC;
 using Eruru.TextCommand;
 using System;
+using System.IO;
 using System.Net.Sockets;
 
 namespace ConsoleApp1 {
@@ -22,7 +23,8 @@ namespace ConsoleApp1 {
 						break;
 					case ChatRobotMessageType.Group:
 						if (message.Text.Contains (ChatRobotCode.At (message.Robot))) {
-							message.Text = message.Text.Replace (ChatRobotCode.At (message.Robot), string.Empty);
+							string content = message.Text.Replace (ChatRobotCode.At (message.Robot), string.Empty);
+							message.Text = content;
 							break;
 						}
 						return;
@@ -56,7 +58,7 @@ namespace ConsoleApp1 {
 
 		[TextCommand ("测试")]
 		static void Test (ChatRobotMessage message) {
-			Console.WriteLine (message.ChatRobot.GetFriendAge (message.Robot, 1633756198));
+
 		}
 
 	}

@@ -40,10 +40,22 @@ namespace Eruru.ChatRobotRPC {
 		/// </summary>
 		public long ID { get; set; }
 		/// <summary>
-		/// 发送时间
+		/// 接收时间
 		/// </summary>
 		public DateTime DateTime { get; set; }
 
+		/// <summary>
+		/// 完整构造聊天机器人消息
+		/// </summary>
+		/// <param name="chatRobot">调用实例</param>
+		/// <param name="type">消息类型</param>
+		/// <param name="robot">响应机器人</param>
+		/// <param name="group">来源群</param>
+		/// <param name="qq">来源QQ</param>
+		/// <param name="text">内容</param>
+		/// <param name="number">消息序号</param>
+		/// <param name="id">消息ID</param>
+		/// <param name="dateTime">接收消息时间</param>
 		public ChatRobotMessage (ChatRobot chatRobot, ChatRobotMessageType type, long robot, long group, long qq, string text, long number, long id, DateTime dateTime) {
 			ChatRobot = chatRobot;
 			Type = type;
@@ -55,6 +67,17 @@ namespace Eruru.ChatRobotRPC {
 			ID = id;
 			DateTime = dateTime;
 		}
+		/// <summary>
+		/// 构造聊天机器人消息，无需指定接收时间，默认为DateTime.Now
+		/// </summary>
+		/// <param name="chatRobot">调用实例</param>
+		/// <param name="type">消息类型</param>
+		/// <param name="robot">响应机器人</param>
+		/// <param name="group">来源群</param>
+		/// <param name="qq">来源QQ</param>
+		/// <param name="text">内容</param>
+		/// <param name="number">消息序号</param>
+		/// <param name="id">消息ID</param>
 		public ChatRobotMessage (ChatRobot chatRobot, ChatRobotMessageType type, long robot, long group, long qq, string text, long number, long id)
 			: this (chatRobot, type, robot, group, qq, text, number, id, DateTime.Now
 		) {
@@ -64,46 +87,52 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// 回复消息
 		/// </summary>
-		/// <param name="message"></param>
-		public void Reply (string message) {
-			Reply (message, ChatRobotSendMessageType.Text);
+		/// <param name="message">内容</param>
+		/// 	/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
+		public void Reply (string message, bool isAnonymous = false) {
+			Reply (message, ChatRobotSendMessageType.Text, isAnonymous);
 		}
 		/// <summary>
 		/// 回复消息
 		/// </summary>
-		/// <param name="message"></param>
-		public void Reply (object message) {
-			Reply (message?.ToString ());
+		/// <param name="message">内容</param>
+		/// 	/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
+		public void Reply (object message, bool isAnonymous = false) {
+			Reply (message?.ToString (), isAnonymous);
 		}
 
 		/// <summary>
 		/// 回复Json消息
 		/// </summary>
-		/// <param name="message"></param>
-		public void ReplyJson (string message) {
-			Reply (message, ChatRobotSendMessageType.Json);
+		/// <param name="message">内容</param>
+		/// 	/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
+		public void ReplyJson (string message, bool isAnonymous = false) {
+			Reply (message, ChatRobotSendMessageType.Json, isAnonymous);
 		}
 		/// <summary>
 		/// 回复Json消息
 		/// </summary>
-		/// <param name="message"></param>
-		public void ReplyJson (object message) {
-			ReplyJson (message?.ToString ());
+		/// <param name="message">内容</param>
+		/// 	/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
+		public void ReplyJson (object message, bool isAnonymous = false) {
+			ReplyJson (message?.ToString (), isAnonymous);
 		}
 
 		/// <summary>
 		/// 回复Xml消息
 		/// </summary>
-		/// <param name="message"></param>
-		public void ReplyXml (string message) {
-			Reply (message, ChatRobotSendMessageType.Xml);
+		/// <param name="message">内容</param>
+		/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
+		public void ReplyXml (string message, bool isAnonymous = false) {
+			Reply (message, ChatRobotSendMessageType.Xml, isAnonymous);
 		}
 		/// <summary>
 		/// 回复Xml消息
 		/// </summary>
-		/// <param name="message"></param>
-		public void ReplyXml (object message) {
-			ReplyXml (message?.ToString ());
+		/// <param name="message">群内</param>
+		/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
+		public void ReplyXml (object message, bool isAnonymous = false) {
+			ReplyXml (message?.ToString (), isAnonymous);
 		}
 
 		/// <summary>
@@ -115,8 +144,11 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="message">内容</param>
 		/// <param name="group">目标群</param>
 		/// <param name="qq">目标QQ</param>
+		/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
 		/// <param name="sendType">文本、Json、Xml消息</param>
-		public static void Send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, string message, long group = default, long qq = default, ChatRobotSendMessageType sendType = ChatRobotSendMessageType.Text) {
+		public static void Send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, string message, long group = default, long qq = default,
+			bool isAnonymous = false, ChatRobotSendMessageType sendType = ChatRobotSendMessageType.Text
+		) {
 			switch (type) {
 				case ChatRobotMessageType.Friend:
 					switch (sendType) {
@@ -136,13 +168,13 @@ namespace Eruru.ChatRobotRPC {
 				case ChatRobotMessageType.Group:
 					switch (sendType) {
 						case ChatRobotSendMessageType.Text:
-							chatRobot.SendGroupMessage (robot, group, message);
+							chatRobot.SendGroupMessage (robot, group, message, isAnonymous);
 							break;
 						case ChatRobotSendMessageType.Json:
-							chatRobot.SendGroupJsonMessage (robot, group, message);
+							chatRobot.SendGroupJsonMessage (robot, group, message, isAnonymous);
 							break;
 						case ChatRobotSendMessageType.Xml:
-							chatRobot.SendGroupXmlMessage (robot, group, message);
+							chatRobot.SendGroupXmlMessage (robot, group, message, isAnonymous);
 							break;
 						default:
 							throw new NotImplementedException (sendType.ToString ());
@@ -170,26 +202,31 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// 发送消息
 		/// </summary>
+		/// <param name="chatRobot">调用实例</param>
 		/// <param name="type">目标类型</param>
 		/// <param name="robot">机器人</param>
 		/// <param name="message">内容</param>
 		/// <param name="group">目标群</param>
 		/// <param name="qq">目标QQ</param>
+		/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
 		/// <param name="sendType">文本、Json、Xml消息</param>
-		public static void Send (ChatRobotMessageType type, long robot, object message, long group = default, long qq = default, ChatRobotSendMessageType sendType = ChatRobotSendMessageType.Text) {
-			Send (type, robot, message?.ToString (), group, qq, sendType);
+		public static void Send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, object message, long group = default, long qq = default,
+			bool isAnonymous = false,
+			ChatRobotSendMessageType sendType = ChatRobotSendMessageType.Text
+		) {
+			Send (chatRobot, type, robot, message?.ToString (), group, qq, isAnonymous, sendType);
 		}
 
 		/// <summary>
-		/// 返回消息内容
+		/// 返回消息内容（ChatRobotMessage.Text）
 		/// </summary>
 		/// <returns></returns>
 		public override string ToString () {
 			return Text;
 		}
 
-		void Reply (string message, ChatRobotSendMessageType type) {
-			Send (Type, Robot, message, Group, QQ, type);
+		void Reply (string message, ChatRobotSendMessageType type, bool isAnonymous) {
+			Send (ChatRobot, Type, Robot, message, Group, QQ, isAnonymous, type);
 		}
 
 	}
