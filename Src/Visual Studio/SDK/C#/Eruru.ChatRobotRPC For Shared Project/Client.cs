@@ -8,18 +8,18 @@ namespace Eruru.ChatRobotRPC {
 
 	class Client : IDisposable {
 
-		public bool Connected { get; private set; }
+		public bool IsConnected { get; private set; }
 		public Action<byte[]> OnReceived { get; set; }
+		public Action<string> OnSent { get; set; }
 		public ChatRobotAction OnDisconnected { get; set; }
 		public Encoding Encoding { get; set; } = Encoding.UTF8;
 		public long HeartbeatPacketSendIntervalBySeconds { get; set; } = 60;
-		public Action<string> OnSent { get; set; }
+		public int ReceiveBufferSize { get; set; } = 1024;
 
 		const int PacketHeadLength = 4;
 
 		readonly byte[] EmptyBytes = new byte[0];
 		readonly Queue<byte> Buffer = new Queue<byte> ();
-		readonly int ReceiveBufferSize = 1024;
 
 		Socket Socket;
 		Thread HeartbeatPacketThread;
@@ -31,9 +31,9 @@ namespace Eruru.ChatRobotRPC {
 				Socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			}
 			Socket.Connect (ip, port);
+			IsConnected = true;
 			HeartbeatPacketSendTime = DateTime.Now;
 			BeginReceive ();
-			HeartbeatPacketThread?.Abort ();
 			HeartbeatPacketThread = new Thread (BeginHeartbeatPacket) { IsBackground = true };
 			HeartbeatPacketThread.Start ();
 		}
@@ -67,6 +67,7 @@ namespace Eruru.ChatRobotRPC {
 				Socket = null;
 				Buffer.Clear ();
 				PacketBodyLength = -1;
+				HeartbeatPacketThread.Abort ();
 				OnDisconnected?.Invoke ();
 			}
 		}

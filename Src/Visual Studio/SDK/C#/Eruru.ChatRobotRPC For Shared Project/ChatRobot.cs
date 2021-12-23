@@ -33,11 +33,11 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// 收到好友添加响应
 		/// </summary>
-		public ChatRobotFriendAddResponseEventHandler OnReceivedFriendAddResponse { get; set; }
+		public ChatRobotFriendAddResponsedEventHandler OnReceivedFriendAddResponse { get; set; }
 		/// <summary>
 		/// 收到好友添加请求（使用ChatRobot.HandleFriendAddRequest处理）
 		/// </summary>
-		public ChatRobotFriendAddRequestEventHandler OnReceivedFriendAddRequest { get; set; }
+		public ChatRobotFriendAddRequestedEventHandler OnReceivedFriendAddRequest { get; set; }
 		/// <summary>
 		/// 群消息撤回
 		/// </summary>
@@ -85,7 +85,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// 被好友删除
 		/// </summary>
-		public ChatRobotOnWasRemoveByFriendEventHandler OnWasRemoveByFriend { get; set; }
+		public ChatRobotOnWasRemovedByFriendEventHandler OnWasRemovedByFriend { get; set; }
 		/// <summary>
 		/// 与机器人框架RPC插件断开了连接
 		/// </summary>
@@ -123,7 +123,7 @@ namespace Eruru.ChatRobotRPC {
 					}
 					Received (bytes);
 				},
-				OnSent = Sent,
+				OnSent = text => OnSent?.Invoke (text),
 				OnDisconnected = () => OnDisconnected?.Invoke ()
 			};
 		}
@@ -2066,11 +2066,14 @@ namespace Eruru.ChatRobotRPC {
 			try {
 				OnReceived?.Invoke (text);
 				JObject jObject = JObject.Parse (text);
-				switch (jObject.Value<string> ("Type")) {
+				string type = jObject.Value<string> ("Type");
+				switch (type) {
+					default:
+						throw new NotImplementedException ($"未知的消息类型：{type}");
 					case "Protocol": {
 						string targetProtocolVersion = jObject.Value<string> ("Version");
 						if (targetProtocolVersion != ProtocolVersision) {
-							throw new Exception ($"SDK协议版本：{ProtocolVersision} 与机器人框架插件的协议版本：{targetProtocolVersion}不符");
+							throw new Exception ($"SDK协议版本：{ProtocolVersision} 与机器人框架插件的协议版本：{targetProtocolVersion} 不符");
 						}
 						break;
 					}
@@ -2206,22 +2209,15 @@ namespace Eruru.ChatRobotRPC {
 						);
 						break;
 					case "WasRemoveByFriend":
-						OnWasRemoveByFriend?.Invoke (
+						OnWasRemovedByFriend?.Invoke (
 							jObject.Value<long> ("Robot"),
 							jObject.Value<long> ("QQ")
 						);
-						break;
-					default:
-						Console.WriteLine ($"未知的消息类型：{jObject.Value<string> ("Type")}");
 						break;
 				}
 			} catch (Exception exception) {
 				Console.WriteLine ($"{DateTime.Now} 处理消息：{text} 时出现异常：{exception}");
 			}
-		}
-
-		void Sent (string text) {
-			OnSent?.Invoke (text);
 		}
 
 		void SendGroupMessage (string type, long robot, long group, string message, bool isAnonymous) {
@@ -2260,7 +2256,7 @@ namespace Eruru.ChatRobotRPC {
 		long WaitSystemSend (JObject jObject) {
 			long id = WaitSystem.GetID ();
 			jObject["ID"] = id;
-			Client.BeginSend (jObject.ToString (Formatting.None));
+			ClientBeginSend (jObject);
 			return id;
 		}
 

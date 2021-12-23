@@ -99,7 +99,7 @@
             好友状态改变
             </summary>
         </member>
-        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnWasRemoveByFriend">
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnWasRemovedByFriend">
             <summary>
             被好友删除
             </summary>
@@ -1296,7 +1296,7 @@
             <param name="sign">唯一表示本次请求,用于处理请求</param>
             <param name="message">附加理由</param>
         </member>
-        <member name="T:Eruru.ChatRobotRPC.ChatRobotFriendAddResponseEventHandler">
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotFriendAddResponsedEventHandler">
             <summary>
             好友添加响应
             </summary>
@@ -1305,7 +1305,7 @@
             <param name="qq">同意或拒绝添加响应QQ的QQ号</param>
             <param name="message">拒绝好友时的附加消息/目前暂不支持</param>
         </member>
-        <member name="T:Eruru.ChatRobotRPC.ChatRobotFriendAddRequestEventHandler">
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotFriendAddRequestedEventHandler">
             <summary>
             好友添加请求
             </summary>
@@ -1414,7 +1414,7 @@
             <param name="qq">改变状态的人的QQ号</param>
             <param name="state">在线状态</param>
         </member>
-        <member name="T:Eruru.ChatRobotRPC.ChatRobotOnWasRemoveByFriendEventHandler">
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotOnWasRemovedByFriendEventHandler">
             <summary>
             被好友删除
             </summary>
@@ -1927,7 +1927,7 @@
             与Number配合用于防撤回
             </summary>
         </member>
-        <member name="P:Eruru.ChatRobotRPC.ChatRobotMessage.DateTime">
+        <member name="P:Eruru.ChatRobotRPC.ChatRobotMessage.ReceivedTime">
             <summary>
             接收时间
             </summary>
@@ -1944,7 +1944,7 @@
             <param name="text">内容</param>
             <param name="number">消息序号</param>
             <param name="id">消息ID</param>
-            <param name="dateTime">接收消息时间</param>
+            <param name="receivedTime">接收消息时间</param>
         </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.#ctor(Eruru.ChatRobotRPC.ChatRobot,Eruru.ChatRobotRPC.ChatRobotMessageType,System.Int64,System.Int64,System.Int64,System.String,System.Int64,System.Int64)">
             <summary>

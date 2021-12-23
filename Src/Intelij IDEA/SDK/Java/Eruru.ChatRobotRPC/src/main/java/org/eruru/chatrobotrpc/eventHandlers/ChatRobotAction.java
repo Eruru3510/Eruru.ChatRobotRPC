@@ -1,4 +1,4 @@
-package org.eruru.chatrobotrpc;
+package org.eruru.chatrobotrpc.eventHandlers;
 
 public interface ChatRobotAction {
 

@@ -21,20 +21,23 @@ namespace Eruru.ChatRobotRPC {
 		}
 
 		public void Set (long id, string result) {
-			Waits[id].Result = result;
-			Waits[id].AutoResetEvent.Set ();
+			Wait wait = Waits[id];
+			wait.Result = result;
+			wait.AutoResetEvent.Set ();
 		}
 
 		public string Get (long id) {
-			Wait wait = new Wait ();
-			Waits[id] = wait;
+			if (!Waits.TryGetValue (id, out Wait wait)) {
+				wait = new Wait ();
+				Waits[id] = wait;
+			}
 			wait.AutoResetEvent.WaitOne ();
 			return wait.Result;
 		}
 
 		public void Dispose () {
-			for (int i = 0; i < Waits.Count; i++) {
-				Waits[i].AutoResetEvent.Close ();
+			foreach (var wait in Waits) {
+				wait.Value.AutoResetEvent.Close ();
 			}
 		}
 

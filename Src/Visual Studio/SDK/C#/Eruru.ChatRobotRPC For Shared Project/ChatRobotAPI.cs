@@ -24,14 +24,14 @@
 	/// <param name="robot">收到此事件机器人的QQ</param>
 	/// <param name="qq">同意或拒绝添加响应QQ的QQ号</param>
 	/// <param name="message">拒绝好友时的附加消息/目前暂不支持</param>
-	public delegate void ChatRobotFriendAddResponseEventHandler (bool agree, long robot, long qq, string message);
+	public delegate void ChatRobotFriendAddResponsedEventHandler (bool agree, long robot, long qq, string message);
 	/// <summary>
 	/// 好友添加请求
 	/// </summary>
 	/// <param name="robot">收到此事件机器人的QQ</param>
 	/// <param name="qq">请求添加响应QQ好友的QQ号</param>
 	/// <param name="message">请求添加好友的附加消息</param>
-	public delegate void ChatRobotFriendAddRequestEventHandler (long robot, long qq, string message);
+	public delegate void ChatRobotFriendAddRequestedEventHandler (long robot, long qq, string message);
 	/// <summary>
 	/// 群消息撤回
 	/// </summary>
@@ -127,7 +127,7 @@
 	/// </summary>
 	/// <param name="robot">收到此事件机器人的QQ</param>
 	/// <param name="qq">将响应QQ从好友列表中删除的QQ号</param>
-	public delegate void ChatRobotOnWasRemoveByFriendEventHandler (long robot, long qq);
+	public delegate void ChatRobotOnWasRemovedByFriendEventHandler (long robot, long qq);
 
 	/// <summary>
 	/// 聊天机器人API

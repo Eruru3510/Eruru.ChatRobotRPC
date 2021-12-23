@@ -1,6 +1,6 @@
 package org.eruru.chatrobotrpc;
 
-public interface OnSent {
+interface OnSentEventHandler {
 
 	void invoke (String text);
 

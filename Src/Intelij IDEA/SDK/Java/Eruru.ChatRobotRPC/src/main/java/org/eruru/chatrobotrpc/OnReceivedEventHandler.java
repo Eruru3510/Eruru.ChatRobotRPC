@@ -1,6 +1,6 @@
 package org.eruru.chatrobotrpc;
 
-interface OnReceived {
+interface OnReceivedEventHandler {
 
 	void invoke (byte[] bytes);
 
