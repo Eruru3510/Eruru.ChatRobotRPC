@@ -88,7 +88,7 @@
 	/// <param name="group">离开的群号</param>
 	/// <param name="qq">退出或被移出群组的QQ号</param>
 	/// <param name="operatorQQ">移除QQ的操作者QQ（如果是自己退群，则为-1）</param>
-	public delegate void ChatRobotGroupMemberLeavedEventHandler (bool kick, long robot, long group, long qq, long operatorQQ);
+	public delegate void ChatRobotGroupMemberLeftEventHandler (bool kick, long robot, long group, long qq, long operatorQQ);
 	/// <summary>
 	/// 群成员禁言
 	/// </summary>
@@ -98,7 +98,7 @@
 	/// <param name="qq">被禁止发言的QQ号</param>
 	/// <param name="operatorQQ">设置禁言的QQ号 (管理员或群主)</param>
 	/// <param name="seconds">禁言时长, 单位: 秒, 范围: 1秒-30天</param>
-	public delegate void ChatRobotGroupMemberBannedSpeakEventHandler (bool enable, long robot, long group, long qq, long operatorQQ, long seconds);
+	public delegate void ChatRobotGroupMemberBannedSpeakEventHandler (bool enable, long robot, long group, long qq, long operatorQQ, int seconds);
 	/// <summary>
 	/// 群成员加入
 	/// </summary>
@@ -127,14 +127,12 @@
 	/// </summary>
 	/// <param name="robot">收到此事件机器人的QQ</param>
 	/// <param name="qq">将响应QQ从好友列表中删除的QQ号</param>
-	public delegate void ChatRobotOnWasRemovedByFriendEventHandler (long robot, long qq);
+	public delegate void ChatRobotWasRemovedByFriendEventHandler (long robot, long qq);
 
 	/// <summary>
 	/// 聊天机器人API
 	/// </summary>
 	public class ChatRobotAPI {
-
-
 
 	}
 

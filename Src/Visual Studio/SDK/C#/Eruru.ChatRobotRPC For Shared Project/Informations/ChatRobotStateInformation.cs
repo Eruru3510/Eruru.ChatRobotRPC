@@ -24,11 +24,11 @@
 		/// <summary>
 		/// 接收消息数
 		/// </summary>
-		public long ReceiveMessageNumber { get; set; }
+		public int ReceiveMessageNumber { get; set; }
 		/// <summary>
 		/// 发送消息数
 		/// </summary>
-		public long SendMessageNumber { get; set; }
+		public int SendMessageNumber { get; set; }
 		/// <summary>
 		/// 在线时间
 		/// </summary>

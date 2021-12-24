@@ -65,7 +65,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// 群成员离开
 		/// </summary>
-		public ChatRobotGroupMemberLeavedEventHandler OnGroupMemberLeaved { get; set; }
+		public ChatRobotGroupMemberLeftEventHandler OnGroupMemberLeft { get; set; }
 		/// <summary>
 		/// 群成员禁言
 		/// </summary>
@@ -85,7 +85,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// 被好友删除
 		/// </summary>
-		public ChatRobotOnWasRemovedByFriendEventHandler OnWasRemovedByFriend { get; set; }
+		public ChatRobotWasRemovedByFriendEventHandler OnWasRemovedByFriend { get; set; }
 		/// <summary>
 		/// 与机器人框架RPC插件断开了连接
 		/// </summary>
@@ -1258,8 +1258,8 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="group">需查询的群号</param>
 		/// <param name="maxMemberNumber">群人数上限</param>
 		/// <returns></returns>
-		public long GetGroupMemberNumber (long robot, long group, out long maxMemberNumber) {
-			return WaitSystemGet<long, long> (new JObject () {
+		public int GetGroupMemberNumber (long robot, long group, out int maxMemberNumber) {
+			return WaitSystemGet<int, int> (new JObject () {
 				{ "Type", nameof (GetGroupMemberNumber) },
 				{ "Robot", robot },
 				{ "Group", group }
@@ -2167,7 +2167,7 @@ namespace Eruru.ChatRobotRPC {
 						);
 						break;
 					case "GroupMemberLeave":
-						OnGroupMemberLeaved?.Invoke (
+						OnGroupMemberLeft?.Invoke (
 							jObject.Value<bool> ("Kick"),
 							jObject.Value<long> ("Robot"),
 							jObject.Value<long> ("Group"),
@@ -2182,7 +2182,7 @@ namespace Eruru.ChatRobotRPC {
 							jObject.Value<long> ("Group"),
 							jObject.Value<long> ("QQ"),
 							jObject.Value<long> ("OperatorQQ"),
-							jObject.Value<long> ("Seconds")
+							jObject.Value<int> ("Seconds")
 						);
 						break;
 					case "GroupMemberJoin":

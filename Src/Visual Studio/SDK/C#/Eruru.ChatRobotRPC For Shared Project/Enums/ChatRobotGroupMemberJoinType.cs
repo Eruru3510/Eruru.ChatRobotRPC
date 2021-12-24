@@ -12,11 +12,11 @@
 		/// <summary>
 		/// 我加入某个群
 		/// </summary>
-		IJoin,
+		IJoin = 2,
 		/// <summary>
 		/// 某人被邀请加入了群
 		/// </summary>
-		Invite
+		Invite = 3
 
 	}
 

@@ -12,11 +12,11 @@
 		/// <summary>
 		/// 某人邀请我加群
 		/// </summary>
-		InviteMe,
+		InviteMe = 2,
 		/// <summary>
 		/// 群员邀请某人加群
 		/// </summary>
-		MemberInvite
+		MemberInvite = 3
 
 	}
 

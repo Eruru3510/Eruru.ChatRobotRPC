@@ -12,15 +12,15 @@
 		/// <summary>
 		/// 等级
 		/// </summary>
-		public long Level { get; set; }
+		public int Level { get; set; }
 		/// <summary>
 		/// 活跃天数
 		/// </summary>
-		public long ActiveDays { get; set; }
+		public int ActiveDays { get; set; }
 		/// <summary>
 		/// 升级剩余天数
 		/// </summary>
-		public long DaysRemainingForUpgrade { get; set; }
+		public int DaysRemainingForUpgrade { get; set; }
 
 	}
 

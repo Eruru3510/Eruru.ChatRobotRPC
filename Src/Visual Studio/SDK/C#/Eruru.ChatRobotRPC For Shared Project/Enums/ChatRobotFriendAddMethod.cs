@@ -8,11 +8,11 @@
 		/// <summary>
 		/// 允许任何人
 		/// </summary>
-		AllowAny,
+		AllowAny = 0,
 		/// <summary>
 		/// 需要验证
 		/// </summary>
-		NeedValidation,
+		NeedValidation = 1,
 		/// <summary>
 		/// 需要正确答案
 		/// </summary>
@@ -20,7 +20,7 @@
 		/// <summary>
 		/// 需要回答问题
 		/// </summary>
-		NeedAnswerQuestion,
+		NeedAnswerQuestion = 4,
 		/// <summary>
 		/// 已经是好友
 		/// </summary>

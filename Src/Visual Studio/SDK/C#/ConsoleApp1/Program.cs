@@ -18,20 +18,20 @@ namespace ConsoleApp1 {
 			ChatRobot.OnReceived = message => Console.WriteLine ($"收到消息：{message}");
 			ChatRobot.OnSent = message => Console.WriteLine ($"发送消息：{message}");
 			ChatRobot.OnReceivedMessage = message => {
+				string text = message.Text;
 				switch (message.Type) {
 					case ChatRobotMessageType.Friend:
 						break;
 					case ChatRobotMessageType.Group:
 						if (message.Text.Contains (ChatRobotCode.At (message.Robot))) {
-							string content = message.Text.Replace (ChatRobotCode.At (message.Robot), string.Empty);
-							message.Text = content;
+							text = message.Text.Replace (ChatRobotCode.At (message.Robot), string.Empty);
 							break;
 						}
 						return;
 					default:
 						return;
 				}
-				textCommandSystem.Execute (message.Text, message);
+				textCommandSystem.Execute (text, message);
 			};
 			ChatRobot.OnReceivedFriendAddResponse = (agree, robot, qq, message) => {
 				Console.WriteLine ($"{agree} {robot} {qq} {message}");

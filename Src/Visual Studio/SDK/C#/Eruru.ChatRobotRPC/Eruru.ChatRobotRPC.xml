@@ -74,7 +74,7 @@
             群成员名片改变
             </summary>
         </member>
-        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnGroupMemberLeaved">
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnGroupMemberLeft">
             <summary>
             群成员离开
             </summary>
@@ -811,7 +811,7 @@
             <param name="group">QQ群号</param>
             <returns></returns>
         </member>
-        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetGroupMemberNumber(System.Int64,System.Int64,System.Int64@)">
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.GetGroupMemberNumber(System.Int64,System.Int64,System.Int32@)">
             <summary>
             查询对象群当前人数和上限人数
             </summary>
@@ -1367,7 +1367,7 @@
             <param name="qq">改变名片的人的QQ号</param>
             <param name="businessCard">修改完的群名片</param>
         </member>
-        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupMemberLeavedEventHandler">
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupMemberLeftEventHandler">
             <summary>
             群成员离开
             </summary>
@@ -1414,7 +1414,7 @@
             <param name="qq">改变状态的人的QQ号</param>
             <param name="state">在线状态</param>
         </member>
-        <member name="T:Eruru.ChatRobotRPC.ChatRobotOnWasRemovedByFriendEventHandler">
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotWasRemovedByFriendEventHandler">
             <summary>
             被好友删除
             </summary>

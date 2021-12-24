@@ -17,8 +17,8 @@ import java.util.Queue;
 class Client implements Closeable {
 
 	private boolean isConnected;
-	private OnReceivedEventHandler onReceived;
-	private OnSentEventHandler onSent;
+	private ReceivedEventHandler onReceived;
+	private SentEventHandler onSent;
 	private ChatRobotAction onDisconnected;
 	private Charset charset = StandardCharsets.UTF_8;
 	private int heartbeatPacketSendIntervalBySeconds = 60;
@@ -35,19 +35,19 @@ class Client implements Closeable {
 	private int packetBodyLength = -1;
 	private Date heartbeatPacketSendTime;
 
-	public OnReceivedEventHandler getOnReceived () {
+	public ReceivedEventHandler getOnReceived () {
 		return onReceived;
 	}
 
-	public void setOnReceived (OnReceivedEventHandler onReceived) {
+	public void setOnReceived (ReceivedEventHandler onReceived) {
 		this.onReceived = onReceived;
 	}
 
-	public OnSentEventHandler getOnSent () {
+	public SentEventHandler getOnSent () {
 		return onSent;
 	}
 
-	public void setOnSent (OnSentEventHandler onSent) {
+	public void setOnSent (SentEventHandler onSent) {
 		this.onSent = onSent;
 	}
 
@@ -88,9 +88,7 @@ class Client implements Closeable {
 	}
 
 	public void connect (String ip, int port) throws IOException {
-		if (socket == null) {
-			socket = new Socket ();
-		}
+		socket = new Socket ();
 		socket.connect (new InetSocketAddress (ip, port));
 		isConnected = true;
 		heartbeatPacketSendTime = new Date ();

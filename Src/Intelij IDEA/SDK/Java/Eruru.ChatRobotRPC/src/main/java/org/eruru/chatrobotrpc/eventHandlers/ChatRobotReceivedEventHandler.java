@@ -1,6 +1,6 @@
 package org.eruru.chatrobotrpc.eventHandlers;
 
-public interface ChatRobotOnReceivedEventHandler {
+public interface ChatRobotReceivedEventHandler {
 
 	void invoke (String text);
 

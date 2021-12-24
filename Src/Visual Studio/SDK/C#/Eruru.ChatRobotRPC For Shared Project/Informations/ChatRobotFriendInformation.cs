@@ -20,7 +20,7 @@
 		/// <summary>
 		/// 年龄
 		/// </summary>
-		public long Age { get; set; }
+		public int Age { get; set; }
 		/// <summary>
 		/// 国家
 		/// </summary>

@@ -8,11 +8,11 @@
 		/// <summary>
 		/// 男
 		/// </summary>
-		Male,
+		Male = 0,
 		/// <summary>
 		/// 女
 		/// </summary>
-		Female,
+		Female = 1,
 		/// <summary>
 		/// 隐藏
 		/// </summary>

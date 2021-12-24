@@ -1,12 +1,28 @@
 package org.eruru.chatrobotrpc;
 
+import java.lang.reflect.Method;
+
 public class ChatRobotAPI {
 
-	static <T extends Enum<?>> T enumParse (Class<T> enumeration, String search) {
-		for (T each : enumeration.getEnumConstants ()) {
-			if (each.name ().compareToIgnoreCase (search) == 0) {
-				return each;
+	static <T> T enumParse (Class<T> type, String search) {
+		for (T item : type.getEnumConstants ()) {
+			if (item.toString ().compareToIgnoreCase (search) == 0) {
+				return item;
 			}
+		}
+		return null;
+	}
+
+	static <T> T enumGet (Class<T> type, int value) {
+		try {
+			Method method = type.getDeclaredMethod ("getValue");
+			for (T item : type.getEnumConstants ()) {
+				if ((int) method.invoke (item) == value) {
+					return item;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace ();
 		}
 		return null;
 	}

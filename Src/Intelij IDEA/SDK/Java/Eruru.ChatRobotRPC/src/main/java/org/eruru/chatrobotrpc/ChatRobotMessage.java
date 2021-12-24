@@ -110,15 +110,23 @@ public class ChatRobotMessage {
 	}
 
 	public void reply (String message) {
-		reply (message, false);
+		reply (message, ChatRobotSendMessageType.text, false);
 	}
 
 	public void reply (Object message, boolean isAnonymous) {
-		reply (message == null ? null : message.toString (), isAnonymous);
+		reply (message, ChatRobotSendMessageType.text, isAnonymous);
 	}
 
 	public void reply (Object message) {
-		reply (message, false);
+		reply (message, ChatRobotSendMessageType.text, false);
+	}
+
+	public void reply (String format, boolean isAnonymous, Object... args) {
+		reply (format, ChatRobotSendMessageType.text, isAnonymous, args);
+	}
+
+	public void reply (String format, Object... args) {
+		reply (format, ChatRobotSendMessageType.text, false, args);
 	}
 
 	public void replyJson (String message, boolean isAnonymous) {
@@ -126,15 +134,23 @@ public class ChatRobotMessage {
 	}
 
 	public void replyJson (String message) {
-		replyJson (message, false);
+		reply (message, ChatRobotSendMessageType.json, false);
 	}
 
 	public void replyJson (Object message, boolean isAnonymous) {
-		replyJson (message == null ? null : message.toString (), isAnonymous);
+		reply (message, ChatRobotSendMessageType.json, isAnonymous);
 	}
 
 	public void replyJson (Object message) {
-		replyJson (message, false);
+		reply (message, ChatRobotSendMessageType.json, false);
+	}
+
+	public void replyJson (String format, boolean isAnonymous, Object... args) {
+		reply (format, ChatRobotSendMessageType.json, isAnonymous, args);
+	}
+
+	public void replyJson (String format, Object... args) {
+		reply (format, ChatRobotSendMessageType.json, false, args);
 	}
 
 	public void replyXml (String message, boolean isAnonymous) {
@@ -142,19 +158,27 @@ public class ChatRobotMessage {
 	}
 
 	public void replyXml (String message) {
-		replyJson (message, false);
+		reply (message, ChatRobotSendMessageType.xml, false);
 	}
 
 	public void replyXml (Object message, boolean isAnonymous) {
-		replyJson (message == null ? null : message.toString (), isAnonymous);
+		reply (message, ChatRobotSendMessageType.xml, isAnonymous);
 	}
 
 	public void replyXml (Object message) {
-		replyJson (message, false);
+		reply (message, ChatRobotSendMessageType.xml, false);
 	}
 
-	public static void send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, String message, long group, long qq, boolean isAnonymous,
-							 ChatRobotSendMessageType sendType
+	public void replyXml (String format, boolean isAnonymous, Object... args) {
+		reply (format, ChatRobotSendMessageType.xml, isAnonymous, args);
+	}
+
+	public void replyXml (String format, Object... args) {
+		reply (format, ChatRobotSendMessageType.xml, false, args);
+	}
+
+	public static void send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, String message, long group, long qq,
+							 boolean isAnonymous, ChatRobotSendMessageType sendType
 	) {
 		switch (type) {
 			case friend:
@@ -195,6 +219,18 @@ public class ChatRobotMessage {
 		}
 	}
 
+	public static void send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, Object message, long group, long qq,
+							 boolean isAnonymous, ChatRobotSendMessageType sendType
+	) {
+		send (chatRobot, type, robot, message == null ? null : message.toString (), group, qq, isAnonymous, sendType);
+	}
+
+	public static void send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, String format, long group, long qq,
+							 boolean isAnonymous, ChatRobotSendMessageType sendType, Object... args
+	) {
+		send (chatRobot, type, robot, String.format (format, args), group, qq, isAnonymous, sendType);
+	}
+
 	@Override
 	public String toString () {
 		return text;
@@ -202,6 +238,14 @@ public class ChatRobotMessage {
 
 	private void reply (String message, ChatRobotSendMessageType type, boolean isAnonymous) {
 		send (chatRobot, this.type, robot, message, group, qq, isAnonymous, type);
+	}
+
+	private void reply (Object message, ChatRobotSendMessageType type, boolean isAnonymous) {
+		send (chatRobot, this.type, robot, message == null ? null : message.toString (), group, qq, isAnonymous, type);
+	}
+
+	private void reply (String format, ChatRobotSendMessageType type, boolean isAnonymous, Object... args) {
+		send (chatRobot, this.type, robot, String.format (format, args), group, qq, isAnonymous, type);
 	}
 
 }

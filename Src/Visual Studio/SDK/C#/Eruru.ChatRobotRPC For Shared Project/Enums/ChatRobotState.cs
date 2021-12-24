@@ -16,23 +16,23 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// Q我吧
 		/// </summary>
-		QMe,
+		QMe = 2,
 		/// <summary>
 		/// 离开
 		/// </summary>
-		Leave,
+		Leave = 3,
 		/// <summary>
 		/// 忙碌
 		/// </summary>
-		Busy,
+		Busy = 4,
 		/// <summary>
 		/// 勿扰
 		/// </summary>
-		DoNotDisturb,
+		DoNotDisturb = 5,
 		/// <summary>
 		/// 隐身
 		/// </summary>
-		Invisible
+		Invisible = 6
 
 	}
 

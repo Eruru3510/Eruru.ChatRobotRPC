@@ -12,27 +12,27 @@
 		/// <summary>
 		/// 群临时
 		/// </summary>
-		GroupTemp,
+		GroupTemp = 2,
 		/// <summary>
 		/// 讨论组临时
 		/// </summary>
-		DiscussTemp,
+		DiscussTemp = 3,
 		/// <summary>
 		/// 网页临时
 		/// </summary>
-		WebpageTemp,
+		WebpageTemp = 4,
 		/// <summary>
 		/// 好友验证回复
 		/// </summary>
-		FriendVerificationReply,
+		FriendVerificationReply = 5,
 		/// <summary>
 		/// 群
 		/// </summary>
-		Group,
+		Group = 6,
 		/// <summary>
 		/// 讨论组
 		/// </summary>
-		Discuss,
+		Discuss = 7,
 
 	}
 

@@ -8,11 +8,11 @@
 		/// <summary>
 		/// 群人数
 		/// </summary>
-		public long MemberNumber { get; set; }
+		public int MemberNumber { get; set; }
 		/// <summary>
 		/// 群人数上限
 		/// </summary>
-		public long MaxMemberNumber { get; set; }
+		public int MaxMemberNumber { get; set; }
 		/// <summary>
 		/// 群主QQ
 		/// </summary>

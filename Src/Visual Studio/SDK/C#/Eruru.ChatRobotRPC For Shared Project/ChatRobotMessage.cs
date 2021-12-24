@@ -100,7 +100,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="message">内容</param>
 		/// 	/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
 		public void Reply (object message, bool isAnonymous = false) {
-			Reply (message?.ToString (), isAnonymous);
+			Reply (message, ChatRobotSendMessageType.Text, isAnonymous);
 		}
 
 		/// <summary>
@@ -117,7 +117,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="message">内容</param>
 		/// 	/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
 		public void ReplyJson (object message, bool isAnonymous = false) {
-			ReplyJson (message?.ToString (), isAnonymous);
+			Reply (message, ChatRobotSendMessageType.Json, isAnonymous);
 		}
 
 		/// <summary>
@@ -134,7 +134,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="message">群内</param>
 		/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
 		public void ReplyXml (object message, bool isAnonymous = false) {
-			ReplyXml (message?.ToString (), isAnonymous);
+			Reply (message, ChatRobotSendMessageType.Xml, isAnonymous);
 		}
 
 		/// <summary>
@@ -273,8 +273,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
 		/// <param name="sendType">文本、Json、Xml消息</param>
 		public static void Send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, object message, long group = default, long qq = default,
-			bool isAnonymous = false,
-			ChatRobotSendMessageType sendType = ChatRobotSendMessageType.Text
+			bool isAnonymous = false, ChatRobotSendMessageType sendType = ChatRobotSendMessageType.Text
 		) {
 			Send (chatRobot, type, robot, message?.ToString (), group, qq, isAnonymous, sendType);
 		}
@@ -289,6 +288,10 @@ namespace Eruru.ChatRobotRPC {
 
 		void Reply (string message, ChatRobotSendMessageType type, bool isAnonymous) {
 			Send (ChatRobot, Type, Robot, message, Group, QQ, isAnonymous, type);
+		}
+
+		void Reply (object message, ChatRobotSendMessageType type, bool isAnonymous) {
+			Send (ChatRobot, Type, Robot, message?.ToString (), Group, QQ, isAnonymous, type);
 		}
 
 	}
