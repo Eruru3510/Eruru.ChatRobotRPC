@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net20;net35;net40;net45;net48;netstandard2.0</TargetFrameworks>
-		<Version>1.0.0.12</Version>
+		<Version>1.0.0.13</Version>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net20|AnyCPU'">

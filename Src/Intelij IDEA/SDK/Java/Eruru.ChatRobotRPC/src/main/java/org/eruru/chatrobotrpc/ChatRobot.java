@@ -11,7 +11,9 @@ import org.eruru.chatrobotrpc.enums.ChatRobotMessageType;
 import org.eruru.chatrobotrpc.eventHandlers.*;
 import org.eruru.chatrobotrpc.informations.*;
 
+import javax.security.sasl.AuthenticationException;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
@@ -19,7 +21,8 @@ import java.util.Date;
 public class ChatRobot {
 
 	private final WaitSystem waitSystem = new WaitSystem ();
-	private final Client client;
+	private final SocketClient socketClient;
+	private final Charset charset = StandardCharsets.UTF_8;
 
 	private ChatRobotReceivedEventHandler onReceived;
 	private ChatRobotSentEventHandler onSent;
@@ -40,10 +43,9 @@ public class ChatRobot {
 	private ChatRobotFriendStateChangedEventHandler onFriendStateChanged;
 	private ChatRobotWasRemovedByFriendEventHandler onWasRemovedByFriend;
 	private ChatRobotAction onDisconnected;
-	private boolean useAsyncReceive = true;
 
 	public String getProtocolVersion () {
-		return "1.0.0.1";
+		return "1.0.0.2";
 	}
 
 	public ChatRobotReceivedEventHandler getOnReceived () {
@@ -199,33 +201,35 @@ public class ChatRobot {
 	}
 
 	public int getHeartbeatPacketSendIntervalBySeconds () {
-		return client.getHeartbeatPacketSendIntervalBySeconds ();
+		return socketClient.getHeartbeatInterval ();
 	}
 
 	public void setHeartbeatPacketSendIntervalBySeconds (int heartbeatPacketSendIntervalBySeconds) {
-		client.setHeartbeatPacketSendIntervalBySeconds (heartbeatPacketSendIntervalBySeconds);
+		socketClient.setHeartbeatInterval (heartbeatPacketSendIntervalBySeconds);
+	}
+
+	public int getHeartbeatInterval () {
+		return socketClient.getHeartbeatInterval ();
+	}
+
+	public void setHeartbeatInterval (int heartbeatInterval) {
+		socketClient.setHeartbeatInterval (heartbeatInterval);
 	}
 
 	public boolean isUseAsyncReceive () {
-		return useAsyncReceive;
+		return socketClient.isUseAsyncOnReceived ();
 	}
 
 	public void setUseAsyncReceive (boolean useAsyncReceive) {
-		this.useAsyncReceive = useAsyncReceive;
+		socketClient.setUseAsyncOnReceived (useAsyncReceive);
 	}
 
 	public ChatRobot () {
-		client = new Client () {{
-			setOnReceived (bytes -> {
-				if (useAsyncReceive) {
-					new Thread (() -> received (bytes)).start ();
-					return;
-				}
-				received (bytes);
-			});
-			setOnSent (text -> {
+		socketClient = new SocketClient () {{
+			setOnReceived (bytes -> received (bytes));
+			setOnSend (bytes -> {
 				if (onSent != null) {
-					onSent.invoke (text);
+					onSent.invoke (new String (bytes, charset));
 				}
 			});
 			setOnDisconnected (() -> {
@@ -237,12 +241,14 @@ public class ChatRobot {
 	}
 
 	public void connect (String ip, int port, String account, String password) throws IOException {
-		client.connect (ip, port);
-		clientBeginSend (new JSONObject () {{
+		socketClient.connect (ip, port);
+		if (Boolean.FALSE.equals (waitSystemGet (Boolean.class, new JSONObject () {{
 			put ("Type", "Login");
 			put ("Account", account);
 			put ("Password", password);
-		}});
+		}}))) {
+			throw new AuthenticationException ("账号或密码错误");
+		}
 	}
 
 	/// <summary>
@@ -2162,7 +2168,7 @@ public class ChatRobot {
 	}
 
 	public void disconnect () throws IOException {
-		client.Disconnect ();
+		socketClient.Disconnect ();
 		waitSystem.close ();
 	}
 
@@ -2402,6 +2408,7 @@ public class ChatRobot {
 			try {
 				return ChatRobotAPI.enumGet (type, Integer.parseInt (result));
 			} catch (Exception e) {
+				e.printStackTrace ();
 				return ChatRobotAPI.enumParse (type, result);
 			}
 		}
@@ -2448,7 +2455,7 @@ public class ChatRobot {
 	}
 
 	private void clientBeginSend (JSONObject jsonObject) {
-		client.beginSend (jsonObject.toJSONString ());
+		socketClient.sendAsync (jsonObject.toJSONString ().getBytes (StandardCharsets.UTF_8));
 	}
 
 }

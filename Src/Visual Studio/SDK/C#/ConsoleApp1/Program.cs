@@ -1,7 +1,6 @@
 ﻿using Eruru.ChatRobotRPC;
 using Eruru.TextCommand;
 using System;
-using System.IO;
 using System.Net.Sockets;
 
 namespace ConsoleApp1 {
@@ -16,7 +15,7 @@ namespace ConsoleApp1 {
 			textCommandSystem.Register<Program> ();
 			textCommandSystem.MatchParameterType = false;
 			ChatRobot.OnReceived = message => Console.WriteLine ($"收到消息：{message}");
-			ChatRobot.OnSent = message => Console.WriteLine ($"发送消息：{message}");
+			ChatRobot.OnSend = message => Console.WriteLine ($"发送消息：{message}");
 			ChatRobot.OnReceivedMessage = message => {
 				string text = message.Text;
 				switch (message.Type) {
@@ -33,9 +32,6 @@ namespace ConsoleApp1 {
 				}
 				textCommandSystem.Execute (text, message);
 			};
-			ChatRobot.OnReceivedFriendAddResponse = (agree, robot, qq, message) => {
-				Console.WriteLine ($"{agree} {robot} {qq} {message}");
-			};
 			ChatRobot.OnDisconnected = () => {
 				Console.WriteLine ("连接断开");
 				Connect ();
@@ -47,13 +43,14 @@ namespace ConsoleApp1 {
 		static void Connect () {
 			try {
 				Console.WriteLine ("开始连接");
-				ChatRobot.Connect ("127.0.0.1", 19730, "root", "root");
+				ChatRobot.Connect ("localhost", 19730, "root", "root");
+				Console.WriteLine ("连接成功");
 			} catch (SocketException socketException) {
 				Console.WriteLine (socketException);
 				Connect ();
-				return;
+			} catch (Exception exception) {
+				Console.WriteLine (exception);
 			}
-			Console.WriteLine ("连接成功");
 		}
 
 		[TextCommand ("测试")]

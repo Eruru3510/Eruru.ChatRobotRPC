@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Security.Authentication;
 using System.Text;
 
 namespace Eruru.ChatRobotRPC {
@@ -13,7 +14,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// 协议版本
 		/// </summary>
-		public string ProtocolVersision { get; } = "1.0.0.1";
+		public string ProtocolVersision { get; } = "1.0.0.2";
 		/// <summary>
 		/// 收到消息（底层协议消息）
 		/// </summary>
@@ -21,9 +22,9 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// 发送消息（底层协议消息）
 		/// </summary>
-		public Action<string> OnSent { get; set; }
+		public Action<string> OnSend { get; set; }
 		/// <summary>
-		/// 收到消息（好友或群等，统一入口，可用ChatRobot.UseAsyncReceive决定是否异步处理消息）
+		/// 收到消息（好友或群等，统一入口，可用ChatRobot.UseAsyncReceive决定是否异步处理所有消息）
 		/// </summary>
 		public Action<ChatRobotMessage> OnReceivedMessage { get; set; }
 		/// <summary>
@@ -93,37 +94,39 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// 心跳包发送间隔（秒）
 		/// </summary>
-		public long HeartbeatPacketSendIntervalBySeconds {
+		public int HeartbeatInterval {
 
-			get => Client.HeartbeatPacketSendIntervalBySeconds;
+			get => SocketClient.HeartbeatInterval;
 
-			set => Client.HeartbeatPacketSendIntervalBySeconds = value;
+			set => SocketClient.HeartbeatInterval = value;
 
 		}
 		/// <summary>
-		/// 是否使用异步接收并处理消息
+		/// 是否使用异步处理所有消息
 		/// </summary>
-		public bool UseAsyncReceive { get; set; } = true;
+		public bool UseAsyncReceive {
 
+			get {
+				return SocketClient.UseAsyncOnReceived;
+			}
+
+			set {
+				SocketClient.UseAsyncOnReceived = value;
+			}
+
+		}
+
+		readonly SocketClient SocketClient;
 		readonly WaitSystem WaitSystem = new WaitSystem ();
-		readonly Client Client;
-		readonly Action<byte[]> ReceivedAsync;
-
+		readonly Encoding Encoding = Encoding.UTF8;
 
 		/// <summary>
 		/// 默认构造函数
 		/// </summary>
 		public ChatRobot () {
-			ReceivedAsync = Received;
-			Client = new Client () {
-				OnReceived = bytes => {
-					if (UseAsyncReceive) {
-						ReceivedAsync.BeginInvoke (bytes, asyncResult => ReceivedAsync.EndInvoke (asyncResult), null);
-						return;
-					}
-					Received (bytes);
-				},
-				OnSent = text => OnSent?.Invoke (text),
+			SocketClient = new SocketClient () {
+				OnReceived = SocketClient_OnReceived,
+				OnSend = bytes => OnSend?.Invoke (Encoding.GetString (bytes)),
 				OnDisconnected = () => OnDisconnected?.Invoke ()
 			};
 		}
@@ -136,12 +139,14 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="account"></param>
 		/// <param name="password"></param>
 		public void Connect (string ip, int port, string account, string password) {
-			Client.Connect (ip, port);
-			ClientBeginSend (new JObject () {
+			SocketClient.Connect (ip, port);
+			if (!WaitSystemGet<bool> (new JObject () {
 				{ "Type", "Login" },
 				{ "Account", account },
 				{ "Password", password }
-			});
+			})) {
+				throw new AuthenticationException ("账号或密码错误");
+			}
 		}
 
 #if DEBUG
@@ -233,7 +238,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="treatmentMethod">处理方式</param>
 		/// <param name="information">拒绝添加好友 附加信息</param>
 		public void HandleFriendAddRequest (long robot, long qq, ChatRobotRequestType treatmentMethod, string information) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (HandleFriendAddRequest) },
 				{ "Robot", robot },
 				{ "QQ", qq },
@@ -255,7 +260,7 @@ namespace Eruru.ChatRobotRPC {
 		public void HandleGroupAddRequest (long robot, ChatRobotGroupAddRequestType requestType, long qq, long group, long sign,
 			ChatRobotRequestType treatmentMethod, string information
 		) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (HandleGroupAddRequest) },
 				{ "Robot", robot },
 				{ "RequestType", (int)requestType },
@@ -286,7 +291,7 @@ namespace Eruru.ChatRobotRPC {
 		/// </summary>
 		/// <param name="robot">机器人QQ</param>
 		public void LoginRobot (long robot) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (LoginRobot) },
 				{ "Robot", robot }
 			});
@@ -676,7 +681,7 @@ namespace Eruru.ChatRobotRPC {
 		/// 请求禁用插件自身
 		/// </summary>
 		public void DisablePlugin () {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (DisablePlugin) }
 			});
 		}
@@ -1425,7 +1430,7 @@ namespace Eruru.ChatRobotRPC {
 		/// </summary>
 		/// <param name="robot">机器人QQ</param>
 		public void RemoveRobot (long robot) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (RemoveRobot) },
 				{ "Robot", robot }
 			});
@@ -1640,7 +1645,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="robot">机器人QQ</param>
 		/// <param name="group">欲退出的群号</param>
 		public void RemoveGroup (long robot, long group) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (RemoveGroup) },
 				{ "Robot", robot },
 				{ "Group", group }
@@ -1653,7 +1658,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="robot">机器人QQ</param>
 		/// <param name="discuss">需退出的讨论组ID</param>
 		public void RemoveDiscuss (long robot, long discuss) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (RemoveDiscuss) },
 				{ "Robot", robot },
 				{ "Discuss", discuss }
@@ -1665,7 +1670,7 @@ namespace Eruru.ChatRobotRPC {
 		/// </summary>
 		/// <param name="robot">机器人QQ</param>
 		public void LogoutRobot (long robot) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (LogoutRobot) },
 				{ "Robot", robot }
 			});
@@ -1694,7 +1699,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="group">被邀请加入的群号</param>
 		/// <param name="qq">被邀请人QQ号码</param>
 		public void InviteFriendJoinGroupByAdministrator (long robot, long group, long qq) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (InviteFriendJoinGroupByAdministrator) },
 				{ "Robot", robot },
 				{ "Group", group },
@@ -1709,7 +1714,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="group">被邀请加入的群号</param>
 		/// <param name="qq">被邀请人QQ号码</param>
 		public void InviteFriendJoinGroupNonAdministrator (long robot, long group, long qq) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (InviteFriendJoinGroupNonAdministrator) },
 				{ "Robot", robot },
 				{ "Group", group },
@@ -1746,7 +1751,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="robot">机器人QQ</param>
 		/// <param name="personalSignature">签名</param>
 		public void SetPersonalSignature (long robot, string personalSignature) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (SetPersonalSignature) },
 				{ "Robot", robot },
 				{ "PersonalSignature", personalSignature }
@@ -1760,7 +1765,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="qq">需获取对象好友QQ</param>
 		/// <param name="notes">需要修改的备注姓名</param>
 		public void SetFriendNotes (long robot, long qq, string notes) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (SetFriendNotes) },
 				{ "Robot", robot },
 				{ "QQ", qq },
@@ -1775,7 +1780,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="qq">要拉黑的好友QQ号</param>
 		/// <param name="enable">真拉黑,假取消拉黑</param>
 		public void SetFriendBlacklist (long robot, long qq, bool enable) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (SetFriendBlacklist) },
 				{ "Robot", robot },
 				{ "QQ", qq },
@@ -1807,7 +1812,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="robot">机器人QQ</param>
 		/// <param name="gender">1为男 2为女</param>
 		public void SetRobotGender (long robot, long gender) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (SetRobotGender) },
 				{ "Robot", robot },
 				{ "Gender", gender }
@@ -1821,7 +1826,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="state">在线状态</param>
 		/// <param name="information">最大255字节</param>
 		public void SetRobotState (long robot, long state, string information) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (SetRobotState) },
 				{ "Robot", robot },
 				{ "State", state },
@@ -1835,7 +1840,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="robot">机器人QQ</param>
 		/// <param name="name">需要设置的昵称</param>
 		public void SetRobotName (long robot, string name) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (SetRobotName) },
 				{ "Robot", robot },
 				{ "Name", name },
@@ -1920,7 +1925,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="qq">被执行对象</param>
 		/// <param name="noLongerAccept">真为不再接收，假为接收，默认为假</param>
 		public void KickGroupMember (long robot, long group, long qq, bool noLongerAccept) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (KickGroupMember) },
 				{ "Robot", robot },
 				{ "Group", group },
@@ -1970,7 +1975,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="group">指定群号</param>
 		/// <param name="enable">真 为屏蔽接收 假为接收并提醒</param>
 		public void SetMaskGroupMessage (long robot, long group, bool enable) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (SetMaskGroupMessage) },
 				{ "Robot", robot },
 				{ "Group", group },
@@ -1983,7 +1988,7 @@ namespace Eruru.ChatRobotRPC {
 		/// </summary>
 		/// <param name="content">输出的内容</param>
 		public void Log (string content) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (Log) },
 				{ "Content", content }
 			});
@@ -1995,7 +2000,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="robot">机器人QQ</param>
 		/// <param name="qq">置正在输入状态接收对象QQ号</param>
 		public void SetInputting (long robot, long qq) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (SetInputting) },
 				{ "Robot", robot },
 				{ "QQ", qq }
@@ -2009,7 +2014,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="discuss">需执行的讨论组ID</param>
 		/// <param name="qq">被执行对象</param>
 		public void KickDiscussMember (long robot, long discuss, long qq) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (KickDiscussMember) },
 				{ "Robot", robot },
 				{ "Discuss", discuss },
@@ -2024,7 +2029,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="discuss">需执行的讨论组ID</param>
 		/// <param name="name">需修改的名称</param>
 		public void SetDiscussName (long robot, long discuss, string name) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (SetDiscussName) },
 				{ "Robot", robot },
 				{ "Discuss", discuss },
@@ -2038,7 +2043,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="robot">机器人QQ</param>
 		/// <param name="base64">图片base64文本</param>
 		public void SetAvatar (long robot, string base64) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", nameof (SetAvatar) },
 				{ "Robot", robot },
 				{ "Data", base64 }
@@ -2057,11 +2062,11 @@ namespace Eruru.ChatRobotRPC {
 		/// 断开与机器人框架RPC插件的连接
 		/// </summary>
 		public void Disconnect () {
-			Client.Disconnect ();
+			SocketClient.Disconnect ();
 			WaitSystem.Dispose ();
 		}
 
-		void Received (byte[] data) {
+		void SocketClient_OnReceived (byte[] data) {
 			string text = Encoding.UTF8.GetString (data);
 			try {
 				OnReceived?.Invoke (text);
@@ -2221,7 +2226,7 @@ namespace Eruru.ChatRobotRPC {
 		}
 
 		void SendGroupMessage (string type, long robot, long group, string message, bool isAnonymous) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", type },
 				{ "Robot", robot },
 				{ "Group", group },
@@ -2231,7 +2236,7 @@ namespace Eruru.ChatRobotRPC {
 		}
 
 		void SendFriendMessage (string type, long robot, long qq, string message) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", type },
 				{ "Robot", robot },
 				{ "QQ", qq },
@@ -2240,7 +2245,7 @@ namespace Eruru.ChatRobotRPC {
 		}
 
 		void SendGroupTempMessage (string type, long robot, long group, long qq, string message) {
-			ClientBeginSend (new JObject () {
+			SocketClientBeginSend (new JObject () {
 				{ "Type", type },
 				{ "Robot", robot },
 				{ "Group", group },
@@ -2256,7 +2261,7 @@ namespace Eruru.ChatRobotRPC {
 		long WaitSystemSend (JObject jObject) {
 			long id = WaitSystem.GetID ();
 			jObject["ID"] = id;
-			ClientBeginSend (jObject);
+			SocketClientBeginSend (jObject);
 			return id;
 		}
 
@@ -2296,8 +2301,8 @@ namespace Eruru.ChatRobotRPC {
 			return WaitSystemConvert<Result> (result[0].Value<string> ());
 		}
 
-		void ClientBeginSend (JObject jObject) {
-			Client.BeginSend (jObject.ToString (Formatting.None));
+		void SocketClientBeginSend (JObject jObject) {
+			SocketClient.SendAsync (Encoding.GetBytes (jObject.ToString (Formatting.None)));
 		}
 
 	}

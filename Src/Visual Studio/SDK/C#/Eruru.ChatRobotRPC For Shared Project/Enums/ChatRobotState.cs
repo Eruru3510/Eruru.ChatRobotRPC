@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Eruru.ChatRobotRPC {
+﻿namespace Eruru.ChatRobotRPC {
 
 	/// <summary>
 	/// 在线状态

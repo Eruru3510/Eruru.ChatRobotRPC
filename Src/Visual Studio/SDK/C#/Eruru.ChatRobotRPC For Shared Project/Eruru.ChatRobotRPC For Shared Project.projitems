@@ -29,10 +29,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Enums\ChatRobotMessageType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enums\ChatRobotSendMessageType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Informations\ChatRobotStateInformation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Client.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SocketClient\SocketClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SocketClient\SocketClientAPI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SocketClient\SocketClientState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Exceptions\" />
     <Folder Include="$(MSBuildThisFileDirectory)Informations\" />
   </ItemGroup>
 </Project>

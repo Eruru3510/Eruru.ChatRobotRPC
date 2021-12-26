@@ -6,14 +6,17 @@ namespace Eruru.ChatRobotRPC {
 
 	class WaitSystem : IDisposable {
 
+		public int MillisecondsTimeout { get; set; } = 60 * 1000;
+
 		readonly Dictionary<long, Wait> Waits = new Dictionary<long, Wait> ();
 		readonly object GetIDLock = new object ();
+		readonly object WaitsLock = new object ();
 
 		long ID;
 
 		public long GetID () {
 			lock (GetIDLock) {
-				if (ID == long.MaxValue) {
+				if (ID >= long.MaxValue) {
 					ID = 0;
 				}
 				return ID++;
@@ -21,23 +24,31 @@ namespace Eruru.ChatRobotRPC {
 		}
 
 		public void Set (long id, string result) {
-			Wait wait = Waits[id];
-			wait.Result = result;
-			wait.AutoResetEvent.Set ();
+			lock (WaitsLock) {
+				Wait wait = Waits[id];
+				wait.Result = result;
+				wait.AutoResetEvent.Set ();
+			}
 		}
 
 		public string Get (long id) {
-			if (!Waits.TryGetValue (id, out Wait wait)) {
-				wait = new Wait ();
-				Waits[id] = wait;
+			Wait wait;
+			lock (WaitsLock) {
+				if (!Waits.TryGetValue (id, out wait)) {
+					wait = new Wait ();
+					Waits[id] = wait;
+				}
 			}
-			wait.AutoResetEvent.WaitOne ();
+			wait.AutoResetEvent.WaitOne (MillisecondsTimeout);
 			return wait.Result;
 		}
 
 		public void Dispose () {
-			foreach (var wait in Waits) {
-				wait.Value.AutoResetEvent.Close ();
+			lock (WaitsLock) {
+				ID = 0;
+				foreach (var wait in Waits) {
+					wait.Value.AutoResetEvent.Close ();
+				}
 			}
 		}
 

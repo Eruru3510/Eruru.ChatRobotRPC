@@ -28,12 +28,14 @@ public class Example {
 	static void connect () {
 		try {
 			System.out.println ("开始连接");
-			chatRobot.connect ("127.0.0.1", 19730, "root", "root");
+			chatRobot.connect ("localhost", 19730, "root", "root");
 			System.out.println ("连接成功");
 		} catch (IOException ioException) {
 			System.out.println ("连接失败");
 			ioException.printStackTrace ();
 			connect ();
+		} catch (Exception exception) {
+			exception.printStackTrace ();
 		}
 	}
 

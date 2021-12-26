@@ -29,12 +29,14 @@ namespace Example {
 		static void Connect () {
 			try {
 				Console.WriteLine ("开始连接");
-				ChatRobot.Connect ("127.0.0.1", 19730, "root", "root");
+				ChatRobot.Connect ("localhost", 19730, "root", "root");
 				Console.WriteLine ("连接成功");
 			} catch (SocketException socketException) {
 				Console.WriteLine ("连接失败");
 				Console.WriteLine (socketException);
 				Connect ();
+			} catch (Exception exception) {
+				Console.WriteLine (exception);
 			}
 		}
 

@@ -19,14 +19,14 @@
             收到消息（底层协议消息）
             </summary>
         </member>
-        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnSent">
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnSend">
             <summary>
             发送消息（底层协议消息）
             </summary>
         </member>
         <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnReceivedMessage">
             <summary>
-            收到消息（好友或群等，统一入口，可用ChatRobot.UseAsyncReceive决定是否异步处理消息）
+            收到消息（好友或群等，统一入口，可用ChatRobot.UseAsyncReceive决定是否异步处理所有消息）
             </summary>
         </member>
         <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnReceivedGroupAddRequest">
@@ -109,14 +109,14 @@
             与机器人框架RPC插件断开了连接
             </summary>
         </member>
-        <member name="P:Eruru.ChatRobotRPC.ChatRobot.HeartbeatPacketSendIntervalBySeconds">
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.HeartbeatInterval">
             <summary>
             心跳包发送间隔（秒）
             </summary>
         </member>
         <member name="P:Eruru.ChatRobotRPC.ChatRobot.UseAsyncReceive">
             <summary>
-            是否使用异步接收并处理消息
+            是否使用异步处理所有消息
             </summary>
         </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobot.#ctor">
@@ -2131,6 +2131,11 @@
         <member name="P:Eruru.ChatRobotRPC.ChatRobotStateInformation.OnlineTime">
             <summary>
             在线时间
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.SocketClient.HeartbeatInterval">
+            <summary>
+            Seconds
             </summary>
         </member>
     </members>

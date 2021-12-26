@@ -9,6 +9,7 @@ class WaitSystem implements Closeable {
 
 	private final Map<Long, Wait> waits = new HashMap<> ();
 	private final Object getIDLock = new Object ();
+	private final Object waitsLock = new Object ();
 
 	private Long id = 0L;
 
@@ -22,16 +23,21 @@ class WaitSystem implements Closeable {
 	}
 
 	public void set (long id, String result) {
-		Wait wait = waits.get (id);
-		wait.Result = result;
-		wait.AutoResetEvent.set ();
+		synchronized (waitsLock) {
+			Wait wait = waits.get (id);
+			wait.Result = result;
+			wait.AutoResetEvent.set ();
+		}
 	}
 
 	public String get (long id) throws InterruptedException {
-		Wait wait = waits.get (id);
-		if (wait == null) {
-			wait = new Wait ();
-			waits.put (id, wait);
+		Wait wait;
+		synchronized (waitsLock) {
+			wait = waits.get (id);
+			if (wait == null) {
+				wait = new Wait ();
+				waits.put (id, wait);
+			}
 		}
 		wait.AutoResetEvent.waitOne ();
 		return wait.Result;
@@ -39,8 +45,10 @@ class WaitSystem implements Closeable {
 
 	@Override
 	public void close () throws IOException {
-		for (Map.Entry<Long, Wait> wait : waits.entrySet ()) {
-			wait.getValue ().AutoResetEvent.close ();
+		synchronized (waitsLock) {
+			for (Map.Entry<Long, Wait> wait : waits.entrySet ()) {
+				wait.getValue ().AutoResetEvent.close ();
+			}
 		}
 	}
 
