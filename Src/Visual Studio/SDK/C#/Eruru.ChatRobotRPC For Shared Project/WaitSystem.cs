@@ -8,7 +8,8 @@ namespace Eruru.ChatRobotRPC {
 
 		public int MillisecondsTimeout { get; set; } = 60 * 1000;
 
-		readonly Dictionary<long, Wait> Waits = new Dictionary<long, Wait> ();
+		readonly Queue<Wait> WaitPool = new Queue<Wait> ();
+		readonly List<Wait> Waits = new List<Wait> ();
 		readonly object GetIDLock = new object ();
 		readonly object WaitsLock = new object ();
 
@@ -25,19 +26,29 @@ namespace Eruru.ChatRobotRPC {
 
 		public void Set (long id, string result) {
 			lock (WaitsLock) {
-				Wait wait = Waits[id];
-				wait.Result = result;
-				wait.AutoResetEvent.Set ();
+				for (int i = 0; i < Waits.Count; i++) {
+					if (Waits[i].ID == id) {
+						Waits[i].Result = result;
+						Waits[i].AutoResetEvent.Set ();
+						WaitPool.Enqueue (Waits[i]);
+						Waits.RemoveAt (i);
+						return;
+					}
+				}
+				throw new Exception ($"没有找到ID为{id}的Wait");
 			}
 		}
 
 		public string Get (long id) {
 			Wait wait;
 			lock (WaitsLock) {
-				if (!Waits.TryGetValue (id, out wait)) {
-					wait = new Wait ();
-					Waits[id] = wait;
+				if (WaitPool.Count == 0) {
+					wait = new Wait (id);
+				} else {
+					wait = WaitPool.Dequeue ();
+					wait.ID = id;
 				}
+				Waits.Add (wait);
 			}
 			wait.AutoResetEvent.WaitOne (MillisecondsTimeout);
 			return wait.Result;
@@ -47,15 +58,22 @@ namespace Eruru.ChatRobotRPC {
 			lock (WaitsLock) {
 				ID = 0;
 				foreach (var wait in Waits) {
-					wait.Value.AutoResetEvent.Close ();
+					wait.AutoResetEvent.Close ();
+					WaitPool.Enqueue (wait);
 				}
+				Waits.Clear ();
 			}
 		}
 
 		class Wait {
 
+			public long ID;
 			public AutoResetEvent AutoResetEvent = new AutoResetEvent (false);
 			public string Result;
+
+			public Wait (long id) {
+				ID = id;
+			}
 
 		}
 

@@ -2,12 +2,15 @@ package org.eruru.chatrobotrpc;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 class WaitSystem implements Closeable {
 
-	private final Map<Long, Wait> waits = new HashMap<> ();
+	private final Queue<Wait> waitPool = new LinkedList<> ();
+	private final List<Wait> waits = new ArrayList<> ();
 	private final Object getIDLock = new Object ();
 	private final Object waitsLock = new Object ();
 
@@ -22,40 +25,56 @@ class WaitSystem implements Closeable {
 		}
 	}
 
-	public void set (long id, String result) {
+	public void set (long id, String result) throws Exception {
 		synchronized (waitsLock) {
-			Wait wait = waits.get (id);
-			wait.Result = result;
-			wait.AutoResetEvent.set ();
+			for (int i = 0; i < waits.size (); i++) {
+				if (waits.get (i).id == id) {
+					waits.get (i).result = result;
+					waits.get (i).autoResetEvent.set ();
+					waitPool.offer (waits.get (i));
+					waits.remove (i);
+					return;
+				}
+			}
+			throw new Exception (String.format ("没有找到ID为%d的Wait", id));
 		}
 	}
 
 	public String get (long id) throws InterruptedException {
 		Wait wait;
 		synchronized (waitsLock) {
-			wait = waits.get (id);
-			if (wait == null) {
-				wait = new Wait ();
-				waits.put (id, wait);
+			if (waitPool.size () == 0) {
+				wait = new Wait (id);
+			} else {
+				wait = waitPool.poll ();
+				wait.id = id;
 			}
+			waits.add (wait);
 		}
-		wait.AutoResetEvent.waitOne ();
-		return wait.Result;
+		wait.autoResetEvent.waitOne ();
+		return wait.result;
 	}
 
 	@Override
 	public void close () throws IOException {
 		synchronized (waitsLock) {
-			for (Map.Entry<Long, Wait> wait : waits.entrySet ()) {
-				wait.getValue ().AutoResetEvent.close ();
+			for (Wait wait : waits) {
+				wait.autoResetEvent.close ();
+				waitPool.offer (wait);
 			}
+			waits.clear ();
 		}
 	}
 
 	static class Wait {
 
-		public AutoResetEvent AutoResetEvent = new AutoResetEvent (false);
-		public String Result;
+		public long id;
+		public AutoResetEvent autoResetEvent = new AutoResetEvent (false);
+		public String result;
+
+		public Wait (long id) {
+			this.id = id;
+		}
 
 	}
 

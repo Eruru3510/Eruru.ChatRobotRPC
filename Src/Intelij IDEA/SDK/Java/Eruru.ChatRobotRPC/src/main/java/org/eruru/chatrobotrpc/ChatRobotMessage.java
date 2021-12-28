@@ -1,9 +1,11 @@
 package org.eruru.chatrobotrpc;
 
+import javafx.util.Pair;
 import org.eruru.chatrobotrpc.enums.ChatRobotMessageType;
 import org.eruru.chatrobotrpc.enums.ChatRobotSendMessageType;
 
 import java.util.Date;
+import java.util.List;
 
 public class ChatRobotMessage {
 
@@ -177,6 +179,36 @@ public class ChatRobotMessage {
 		reply (format, ChatRobotSendMessageType.xml, false, args);
 	}
 
+	/// <summary>
+	/// 是否为语音消息
+	/// </summary>
+	/// <param name="message">消息文本</param>
+	/// <param name="guid">提取出来的语音GUID</param>
+	/// <param name="identifyResult">提取出来的语音识别结果</param>
+	/// <returns></returns>
+	public ChatRobotVoiceMessageResult isVoice () {
+		return ChatRobotAPI.isVoiceMessage (text);
+	}
+
+	/// <summary>
+	/// 消息中是否包含图片
+	/// </summary>
+	/// <param name="message">消息文本</param>
+	/// <param name="guids">提取出来的图片GUID</param>
+	/// <returns></returns>
+	public Pair<Boolean, List<String>> containsPicture () {
+		return ChatRobotAPI.containsPictureInMessage (text);
+	}
+
+	/// <summary>
+	/// 是否为闪照消息
+	/// </summary>
+	/// <param name="message">消息文本</param>
+	/// <returns></returns>
+	public boolean isFlashPicture () {
+		return ChatRobotAPI.isFlashPictureMessage (text);
+	}
+	
 	public static void send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, String message, long group, long qq,
 							 boolean isAnonymous, ChatRobotSendMessageType sendType
 	) {

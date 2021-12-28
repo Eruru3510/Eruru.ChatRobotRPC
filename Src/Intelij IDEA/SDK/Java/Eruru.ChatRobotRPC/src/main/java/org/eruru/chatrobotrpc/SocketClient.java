@@ -213,10 +213,10 @@ class SocketClient implements Closeable {
 		}
 	}
 
-	private byte[] toPacket (byte[] data) {
-		byte[] buffer = new byte[data.length + packetHeadLength];
-		System.arraycopy (ChatRobotAPI.intToBytes (data.length), 0, buffer, 0, packetHeadLength);
-		System.arraycopy (data, 0, buffer, packetHeadLength, data.length);
+	private byte[] toPacket (byte[] bytes) {
+		byte[] buffer = new byte[bytes.length + packetHeadLength];
+		System.arraycopy (ChatRobotAPI.intToBytes (bytes.length), 0, buffer, 0, packetHeadLength);
+		System.arraycopy (bytes, 0, buffer, packetHeadLength, bytes.length);
 		return buffer;
 	}
 

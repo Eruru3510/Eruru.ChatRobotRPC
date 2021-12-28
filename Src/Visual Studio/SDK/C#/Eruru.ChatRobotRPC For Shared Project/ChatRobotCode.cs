@@ -8,6 +8,37 @@ namespace Eruru.ChatRobotRPC {
 	public class ChatRobotCode {
 
 		/// <summary>
+		/// 用于消息中表示当前对象QQ（[QQ]）
+		/// </summary>
+		/// <returns></returns>
+		public const string QQ = "[QQ]";
+		/// <summary>
+		/// 如:早上好[next]吃过早饭了吗？ 将会分成两条信息分别发送 每条信息最多允许使用10个分句标识
+		/// </summary>
+		/// <returns></returns>
+		public const string Split = "[next]";
+		/// <summary>
+		/// 表示换行,也可直接使用\r\n或\n（[换行]）
+		/// </summary>
+		/// <returns></returns>
+		public const string NewLine = "[换行]";
+		/// <summary>
+		/// 用于群消息中表示当前群名（[gname]）
+		/// </summary>
+		/// <returns></returns>
+		public const string Group = "[gname]";
+		/// <summary>
+		/// 表示 上午/下午/中午（[TimePer]）
+		/// </summary>
+		/// <returns></returns>
+		public const string TimeInterval = "[TimePer]";
+		/// <summary>
+		/// 表示一个0-100的随机数（[r]）
+		/// </summary>
+		/// <returns></returns>
+		public const string Random = "[r]";
+
+		/// <summary>
 		/// 群内@人（[@1633756198]）
 		/// </summary>
 		/// <param name="qq">-1为全体</param>
@@ -56,59 +87,11 @@ namespace Eruru.ChatRobotRPC {
 		}
 
 		/// <summary>
-		/// 用于消息中表示当前对象QQ（[QQ]）
-		/// </summary>
-		/// <returns></returns>
-		public static string QQ () {
-			return "[QQ]";
-		}
-
-		/// <summary>
-		/// 如:早上好[next]吃过早饭了吗？ 将会分成两条信息分别发送 每条信息最多允许使用10个分句标识
-		/// </summary>
-		/// <returns></returns>
-		public static string Split () {
-			return "[next]";
-		}
-
-		/// <summary>
-		/// 表示换行,也可直接使用\r\n或\n（[换行]）
-		/// </summary>
-		/// <returns></returns>
-		public static string NewLine () {
-			return "[换行]";
-		}
-
-		/// <summary>
 		/// 自定义本条信息气泡（[气泡10]）
 		/// </summary>
 		/// <returns></returns>
 		public static string Bubble (int id) {
 			return $"[气泡{id}]";
-		}
-
-		/// <summary>
-		/// 用于群消息中表示当前群名（[gname]）
-		/// </summary>
-		/// <returns></returns>
-		public static string Group () {
-			return "[gname]";
-		}
-
-		/// <summary>
-		/// 表示 上午/下午/中午（[TimePer]）
-		/// </summary>
-		/// <returns></returns>
-		public static string TimeInterval () {
-			return "[TimePer]";
-		}
-
-		/// <summary>
-		/// 表示一个0-100的随机数（[r]）
-		/// </summary>
-		/// <returns></returns>
-		public static string Random () {
-			return "[r]";
 		}
 
 		/// <summary>

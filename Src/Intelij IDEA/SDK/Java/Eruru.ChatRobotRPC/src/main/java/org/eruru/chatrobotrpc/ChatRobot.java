@@ -20,16 +20,15 @@ import java.util.Date;
 
 public class ChatRobot {
 
-	private final WaitSystem waitSystem = new WaitSystem ();
-	private final SocketClient socketClient;
-	private final Charset charset = StandardCharsets.UTF_8;
+	public static final String protocolVersion = "1.0.0.3";
 
+	private ChatRobotAction onDisconnected;
 	private ChatRobotReceivedEventHandler onReceived;
-	private ChatRobotSentEventHandler onSent;
+	private ChatRobotSendEventHandler onSend;
 	private ChatRobotReceivedMessageEventHandler onReceivedMessage;
-	private ChatRobotGroupAddRequestEventHandler onGroupAddRequest;
-	private ChatRobotFriendAddResponsedEventHandler onFriendAddResponsed;
-	private ChatRobotFriendAddRequestedEventHandler onFriendAddRequested;
+	private ChatRobotGroupAddRequestedEventHandler onReceivedGroupAddRequest;
+	private ChatRobotFriendAddRespondedEventHandler onReceivedFriendAddResponse;
+	private ChatRobotFriendAddRequestedEventHandler onReceivedFriendAddRequest;
 	private ChatRobotGroupMessageRevokedEventHandler onGroupMessageRevoked;
 	private ChatRobotGroupAnonymousSwitchedEventHandler onGroupAnonymousSwitched;
 	private ChatRobotGroupNameChangedEventHandler onGroupNameChanged;
@@ -42,10 +41,33 @@ public class ChatRobot {
 	private ChatRobotGroupDisbandedEventHandler onGroupDisbanded;
 	private ChatRobotFriendStateChangedEventHandler onFriendStateChanged;
 	private ChatRobotWasRemovedByFriendEventHandler onWasRemovedByFriend;
-	private ChatRobotAction onDisconnected;
 
-	public String getProtocolVersion () {
-		return "1.0.0.2";
+	private final WaitSystem waitSystem = new WaitSystem ();
+	private final SocketClient socketClient;
+	private final Charset charset = StandardCharsets.UTF_8;
+
+	public int getHeartbeatInterval () {
+		return socketClient.getHeartbeatInterval ();
+	}
+
+	public void setHeartbeatInterval (int heartbeatInterval) {
+		socketClient.setHeartbeatInterval (heartbeatInterval);
+	}
+
+	public boolean isUseAsyncReceive () {
+		return socketClient.isUseAsyncOnReceived ();
+	}
+
+	public void setUseAsyncReceive (boolean useAsyncReceive) {
+		socketClient.setUseAsyncOnReceived (useAsyncReceive);
+	}
+
+	public ChatRobotAction getOnDisconnected () {
+		return onDisconnected;
+	}
+
+	public void setOnDisconnected (ChatRobotAction onDisconnected) {
+		this.onDisconnected = onDisconnected;
 	}
 
 	public ChatRobotReceivedEventHandler getOnReceived () {
@@ -56,12 +78,12 @@ public class ChatRobot {
 		this.onReceived = onReceived;
 	}
 
-	public ChatRobotSentEventHandler getOnSent () {
-		return onSent;
+	public ChatRobotSendEventHandler getOnSend () {
+		return onSend;
 	}
 
-	public void setOnSent (ChatRobotSentEventHandler onSent) {
-		this.onSent = onSent;
+	public void setOnSend (ChatRobotSendEventHandler onSend) {
+		this.onSend = onSend;
 	}
 
 	public ChatRobotReceivedMessageEventHandler getOnReceivedMessage () {
@@ -72,28 +94,28 @@ public class ChatRobot {
 		this.onReceivedMessage = onReceivedMessage;
 	}
 
-	public ChatRobotGroupAddRequestEventHandler getOnGroupAddRequest () {
-		return onGroupAddRequest;
+	public ChatRobotGroupAddRequestedEventHandler getOnReceivedGroupAddRequest () {
+		return onReceivedGroupAddRequest;
 	}
 
-	public void setOnGroupAddRequest (ChatRobotGroupAddRequestEventHandler onGroupAddRequest) {
-		this.onGroupAddRequest = onGroupAddRequest;
+	public void setOnReceivedGroupAddRequest (ChatRobotGroupAddRequestedEventHandler onReceivedGroupAddRequest) {
+		this.onReceivedGroupAddRequest = onReceivedGroupAddRequest;
 	}
 
-	public ChatRobotFriendAddResponsedEventHandler getOnFriendAddResponsed () {
-		return onFriendAddResponsed;
+	public ChatRobotFriendAddRespondedEventHandler getOnReceivedFriendAddResponse () {
+		return onReceivedFriendAddResponse;
 	}
 
-	public void setOnFriendAddResponsed (ChatRobotFriendAddResponsedEventHandler onFriendAddResponsed) {
-		this.onFriendAddResponsed = onFriendAddResponsed;
+	public void setOnReceivedFriendAddResponse (ChatRobotFriendAddRespondedEventHandler onReceivedFriendAddResponse) {
+		this.onReceivedFriendAddResponse = onReceivedFriendAddResponse;
 	}
 
-	public ChatRobotFriendAddRequestedEventHandler getOnFriendAddRequested () {
-		return onFriendAddRequested;
+	public ChatRobotFriendAddRequestedEventHandler getOnReceivedFriendAddRequest () {
+		return onReceivedFriendAddRequest;
 	}
 
-	public void setOnFriendAddRequested (ChatRobotFriendAddRequestedEventHandler onFriendAddRequested) {
-		this.onFriendAddRequested = onFriendAddRequested;
+	public void setOnReceivedFriendAddRequest (ChatRobotFriendAddRequestedEventHandler onReceivedFriendAddRequest) {
+		this.onReceivedFriendAddRequest = onReceivedFriendAddRequest;
 	}
 
 	public ChatRobotGroupMessageRevokedEventHandler getOnGroupMessageRevoked () {
@@ -192,44 +214,12 @@ public class ChatRobot {
 		this.onWasRemovedByFriend = onWasRemovedByFriend;
 	}
 
-	public ChatRobotAction getOnDisconnected () {
-		return onDisconnected;
-	}
-
-	public void setOnDisconnected (ChatRobotAction onDisconnected) {
-		this.onDisconnected = onDisconnected;
-	}
-
-	public int getHeartbeatPacketSendIntervalBySeconds () {
-		return socketClient.getHeartbeatInterval ();
-	}
-
-	public void setHeartbeatPacketSendIntervalBySeconds (int heartbeatPacketSendIntervalBySeconds) {
-		socketClient.setHeartbeatInterval (heartbeatPacketSendIntervalBySeconds);
-	}
-
-	public int getHeartbeatInterval () {
-		return socketClient.getHeartbeatInterval ();
-	}
-
-	public void setHeartbeatInterval (int heartbeatInterval) {
-		socketClient.setHeartbeatInterval (heartbeatInterval);
-	}
-
-	public boolean isUseAsyncReceive () {
-		return socketClient.isUseAsyncOnReceived ();
-	}
-
-	public void setUseAsyncReceive (boolean useAsyncReceive) {
-		socketClient.setUseAsyncOnReceived (useAsyncReceive);
-	}
-
 	public ChatRobot () {
 		socketClient = new SocketClient () {{
-			setOnReceived (bytes -> received (bytes));
+			setOnReceived (bytes -> socketClient_onReceived (bytes));
 			setOnSend (bytes -> {
-				if (onSent != null) {
-					onSent.invoke (new String (bytes, charset));
+				if (onSend != null) {
+					onSend.invoke (new String (bytes, charset));
 				}
 			});
 			setOnDisconnected (() -> {
@@ -242,13 +232,18 @@ public class ChatRobot {
 
 	public void connect (String ip, int port, String account, String password) throws IOException {
 		socketClient.connect (ip, port);
-		if (Boolean.FALSE.equals (waitSystemGet (Boolean.class, new JSONObject () {{
+		if (Boolean.FALSE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "Login");
 			put ("Account", account);
 			put ("Password", password);
 		}}))) {
 			throw new AuthenticationException ("账号或密码错误");
 		}
+	}
+
+	public void disconnect () throws IOException {
+		socketClient.Disconnect ();
+		waitSystem.close ();
 	}
 
 	/// <summary>
@@ -331,7 +326,7 @@ public class ChatRobot {
 	/// <param name="treatmentMethod">处理方式</param>
 	/// <param name="information">拒绝添加好友 附加信息</param>
 	public void handleFriendAddRequest (long robot, long qq, ChatRobotGroupAddRequestType treatmentMethod, String information) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "HandleFriendAddRequest");
 			put ("Robot", robot);
 			put ("QQ", qq);
@@ -353,7 +348,7 @@ public class ChatRobot {
 	public void handleGroupAddRequest (long robot, ChatRobotGroupAddRequestType requestType, long qq, long group, long sign,
 									   ChatRobotGroupAddRequestType treatmentMethod, String information
 	) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "HandleGroupAddRequest");
 			put ("Robot", robot);
 			put ("RequestType", requestType.getValue ());
@@ -384,7 +379,7 @@ public class ChatRobot {
 	/// </summary>
 	/// <param name="robot">机器人QQ</param>
 	public void loginRobot (long robot) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "LoginRobot");
 			put ("Robot", robot);
 		}});
@@ -468,12 +463,12 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="qq">接收抖动消息的QQ</param>
 	/// <returns></returns>
-	public Boolean sendFriendWindowJitter (long robot, long qq) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean sendFriendWindowJitter (long robot, long qq) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "SendFriendWindowJitter");
 			put ("Robot", robot);
 			put ("QQ", qq);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -521,16 +516,19 @@ public class ChatRobot {
 	/// </summary>
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="qq">要发送的QQ号</param>
-	/// <param name="data">语音字节集数据（AMR Silk编码）</param>
+	/// <param name="bytes">语音字节集数据（AMR Silk编码）</param>
 	/// <returns></returns>
-	public Boolean sendFriendVoice (long robot, long qq, byte[] data) {
-		new Exception ().printStackTrace ();
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean sendFriendVoice (long robot, long qq, String base64) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "SendFriendVoice");
 			put ("Robot", robot);
 			put ("QQ", qq);
-			put ("Data", data);
-		}});
+			put ("Data", base64);
+		}}));
+	}
+
+	public boolean sendFriendVoice (long robot, long qq, byte[] bytes) {
+		return sendFriendVoice (robot, qq, Base64.getEncoder ().encodeToString (bytes));
 	}
 
 	/// <summary>
@@ -571,14 +569,14 @@ public class ChatRobot {
 	/// <param name="qq">赠予礼物对象</param>
 	/// <param name="gift">礼物id</param>
 	/// <returns></returns>
-	public Boolean sendGroupGift (long robot, long group, long qq, long gift) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean sendGroupGift (long robot, long group, long qq, long gift) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "SendGroupGift");
 			put ("Robot", robot);
 			put ("Group", group);
 			put ("QQ", qq);
 			put ("Gift", gift);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -622,14 +620,14 @@ public class ChatRobot {
 	/// <param name="place">签到地名（Pro可自定义）</param>
 	/// <param name="content">想发表的内容</param>
 	/// <returns></returns>
-	public Boolean sendGroupSignIn (long robot, long group, String place, String content) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean sendGroupSignIn (long robot, long group, String place, String content) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "SendGroupSignIn");
 			put ("Robot", robot);
 			put ("Group", group);
 			put ("Place", place);
 			put ("Content", content);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -786,7 +784,7 @@ public class ChatRobot {
 	/// 请求禁用插件自身
 	/// </summary>
 	public void disablePlugin () {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "DisablePlugin");
 		}});
 	}
@@ -922,7 +920,7 @@ public class ChatRobot {
 	/// <param name="levelInformation">等级信息</param>
 	/// <returns></returns>
 	public Pair<Boolean, ChatRobotLevelInformation> tryGetLevel (long robot) {
-		return waitSystemGet (Boolean.class, ChatRobotLevelInformation.class, new JSONObject () {{
+		return waitSystemGet (boolean.class, ChatRobotLevelInformation.class, new JSONObject () {{
 			put ("Type", "TryGetLevel");
 			put ("Robot", robot);
 		}});
@@ -1044,12 +1042,12 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="qq">需获取对象QQ</param>
 	/// <returns></returns>
-	public Boolean isFriendOnline (long robot, long qq) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean isFriendOnline (long robot, long qq) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "IsFriendOnline");
 			put ("Robot", robot);
 			put ("QQ", qq);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1060,7 +1058,7 @@ public class ChatRobot {
 	/// <param name="friendInformation">好友信息</param>
 	/// <returns></returns>
 	public Pair<Boolean, ChatRobotFriendInformation> tryGetFriendInformation (long robot, long qq) {
-		return waitSystemGet (Boolean.class, ChatRobotFriendInformation.class, new JSONObject () {{
+		return waitSystemGet (boolean.class, ChatRobotFriendInformation.class, new JSONObject () {{
 			put ("Type", "TryGetFriendInformation");
 			put ("Robot", robot);
 			put ("QQ", qq);
@@ -1258,13 +1256,13 @@ public class ChatRobot {
 	/// <param name="group">要查询的群号</param>
 	/// <param name="qq">要查询的QQ号</param>
 	/// <returns></returns>
-	public Boolean isGroupMemberBanSpeak (long robot, long group, long qq) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean isGroupMemberBanSpeak (long robot, long group, long qq) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "IsGroupMemberBanSpeak");
 			put ("Robot", robot);
 			put ("Group", group);
 			put ("QQ", qq);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1378,12 +1376,12 @@ public class ChatRobot {
 	/// 取群是否支持匿名
 	/// </summary>
 	/// <returns></returns>
-	public Boolean isGroupAnonymousEnabled (long robot, long group) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean isGroupAnonymousEnabled (long robot, long group) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "IsGroupAnonymousEnabled");
 			put ("Robot", robot);
 			put ("Group", group);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1504,12 +1502,12 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="qq">好友QQ号</param>
 	/// <returns></returns>
-	public Boolean removeFriend (long robot, long qq) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean removeFriend (long robot, long qq) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "RemoveFriend");
 			put ("Robot", robot);
 			put ("QQ", qq);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1519,13 +1517,13 @@ public class ChatRobot {
 	/// <param name="qq">欲操作的目标</param>
 	/// <param name="operatorType">1为在对方的列表删除我(双向) 2为在我的列表删除对方(单项) 默认为2</param>
 	/// <returns></returns>
-	public Boolean removeFriendByOneWay (long robot, long qq, long operatorType) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean removeFriendByOneWay (long robot, long qq, long operatorType) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "RemoveFriendByOneWay");
 			put ("Robot", robot);
 			put ("QQ", qq);
 			put ("OperatorType", operatorType);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1533,7 +1531,7 @@ public class ChatRobot {
 	/// </summary>
 	/// <param name="robot">机器人QQ</param>
 	public void removeRobot (long robot) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "RemoveRobot");
 			put ("Robot", robot);
 		}});
@@ -1562,8 +1560,8 @@ public class ChatRobot {
 	/// <param name="group">要上传的群号或讨论组号</param>
 	/// <param name="data">图片字节集数据</param>
 	/// <returns></returns>
-	public String uploadGroupChatImage (long robot, long group, byte[] data) {
-		return uploadGroupChatImage (robot, group, Base64.getEncoder ().encodeToString (data));
+	public String uploadGroupChatImage (long robot, long group, byte[] bytes) {
+		return uploadGroupChatImage (robot, group, Base64.getEncoder ().encodeToString (bytes));
 	}
 
 	/// <summary>
@@ -1574,8 +1572,12 @@ public class ChatRobot {
 	/// <param name="filePath">文件路径</param>
 	/// <returns></returns>
 	public boolean uploadGroupFile (long robot, long group, String filePath) {
-		new Exception ().printStackTrace ();
-		return false;
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
+			put ("Type", "UploadGroupFile");
+			put ("Robot", robot);
+			put ("Group", group);
+			put ("Path", filePath);
+		}}));
 	}
 
 	/// <summary>
@@ -1586,7 +1588,6 @@ public class ChatRobot {
 	/// <param name="base64">语音字节集数据（AMR Silk编码）</param>
 	/// <returns></returns>
 	public String uploadGroupChatVoice (long robot, long group, String base64) {
-		new Exception ().printStackTrace ();
 		return waitSystemGet (String.class, new JSONObject () {{
 			put ("Type", "UploadGroupChatVoice");
 			put ("Robot", robot);
@@ -1602,9 +1603,8 @@ public class ChatRobot {
 	/// <param name="group">要上传的群号</param>
 	/// <param name="data">语音字节集数据（AMR Silk编码）</param>
 	/// <returns></returns>
-	public String uploadGroupChatVoice (long robot, long group, byte[] data) {
-		new Exception ().printStackTrace ();
-		return uploadGroupChatVoice (robot, group, Base64.getUrlEncoder ().encodeToString (data));
+	public String uploadGroupChatVoice (long robot, long group, byte[] bytes) {
+		return uploadGroupChatVoice (robot, group, Base64.getUrlEncoder ().encodeToString (bytes));
 	}
 
 	/// <summary>
@@ -1630,8 +1630,8 @@ public class ChatRobot {
 	/// <param name="qq">要上传的QQ号</param>
 	/// <param name="data">图片字节集数据</param>
 	/// <returns></returns>
-	public String uploadPrivateChatImage (long robot, long qq, byte[] data) {
-		return uploadPrivateChatImage (robot, qq, Base64.getEncoder ().encodeToString (data));
+	public String uploadPrivateChatImage (long robot, long qq, byte[] bytes) {
+		return uploadPrivateChatImage (robot, qq, Base64.getEncoder ().encodeToString (bytes));
 	}
 
 	/// <summary>
@@ -1671,21 +1671,21 @@ public class ChatRobot {
 	/// </summary>
 	/// <param name="robot">机器人QQ</param>
 	/// <returns></returns>
-	public Boolean isMaskSendMessage (long robot) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean isMaskSendMessage (long robot) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "IsMaskSendMessage");
 			put ("Robot", robot);
-		}});
+		}}));
 	}
 
 	/// <summary>
 	/// 取得插件自身启用状态，启用真 禁用假
 	/// </summary>
 	/// <returns></returns>
-	public Boolean isEnable () {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean isEnable () {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "IsEnable");
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1694,12 +1694,12 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="qq">需获取对象QQ</param>
 	/// <returns></returns>
-	public Boolean isFriend (long robot, long qq) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean isFriend (long robot, long qq) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "IsFriend");
 			put ("Robot", robot);
 			put ("QQ", qq);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1708,12 +1708,12 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="group">要查询的群号</param>
 	/// <returns></returns>
-	public Boolean isAllowGroupTempMessage (long robot, long group) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean isAllowGroupTempMessage (long robot, long group) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "IsAllowGroupTempMessage");
 			put ("Robot", robot);
 			put ("Group", group);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1722,12 +1722,12 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="qq">需获取对象QQ</param>
 	/// <returns></returns>
-	public Boolean isAllowWebpageTempMessage (long robot, long qq) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean isAllowWebpageTempMessage (long robot, long qq) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "IsAllowWebpageTempMessage");
 			put ("Robot", robot);
 			put ("QQ", qq);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1737,13 +1737,13 @@ public class ChatRobot {
 	/// <param name="password">机器人密码 </param>
 	/// <param name="autoLogin">运行框架时是否自动登录该Q.若添加后需要登录该Q则需要通过API登录账号操作</param>
 	/// <returns></returns>
-	public Boolean addRobot (long robot, String password, boolean autoLogin) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean addRobot (long robot, String password, boolean autoLogin) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "AddRobot");
 			put ("Robot", robot);
 			put ("Password", password);
 			put ("AutoLogin", autoLogin);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1752,7 +1752,7 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="group">欲退出的群号</param>
 	public void removeGroup (long robot, long group) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "RemoveGroup");
 			put ("Robot", robot);
 			put ("Group", group);
@@ -1765,7 +1765,7 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="discuss">需退出的讨论组ID</param>
 	public void removeDiscuss (long robot, long discuss) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "RemoveDiscuss");
 			put ("Robot", robot);
 			put ("Discuss", discuss);
@@ -1777,7 +1777,7 @@ public class ChatRobot {
 	/// </summary>
 	/// <param name="robot">机器人QQ</param>
 	public void logoutRobot (long robot) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "LogoutRobot");
 			put ("Robot", robot);
 		}});
@@ -1790,13 +1790,13 @@ public class ChatRobot {
 	/// <param name="discuss">需执行的讨论组ID</param>
 	/// <param name="qq">被邀请对象QQ</param>
 	/// <returns></returns>
-	public Boolean inviteFriendJoinDiscuss (long robot, long discuss, long qq) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean inviteFriendJoinDiscuss (long robot, long discuss, long qq) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "InviteFriendJoinDiscuss");
 			put ("Robot", robot);
 			put ("Discuss", discuss);
 			put ("QQ", qq);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1806,7 +1806,7 @@ public class ChatRobot {
 	/// <param name="group">被邀请加入的群号</param>
 	/// <param name="qq">被邀请人QQ号码</param>
 	public void inviteFriendJoinGroupByAdministrator (long robot, long group, long qq) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "InviteFriendJoinGroupByAdministrator");
 			put ("Robot", robot);
 			put ("Group", group);
@@ -1821,7 +1821,7 @@ public class ChatRobot {
 	/// <param name="group">被邀请加入的群号</param>
 	/// <param name="qq">被邀请人QQ号码</param>
 	public void inviteFriendJoinGroupNonAdministrator (long robot, long group, long qq) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "InviteFriendJoinGroupNonAdministrator");
 			put ("Robot", robot);
 			put ("Group", group);
@@ -1835,12 +1835,12 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="base64">图片base64文本</param>
 	/// <returns></returns>
-	public Boolean setCover (long robot, String base64) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean setCover (long robot, String base64) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "SetCover");
 			put ("Robot", robot);
 			put ("Data", base64);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1849,8 +1849,8 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="data">图片数据</param>
 	/// <returns></returns>
-	public boolean setCover (long robot, byte[] data) {
-		return setCover (robot, Base64.getEncoder ().encodeToString (data));
+	public boolean setCover (long robot, byte[] bytes) {
+		return setCover (robot, Base64.getEncoder ().encodeToString (bytes));
 	}
 
 	/// <summary>
@@ -1859,7 +1859,7 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="personalSignature">签名</param>
 	public void setPersonalSignature (long robot, String personalSignature) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "SetPersonalSignature");
 			put ("Robot", robot);
 			put ("PersonalSignature", personalSignature);
@@ -1873,7 +1873,7 @@ public class ChatRobot {
 	/// <param name="qq">需获取对象好友QQ</param>
 	/// <param name="notes">需要修改的备注姓名</param>
 	public void setFriendNotes (long robot, long qq, String notes) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "SetFriendNotes");
 			put ("Robot", robot);
 			put ("QQ", qq);
@@ -1888,7 +1888,7 @@ public class ChatRobot {
 	/// <param name="qq">要拉黑的好友QQ号</param>
 	/// <param name="enable">真拉黑,假取消拉黑</param>
 	public void setFriendBlacklist (long robot, long qq, boolean enable) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "SetFriendBlacklist");
 			put ("Robot", robot);
 			put ("QQ", qq);
@@ -1904,14 +1904,14 @@ public class ChatRobot {
 	/// <param name="question">需要回答的问题,不需要可空</param>
 	/// <param name="answer">设置的问题答案,不需要可空</param>
 	/// <returns></returns>
-	public Boolean setFriendAuthenticationMethod (long robot, ChatRobotFriendAddMethod VerificationMethod, String question, String answer) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean setFriendAuthenticationMethod (long robot, ChatRobotFriendAddMethod VerificationMethod, String question, String answer) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "SetFriendAuthenticationMethod");
 			put ("Robot", robot);
 			put ("VerificationMethod", VerificationMethod.getValue ());
 			put ("Question", question);
 			put ("Answer", answer);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1920,7 +1920,7 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="gender">1为男 2为女</param>
 	public void setRobotGender (long robot, long gender) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "SetRobotGender");
 			put ("Robot", robot);
 			put ("Gender", gender);
@@ -1934,7 +1934,7 @@ public class ChatRobot {
 	/// <param name="state">在线状态</param>
 	/// <param name="information">最大255字节</param>
 	public void setRobotState (long robot, long state, String information) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "SetRobotState");
 			put ("Robot", robot);
 			put ("State", state);
@@ -1948,7 +1948,7 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="name">需要设置的昵称</param>
 	public void setRobotName (long robot, String name) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "SetRobotName");
 			put ("Robot", robot);
 			put ("Name", name);
@@ -1963,14 +1963,14 @@ public class ChatRobot {
 	/// <param name="anonymousInformation">收到匿名消息时返回的Flag 例：[AnonyMsg,Name=小遮拦,Fkey=AB4A9698AA5C3D17A173D0F7C89B8675758534099F1477206EDF559D3E3A1DD964EC71B34F9B6B77]</param>
 	/// <param name="duration">单位:秒 最大为1个月. 为零解除对象禁言</param>
 	/// <returns></returns>
-	public Boolean setAnonymousMemberBanSpeak (long robot, long group, String anonymousInformation, long duration) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean setAnonymousMemberBanSpeak (long robot, long group, String anonymousInformation, long duration) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "SetAnonymousMemberBanSpeak");
 			put ("Robot", robot);
 			put ("Group", group);
 			put ("AnonymousInformation", anonymousInformation);
 			put ("Duration", duration);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1980,13 +1980,13 @@ public class ChatRobot {
 	/// <param name="group">要禁言的群号</param>
 	/// <param name="enable">为真开启禁言. 为假解除</param>
 	/// <returns></returns>
-	public Boolean setGroupBanSpeak (long robot, long group, boolean enable) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean setGroupBanSpeak (long robot, long group, boolean enable) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "SetGroupBanSpeak");
 			put ("Robot", robot);
 			put ("Group", group);
 			put ("Enable", enable);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -1997,14 +1997,14 @@ public class ChatRobot {
 	/// <param name="qq">要禁言的QQ号</param>
 	/// <param name="seconds">单位:秒 最大为1个月. 为零解除</param>
 	/// <returns></returns>
-	public Boolean setGroupMemberBanSpeak (long robot, long group, long qq, long seconds) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean setGroupMemberBanSpeak (long robot, long group, long qq, long seconds) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "SetGroupMemberBanSpeak");
 			put ("Robot", robot);
 			put ("Group", group);
 			put ("QQ", qq);
 			put ("Seconds", seconds);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -2015,14 +2015,14 @@ public class ChatRobot {
 	/// <param name="qq">被修改名片人QQ</param>
 	/// <param name="businessCard">需要修改的名片</param>
 	/// <returns></returns>
-	public Boolean setGroupMemberBusinessCard (long robot, long group, long qq, String businessCard) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean setGroupMemberBusinessCard (long robot, long group, long qq, String businessCard) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "SetGroupMemberBusinessCard");
 			put ("Robot", robot);
 			put ("Group", group);
 			put ("QQ", qq);
 			put ("BusinessCard", businessCard);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -2033,7 +2033,7 @@ public class ChatRobot {
 	/// <param name="qq">被执行对象</param>
 	/// <param name="noLongerAccept">真为不再接收，假为接收，默认为假</param>
 	public void kickGroupMember (long robot, long group, long qq, boolean noLongerAccept) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "KickGroupMember");
 			put ("Robot", robot);
 			put ("Group", group);
@@ -2050,14 +2050,14 @@ public class ChatRobot {
 	/// <param name="qq">群员QQ号</param>
 	/// <param name="enable">真 为设置管理 假为取消管理</param>
 	/// <returns></returns>
-	public Boolean setGroupAdministrator (long robot, long group, long qq, boolean enable) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean setGroupAdministrator (long robot, long group, long qq, boolean enable) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "SetGroupAdministrator");
 			put ("Robot", robot);
 			put ("Group", group);
 			put ("QQ", qq);
 			put ("Enable", enable);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -2067,13 +2067,13 @@ public class ChatRobot {
 	/// <param name="group">需开关群匿名功能群号</param>
 	/// <param name="enable">真开 假关</param>
 	/// <returns></returns>
-	public Boolean setGroupAnonymousEnable (long robot, long group, boolean enable) {
-		return waitSystemGet (Boolean.class, new JSONObject () {{
+	public boolean setGroupAnonymousEnable (long robot, long group, boolean enable) {
+		return Boolean.TRUE.equals (waitSystemGet (boolean.class, new JSONObject () {{
 			put ("Type", "SetGroupAnonymousEnable");
 			put ("Robot", robot);
 			put ("Group", group);
 			put ("Enable", enable);
-		}});
+		}}));
 	}
 
 	/// <summary>
@@ -2083,7 +2083,7 @@ public class ChatRobot {
 	/// <param name="group">指定群号</param>
 	/// <param name="enable">真 为屏蔽接收 假为接收并提醒</param>
 	public void setMaskGroupMessage (long robot, long group, boolean enable) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "SetMaskGroupMessage");
 			put ("Robot", robot);
 			put ("Group", group);
@@ -2096,7 +2096,7 @@ public class ChatRobot {
 	/// </summary>
 	/// <param name="content">输出的内容</param>
 	public void log (String content) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "Log");
 			put ("Content", content);
 		}});
@@ -2108,7 +2108,7 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="qq">置正在输入状态接收对象QQ号</param>
 	public void setInputting (long robot, long qq) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "SetInputting");
 			put ("Robot", robot);
 			put ("QQ", qq);
@@ -2122,7 +2122,7 @@ public class ChatRobot {
 	/// <param name="discuss">需执行的讨论组ID</param>
 	/// <param name="qq">被执行对象</param>
 	public void kickDiscussMember (long robot, long discuss, long qq) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "KickDiscussMember");
 			put ("Robot", robot);
 			put ("Discuss", discuss);
@@ -2137,7 +2137,7 @@ public class ChatRobot {
 	/// <param name="discuss">需执行的讨论组ID</param>
 	/// <param name="name">需修改的名称</param>
 	public void setDiscussName (long robot, long discuss, String name) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "SetDiscussName");
 			put ("Robot", robot);
 			put ("Discuss", discuss);
@@ -2151,7 +2151,7 @@ public class ChatRobot {
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="base64">图片base64文本</param>
 	public void setAvatar (long robot, String base64) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", "SetAvatar");
 			put ("Robot", robot);
 			put ("Data", base64);
@@ -2163,16 +2163,11 @@ public class ChatRobot {
 	/// </summary>
 	/// <param name="robot">机器人QQ</param>
 	/// <param name="data">图片数据</param>
-	public void setAvatar (long robot, byte[] data) {
-		setAvatar (robot, Base64.getEncoder ().encodeToString (data));
+	public void setAvatar (long robot, byte[] bytes) {
+		setAvatar (robot, Base64.getEncoder ().encodeToString (bytes));
 	}
 
-	public void disconnect () throws IOException {
-		socketClient.Disconnect ();
-		waitSystem.close ();
-	}
-
-	private void received (byte[] bytes) {
+	private void socketClient_onReceived (byte[] bytes) {
 		String text = new String (bytes, StandardCharsets.UTF_8);
 		try {
 			if (onReceived != null) {
@@ -2185,8 +2180,8 @@ public class ChatRobot {
 					throw new Exception (String.format ("未知的消息类型：%s", type));
 				case "Protocol": {
 					String targetProtocolVersion = jsonObject.getString ("Version");
-					if (!targetProtocolVersion.equals (getProtocolVersion ())) {
-						throw new Exception (String.format ("SDK协议版本：%s 与机器人框架插件的协议版本：%s 不符", getProtocolVersion (), targetProtocolVersion));
+					if (!targetProtocolVersion.equals (protocolVersion)) {
+						throw new Exception (String.format ("SDK协议版本：%s 与机器人框架插件的协议版本：%s 不符", protocolVersion, targetProtocolVersion));
 					}
 					break;
 				}
@@ -2209,8 +2204,8 @@ public class ChatRobot {
 					break;
 				}
 				case "GroupAddRequest":
-					if (onGroupAddRequest != null) {
-						onGroupAddRequest.invoke (
+					if (onReceivedGroupAddRequest != null) {
+						onReceivedGroupAddRequest.invoke (
 								ChatRobotAPI.enumParse (ChatRobotGroupAddRequestType.class, jsonObject.getString ("SubType")),
 								jsonObject.getLongValue ("Robot"),
 								jsonObject.getLongValue ("Group"),
@@ -2222,8 +2217,8 @@ public class ChatRobot {
 					}
 					break;
 				case "FriendAddResponse":
-					if (onFriendAddResponsed != null) {
-						onFriendAddResponsed.invoke (
+					if (onReceivedFriendAddResponse != null) {
+						onReceivedFriendAddResponse.invoke (
 								jsonObject.getBooleanValue ("Agree"),
 								jsonObject.getLongValue ("Robot"),
 								jsonObject.getLongValue ("QQ"),
@@ -2232,8 +2227,8 @@ public class ChatRobot {
 					}
 					break;
 				case "FriendAddRequest":
-					if (onFriendAddRequested != null) {
-						onFriendAddRequested.invoke (
+					if (onReceivedFriendAddRequest != null) {
+						onReceivedFriendAddRequest.invoke (
 								jsonObject.getLongValue ("Robot"),
 								jsonObject.getLongValue ("QQ"),
 								jsonObject.getString ("Message")
@@ -2368,7 +2363,7 @@ public class ChatRobot {
 	}
 
 	private void sendGroupMessage (String type, long robot, long group, String message, boolean isAnonymous) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", type);
 			put ("Robot", robot);
 			put ("Group", group);
@@ -2378,7 +2373,7 @@ public class ChatRobot {
 	}
 
 	private void sendFriendMessage (String type, long robot, long qq, String message) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", type);
 			put ("Robot", robot);
 			put ("QQ", qq);
@@ -2387,7 +2382,7 @@ public class ChatRobot {
 	}
 
 	private void sendGroupTempMessage (String type, long robot, long group, long qq, String message) {
-		clientBeginSend (new JSONObject () {{
+		socketClientSendAsync (new JSONObject () {{
 			put ("Type", type);
 			put ("Robot", robot);
 			put ("Group", group);
@@ -2399,7 +2394,7 @@ public class ChatRobot {
 	private long waitSystemSend (JSONObject jsonObject) {
 		long id = waitSystem.getID ();
 		jsonObject.put ("ID", id);
-		clientBeginSend (jsonObject);
+		socketClientSendAsync (jsonObject);
 		return id;
 	}
 
@@ -2454,7 +2449,7 @@ public class ChatRobot {
 		return null;
 	}
 
-	private void clientBeginSend (JSONObject jsonObject) {
+	private void socketClientSendAsync (JSONObject jsonObject) {
 		socketClient.sendAsync (jsonObject.toJSONString ().getBytes (StandardCharsets.UTF_8));
 	}
 

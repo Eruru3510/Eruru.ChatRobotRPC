@@ -2,6 +2,18 @@ package org.eruru.chatrobotrpc;
 
 public class ChatRobotCode {
 
+	public static final String qq = "[QQ]";
+
+	public static final String split = "[next]";
+
+	public static final String newLine = "[换行]";
+
+	public static final String group = "[gname]";
+
+	public static final String timeInterval = "[TimePer]";
+
+	public static final String random = "[r]";
+
 	public static String at (long qq, boolean hasSpace) {
 		StringBuilder stringBuilder = new StringBuilder ();
 		stringBuilder.append ("[@");
@@ -37,32 +49,8 @@ public class ChatRobotCode {
 		return String.format ("[Face%s.gif]", id);
 	}
 
-	public static String QQ () {
-		return "[QQ]";
-	}
-
-	public static String split () {
-		return "[next]";
-	}
-
-	public static String newLine () {
-		return "[换行]";
-	}
-
 	public static String bubble (int id) {
 		return String.format ("[气泡%d]", id);
-	}
-
-	public static String group () {
-		return "[gname]";
-	}
-
-	public static String timeInterval () {
-		return "[TimePer]";
-	}
-
-	public static String random () {
-		return "[r]";
 	}
 
 	public static String picture (String pathOrURL) {

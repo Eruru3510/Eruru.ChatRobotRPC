@@ -9,9 +9,24 @@
             聊天机器人
             </summary>
         </member>
-        <member name="P:Eruru.ChatRobotRPC.ChatRobot.ProtocolVersision">
+        <member name="F:Eruru.ChatRobotRPC.ChatRobot.ProtocolVersision">
             <summary>
             协议版本
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.HeartbeatInterval">
+            <summary>
+            心跳包发送间隔（秒）
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.UseAsyncReceive">
+            <summary>
+            是否使用异步处理所有消息
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnDisconnected">
+            <summary>
+            与机器人框架RPC插件断开了连接
             </summary>
         </member>
         <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnReceived">
@@ -104,21 +119,6 @@
             被好友删除
             </summary>
         </member>
-        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnDisconnected">
-            <summary>
-            与机器人框架RPC插件断开了连接
-            </summary>
-        </member>
-        <member name="P:Eruru.ChatRobotRPC.ChatRobot.HeartbeatInterval">
-            <summary>
-            心跳包发送间隔（秒）
-            </summary>
-        </member>
-        <member name="P:Eruru.ChatRobotRPC.ChatRobot.UseAsyncReceive">
-            <summary>
-            是否使用异步处理所有消息
-            </summary>
-        </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobot.#ctor">
             <summary>
             默认构造函数
@@ -132,6 +132,11 @@
             <param name="port"></param>
             <param name="account"></param>
             <param name="password"></param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.Disconnect">
+            <summary>
+            断开与机器人框架RPC插件的连接
+            </summary>
         </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobot.TEAEncryption(System.String,System.String)">
             <summary>
@@ -294,13 +299,22 @@
             <param name="qq">对方的QQ号</param>
             <param name="message">信息内容</param>
         </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendFriendVoice(System.Int64,System.Int64,System.String)">
+            <summary>
+            好友语音上传并发送 （成功返回真 失败返回假） QQMini Pro才可用
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="qq">要发送的QQ号</param>
+            <param name="base64">语音字节集数据（AMR Silk编码）</param>
+            <returns></returns>
+        </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendFriendVoice(System.Int64,System.Int64,System.Byte[])">
             <summary>
             好友语音上传并发送 （成功返回真 失败返回假） QQMini Pro才可用
             </summary>
             <param name="robot">机器人QQ</param>
             <param name="qq">要发送的QQ号</param>
-            <param name="data">语音字节集数据（AMR Silk编码）</param>
+            <param name="bytes">语音字节集数据（AMR Silk编码）</param>
             <returns></returns>
         </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobot.SendGroupJsonMessage(System.Int64,System.Int64,System.String,System.Boolean)">
@@ -928,7 +942,7 @@
             </summary>
             <param name="robot">机器人QQ</param>
             <param name="group">要上传的群号或讨论组号</param>
-            <param name="data">图片字节集数据</param>
+            <param name="bytes">图片字节集数据</param>
             <returns></returns>
         </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobot.UploadGroupFile(System.Int64,System.Int64,System.String)">
@@ -955,7 +969,7 @@
             </summary>
             <param name="robot">机器人QQ</param>
             <param name="group">要上传的群号</param>
-            <param name="data">语音字节集数据（AMR Silk编码）</param>
+            <param name="bytes">语音字节集数据（AMR Silk编码）</param>
             <returns></returns>
         </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobot.UploadPrivateChatImage(System.Int64,System.Int64,System.String)">
@@ -973,7 +987,7 @@
             </summary>
             <param name="robot">机器人QQ</param>
             <param name="qq">要上传的QQ号</param>
-            <param name="data">图片字节集数据</param>
+            <param name="bytes">图片字节集数据</param>
             <returns></returns>
         </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobot.RequestAddFriend(System.Int64,System.Int64,System.String)">
@@ -1098,7 +1112,7 @@
             上传封面（通过读入字节集方式）成功真 失败假
             </summary>
             <param name="robot">机器人QQ</param>
-            <param name="data">图片数据</param>
+            <param name="bytes">图片数据</param>
             <returns></returns>
         </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobot.SetPersonalSignature(System.Int64,System.String)">
@@ -1272,19 +1286,14 @@
             上传头像（通过读入字节集方式）成功真 失败假
             </summary>
             <param name="robot">机器人QQ</param>
-            <param name="data">图片数据</param>
-        </member>
-        <member name="M:Eruru.ChatRobotRPC.ChatRobot.Disconnect">
-            <summary>
-            断开与机器人框架RPC插件的连接
-            </summary>
+            <param name="bytes">图片数据</param>
         </member>
         <member name="T:Eruru.ChatRobotRPC.ChatRobotAction">
             <summary>
             无参委托
             </summary>
         </member>
-        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupAddRequestEventHandler">
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotGroupAddRequestedEventHandler">
             <summary>
             群添加请求
             </summary>
@@ -1296,7 +1305,7 @@
             <param name="sign">唯一表示本次请求,用于处理请求</param>
             <param name="message">附加理由</param>
         </member>
-        <member name="T:Eruru.ChatRobotRPC.ChatRobotFriendAddResponsedEventHandler">
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotFriendAddRespondedEventHandler">
             <summary>
             好友添加响应
             </summary>
@@ -1426,10 +1435,77 @@
             聊天机器人API
             </summary>
         </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotAPI.IsVoiceMessage(System.String,System.String@,System.String@)">
+            <summary>
+            是否为语音消息
+            </summary>
+            <param name="message">消息文本</param>
+            <param name="guid">提取出来的语音GUID</param>
+            <param name="identifyResult">提取出来的语音识别结果</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotAPI.ContainsPictureInMessage(System.String,System.Collections.Generic.List{System.String}@)">
+            <summary>
+            消息中是否包含图片
+            </summary>
+            <param name="message">消息文本</param>
+            <param name="guids">提取出来的图片GUID</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotAPI.IsFlashPictureMessage(System.String)">
+            <summary>
+            是否为闪照消息
+            </summary>
+            <param name="message">消息文本</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotAPI.FlashPictureToPicture(System.String)">
+            <summary>
+            将闪照转为图片
+            </summary>
+            <param name="flashPictureGUID"></param>
+            <returns></returns>
+        </member>
         <member name="T:Eruru.ChatRobotRPC.ChatRobotCode">
             <summary>
             聊天机器人码
             </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotCode.QQ">
+            <summary>
+            用于消息中表示当前对象QQ（[QQ]）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotCode.Split">
+            <summary>
+            如:早上好[next]吃过早饭了吗？ 将会分成两条信息分别发送 每条信息最多允许使用10个分句标识
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotCode.NewLine">
+            <summary>
+            表示换行,也可直接使用\r\n或\n（[换行]）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotCode.Group">
+            <summary>
+            用于群消息中表示当前群名（[gname]）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotCode.TimeInterval">
+            <summary>
+            表示 上午/下午/中午（[TimePer]）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotCode.Random">
+            <summary>
+            表示一个0-100的随机数（[r]）
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.At(System.Int64,System.Boolean)">
             <summary>
@@ -1460,45 +1536,9 @@
             <param name="id">0-170共计171个表情（2014年8月28日为止 将来腾讯方面还会继续添加）</param>
             <returns></returns>
         </member>
-        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.QQ">
-            <summary>
-            用于消息中表示当前对象QQ（[QQ]）
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.Split">
-            <summary>
-            如:早上好[next]吃过早饭了吗？ 将会分成两条信息分别发送 每条信息最多允许使用10个分句标识
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.NewLine">
-            <summary>
-            表示换行,也可直接使用\r\n或\n（[换行]）
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.Bubble(System.Int32)">
             <summary>
             自定义本条信息气泡（[气泡10]）
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.Group">
-            <summary>
-            用于群消息中表示当前群名（[gname]）
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.TimeInterval">
-            <summary>
-            表示 上午/下午/中午（[TimePer]）
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Eruru.ChatRobotRPC.ChatRobotCode.Random">
-            <summary>
-            表示一个0-100的随机数（[r]）
             </summary>
             <returns></returns>
         </member>
@@ -1959,6 +1999,12 @@
             <param name="number">消息序号</param>
             <param name="id">消息ID</param>
         </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.op_Implicit(Eruru.ChatRobotRPC.ChatRobotMessage)~System.String">
+            <summary>
+            隐式转换Message（Message.Text）
+            </summary>
+            <param name="message"></param>
+        </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.Reply(System.String,System.Boolean)">
             <summary>
             回复消息
@@ -2000,6 +2046,27 @@
             </summary>
             <param name="message">群内</param>
             <param name="isAnonymous">是否匿名（仅Pro有效）</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.IsVoice(System.String@,System.String@)">
+            <summary>
+            是否为语音消息
+            </summary>
+            <param name="guid">提取出来的语音GUID</param>
+            <param name="identifyResult">提取出来的语音识别结果</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.ContainsPicture(System.Collections.Generic.List{System.String}@)">
+            <summary>
+            消息中是否包含图片
+            </summary>
+            <param name="guids">提取出来的图片GUID</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.IsFlashPicture">
+            <summary>
+            是否为闪照消息
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.Send(Eruru.ChatRobotRPC.ChatRobot,Eruru.ChatRobotRPC.ChatRobotMessageType,System.Int64,System.String,System.Int64,System.Int64,System.Boolean,Eruru.ChatRobotRPC.ChatRobotSendMessageType)">
             <summary>

@@ -127,10 +127,10 @@ namespace Eruru.ChatRobotRPC {
 			}
 		}
 
-		byte[] ToPacket (byte[] data) {
-			byte[] buffer = new byte[data.Length + PacketHeaderLength];
-			Array.Copy (BitConverter.GetBytes (data.Length), buffer, PacketHeaderLength);
-			Array.Copy (data, 0, buffer, PacketHeaderLength, data.Length);
+		byte[] ToPacket (byte[] bytes) {
+			byte[] buffer = new byte[bytes.Length + PacketHeaderLength];
+			Array.Copy (BitConverter.GetBytes (bytes.Length), buffer, PacketHeaderLength);
+			Array.Copy (bytes, 0, buffer, PacketHeaderLength, bytes.Length);
 			return buffer;
 		}
 
@@ -140,7 +140,7 @@ namespace Eruru.ChatRobotRPC {
 					OnReceived.BeginInvoke (bytes, asyncResult => OnReceived.EndInvoke (asyncResult), null);
 					return;
 				}
-				OnReceived.Invoke (bytes);
+				OnReceived.Invoke (bytes);//todo 如果有阻塞方法就会导致无法继续接收数据，这里必须得是异步的
 			}
 		}
 

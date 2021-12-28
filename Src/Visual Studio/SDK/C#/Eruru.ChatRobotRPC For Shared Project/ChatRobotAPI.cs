@@ -1,4 +1,7 @@
-﻿namespace Eruru.ChatRobotRPC {
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
+namespace Eruru.ChatRobotRPC {
 
 	/// <summary>
 	/// 无参委托
@@ -14,9 +17,7 @@
 	/// <param name="inviterQQ">邀请者的QQ号。</param>
 	/// <param name="sign">唯一表示本次请求,用于处理请求</param>
 	/// <param name="message">附加理由</param>
-	public delegate void ChatRobotGroupAddRequestEventHandler (ChatRobotGroupAddRequestType type, long robot, long group, long qq, long inviterQQ,
-		long sign, string message
-	);
+	public delegate void ChatRobotGroupAddRequestedEventHandler (ChatRobotGroupAddRequestType type, long robot, long group, long qq, long inviterQQ, long sign, string message);
 	/// <summary>
 	/// 好友添加响应
 	/// </summary>
@@ -24,7 +25,7 @@
 	/// <param name="robot">收到此事件机器人的QQ</param>
 	/// <param name="qq">同意或拒绝添加响应QQ的QQ号</param>
 	/// <param name="message">拒绝好友时的附加消息/目前暂不支持</param>
-	public delegate void ChatRobotFriendAddResponsedEventHandler (bool agree, long robot, long qq, string message);
+	public delegate void ChatRobotFriendAddRespondedEventHandler (bool agree, long robot, long qq, string message);
 	/// <summary>
 	/// 好友添加请求
 	/// </summary>
@@ -133,6 +134,65 @@
 	/// 聊天机器人API
 	/// </summary>
 	public class ChatRobotAPI {
+
+		/// <summary>
+		/// 是否为语音消息
+		/// </summary>
+		/// <param name="message">消息文本</param>
+		/// <param name="guid">提取出来的语音GUID</param>
+		/// <param name="identifyResult">提取出来的语音识别结果</param>
+		/// <returns></returns>
+		public static bool IsVoiceMessage (string message, out string guid, out string identifyResult) {
+			guid = null;
+			identifyResult = null;
+			Match match = Regex.Match (message, @"(\[Voi=\{.*?\}.*?\])(\[识别结果:(.*?)\])?");
+			if (match.Success) {
+				guid = match.Groups[1].Value;
+				identifyResult = match.Groups.Count > 1 ? match.Groups[3].Value : null;
+				return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// 消息中是否包含图片
+		/// </summary>
+		/// <param name="message">消息文本</param>
+		/// <param name="guids">提取出来的图片GUID</param>
+		/// <returns></returns>
+		public static bool ContainsPictureInMessage (string message, out List<string> guids) {
+			guids = null;
+			MatchCollection matchCollection = Regex.Matches (message, @"\[pic=\{.*?\}.*?\]");
+			if (matchCollection.Count == 0) {
+				return false;
+			}
+			guids = new List<string> ();
+			foreach (Match match in matchCollection) {
+				guids.Add (match.Value);
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// 是否为闪照消息
+		/// </summary>
+		/// <param name="message">消息文本</param>
+		/// <returns></returns>
+		public static bool IsFlashPictureMessage (string message) {
+			if (Regex.IsMatch (message, @"\[FlashPic=\{.*?\}.*?\]")) {
+				return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// 将闪照转为图片
+		/// </summary>
+		/// <param name="flashPictureGUID"></param>
+		/// <returns></returns>
+		public static string FlashPictureToPicture (string flashPictureGUID) {
+			return flashPictureGUID.Replace ("FlashPic", "pic");
+		}
 
 	}
 

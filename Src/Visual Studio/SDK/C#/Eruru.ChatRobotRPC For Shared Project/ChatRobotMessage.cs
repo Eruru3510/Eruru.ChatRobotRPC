@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Eruru.ChatRobotRPC {
 
@@ -87,6 +88,14 @@ namespace Eruru.ChatRobotRPC {
 		}
 
 		/// <summary>
+		/// 隐式转换Message（Message.Text）
+		/// </summary>
+		/// <param name="message"></param>
+		public static implicit operator string (ChatRobotMessage message) {
+			return message?.Text;
+		}
+
+		/// <summary>
 		/// 回复消息
 		/// </summary>
 		/// <param name="message">内容</param>
@@ -135,6 +144,33 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
 		public void ReplyXml (object message, bool isAnonymous = false) {
 			Reply (message, ChatRobotSendMessageType.Xml, isAnonymous);
+		}
+
+		/// <summary>
+		/// 是否为语音消息
+		/// </summary>
+		/// <param name="guid">提取出来的语音GUID</param>
+		/// <param name="identifyResult">提取出来的语音识别结果</param>
+		/// <returns></returns>
+		public bool IsVoice (out string guid, out string identifyResult) {
+			return ChatRobotAPI.IsVoiceMessage (Text, out guid, out identifyResult);
+		}
+
+		/// <summary>
+		/// 消息中是否包含图片
+		/// </summary>
+		/// <param name="guids">提取出来的图片GUID</param>
+		/// <returns></returns>
+		public bool ContainsPicture (out List<string> guids) {
+			return ChatRobotAPI.ContainsPictureInMessage (Text, out guids);
+		}
+
+		/// <summary>
+		/// 是否为闪照消息
+		/// </summary>
+		/// <returns></returns>
+		public bool IsFlashPicture () {
+			return ChatRobotAPI.IsFlashPictureMessage (Text);
 		}
 
 		/// <summary>
