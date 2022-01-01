@@ -92,7 +92,7 @@ namespace Eruru.ChatRobotRPC {
 		/// </summary>
 		/// <param name="message"></param>
 		public static implicit operator string (ChatRobotMessage message) {
-			return message?.Text;
+			return message == null ? default (string) : message.Text;
 		}
 
 		/// <summary>
@@ -184,7 +184,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="qq">目标QQ</param>
 		/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
 		/// <param name="sendType">文本、Json、Xml消息</param>
-		public static void Send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, string message, long group = default, long qq = default,
+		public static void Send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, string message, long group = default (long), long qq = default (long),
 			bool isAnonymous = false, ChatRobotSendMessageType sendType = ChatRobotSendMessageType.Text
 		) {
 			switch (type) {
@@ -200,7 +200,7 @@ namespace Eruru.ChatRobotRPC {
 							chatRobot.SendFriendXmlMessage (robot, qq, message);
 							break;
 						default:
-							throw new NotImplementedException ($"{type}.{sendType}");
+							throw new NotImplementedException (string.Format ("{0}.{1}", type, sendType));
 					}
 					break;
 				case ChatRobotMessageType.GroupTemp:
@@ -215,7 +215,7 @@ namespace Eruru.ChatRobotRPC {
 							chatRobot.SendGroupTempXmlMessage (robot, group, qq, message);
 							break;
 						default:
-							throw new NotImplementedException ($"{type}.{sendType}");
+							throw new NotImplementedException (string.Format ("{0}.{1}", type, sendType));
 					}
 					break;
 				case ChatRobotMessageType.DiscussTemp:
@@ -230,7 +230,7 @@ namespace Eruru.ChatRobotRPC {
 							chatRobot.SendDiscussTempXmlMessage (robot, group, qq, message);
 							break;
 						default:
-							throw new NotImplementedException ($"{type}.{sendType}");
+							throw new NotImplementedException (string.Format ("{0}.{1}", type, sendType));
 					}
 					break;
 				case ChatRobotMessageType.WebpageTemp:
@@ -245,7 +245,7 @@ namespace Eruru.ChatRobotRPC {
 							chatRobot.SendWebpageTempXmlMessage (robot, qq, message);
 							break;
 						default:
-							throw new NotImplementedException ($"{type}.{sendType}");
+							throw new NotImplementedException (string.Format ("{0}.{1}", type, sendType));
 					}
 					break;
 				case ChatRobotMessageType.FriendVerificationReply:
@@ -260,7 +260,7 @@ namespace Eruru.ChatRobotRPC {
 							chatRobot.SendFriendVerificationReplyXmlMessage (robot, qq, message);
 							break;
 						default:
-							throw new NotImplementedException ($"{type}.{sendType}");
+							throw new NotImplementedException (string.Format ("{0}.{1}", type, sendType));
 					}
 					break;
 				case ChatRobotMessageType.Group:
@@ -275,7 +275,7 @@ namespace Eruru.ChatRobotRPC {
 							chatRobot.SendGroupXmlMessage (robot, group, message, isAnonymous);
 							break;
 						default:
-							throw new NotImplementedException ($"{type}.{sendType}");
+							throw new NotImplementedException (string.Format ("{0}.{1}", type, sendType));
 					}
 					break;
 				case ChatRobotMessageType.Discuss:
@@ -290,7 +290,7 @@ namespace Eruru.ChatRobotRPC {
 							chatRobot.SendDiscussXmlMessage (robot, group, message);
 							break;
 						default:
-							throw new NotImplementedException ($"{type}.{sendType}");
+							throw new NotImplementedException (string.Format ("{0}.{1}", type, sendType));
 					}
 					break;
 				default:
@@ -308,10 +308,10 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="qq">目标QQ</param>
 		/// <param name="isAnonymous">是否匿名（仅Pro有效）</param>
 		/// <param name="sendType">文本、Json、Xml消息</param>
-		public static void Send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, object message, long group = default, long qq = default,
+		public static void Send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, object message, long group = default (long), long qq = default (long),
 			bool isAnonymous = false, ChatRobotSendMessageType sendType = ChatRobotSendMessageType.Text
 		) {
-			Send (chatRobot, type, robot, message?.ToString (), group, qq, isAnonymous, sendType);
+			Send (chatRobot, type, robot, message == null ? default (object) : message.ToString (), group, qq, isAnonymous, sendType);
 		}
 
 		/// <summary>
@@ -327,7 +327,7 @@ namespace Eruru.ChatRobotRPC {
 		}
 
 		void Reply (object message, ChatRobotSendMessageType type, bool isAnonymous) {
-			Send (ChatRobot, Type, Robot, message?.ToString (), Group, QQ, isAnonymous, type);
+			Send (ChatRobot, Type, Robot, message, Group, QQ, isAnonymous, type);
 		}
 
 	}

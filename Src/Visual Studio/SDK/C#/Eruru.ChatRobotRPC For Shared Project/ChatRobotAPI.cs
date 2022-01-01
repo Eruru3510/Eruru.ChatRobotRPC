@@ -17,7 +17,9 @@ namespace Eruru.ChatRobotRPC {
 	/// <param name="inviterQQ">邀请者的QQ号。</param>
 	/// <param name="sign">唯一表示本次请求,用于处理请求</param>
 	/// <param name="message">附加理由</param>
-	public delegate void ChatRobotGroupAddRequestedEventHandler (ChatRobotGroupAddRequestType type, long robot, long group, long qq, long inviterQQ, long sign, string message);
+	public delegate void ChatRobotGroupAddRequestedEventHandler (ChatRobotGroupAddRequestType type, long robot, long group, long qq, long inviterQQ,
+		long sign, string message
+	);
 	/// <summary>
 	/// 好友添加响应
 	/// </summary>
@@ -129,6 +131,21 @@ namespace Eruru.ChatRobotRPC {
 	/// <param name="robot">收到此事件机器人的QQ</param>
 	/// <param name="qq">将响应QQ从好友列表中删除的QQ号</param>
 	public delegate void ChatRobotWasRemovedByFriendEventHandler (long robot, long qq);
+	/// <summary>
+	/// 其他事件
+	/// </summary>
+	/// <param name="robot">收到此事件机器人的QQ</param>
+	/// <param name="eventType">事件类型</param>
+	/// <param name="subType">事件子类型</param>
+	/// <param name="source">事件来源</param>
+	/// <param name="active">主动对象</param>
+	/// <param name="passive">被动对象</param>
+	/// <param name="message">消息内容</param>
+	/// <param name="messageNumber">消息序号</param>
+	/// <param name="messageID">消息ID</param>
+	public delegate void ChatRobotOtherEventEventHandler (long robot, int eventType, int subType, long source, long active, long passive, string message,
+		long messageNumber, long messageID
+	);
 
 	/// <summary>
 	/// 聊天机器人API

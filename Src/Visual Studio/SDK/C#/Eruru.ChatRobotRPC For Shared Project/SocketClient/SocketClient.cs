@@ -7,16 +7,56 @@ namespace Eruru.ChatRobotRPC {
 
 	class SocketClient : IDisposable {
 
-		public SocketClientState State { get; set; } = SocketClientState.NotConnected;
-		public bool UseAsyncOnReceived { get; set; } = true;
+		public SocketClientState State {
+
+			get {
+				return _State;
+			}
+
+			set {
+				_State = value;
+			}
+
+		}
+		public bool UseAsyncOnReceived {
+
+			get {
+				return _UseAsyncOnReceived;
+			}
+
+			set {
+				_UseAsyncOnReceived = value;
+			}
+
+		}
 		public SocketClientReceivedEventHandler OnReceived { get; set; }
 		public SocketClientSendEventHandler OnSend { get; set; }
 		public SocketClientDisconnected OnDisconnected { get; set; }
 		/// <summary>
 		/// Seconds
 		/// </summary>
-		public int HeartbeatInterval { get; set; } = 60;
-		public int BufferLength { get; set; } = 1024;
+		public int HeartbeatInterval {
+
+			get {
+				return _HeartbeatInterval;
+			}
+
+			set {
+				_HeartbeatInterval = value;
+			}
+
+		}
+		public int BufferLength {
+
+			get {
+				return _BufferLength;
+			}
+
+			set {
+				_BufferLength = value;
+			}
+
+		}
 
 		const int PacketHeaderLength = 4;
 
@@ -28,6 +68,10 @@ namespace Eruru.ChatRobotRPC {
 		Thread HeartbeatThread;
 		int PacketBodyLength = -1;
 		DateTime HeartbeatSendTime;
+		SocketClientState _State = SocketClientState.NotConnected;
+		bool _UseAsyncOnReceived = true;
+		int _HeartbeatInterval = 60;
+		int _BufferLength = 1024 * 1024;
 
 		public void Connect (string ip, int port) {
 			lock (SocketLock) {
@@ -52,10 +96,13 @@ namespace Eruru.ChatRobotRPC {
 			HeartbeatSendTime = DateTime.Now;
 			byte[] buffer = ToPacket (bytes);
 			if (bytes.Length > 0) {
-				OnSend?.Invoke (bytes);
+				if (OnSend != null) {
+					OnSend (bytes);
+				}
 			}
 			Socket.BeginSend (buffer, 0, buffer.Length, SocketFlags.None, asyncResult => {
-				Socket.EndSend (asyncResult, out SocketError socketError);
+				SocketError socketError;
+				Socket.EndSend (asyncResult, out socketError);
 			}, null);
 		}
 
@@ -68,7 +115,9 @@ namespace Eruru.ChatRobotRPC {
 					Buffer.Clear ();
 					PacketBodyLength = -1;
 					HeartbeatThread.Abort ();
-					OnDisconnected?.Invoke ();
+					if (OnDisconnected != null) {
+						OnDisconnected ();
+					}
 				}
 			}
 		}
@@ -79,8 +128,10 @@ namespace Eruru.ChatRobotRPC {
 
 		void BeginReceive () {
 			byte[] buffer = new byte[BufferLength];
-			Socket.BeginReceive (buffer, 0, buffer.Length, SocketFlags.None, out SocketError socketError, asyncResult => {
-				int length = Socket.EndReceive (asyncResult, out SocketError innerSocketError);
+			SocketError socketError;
+			Socket.BeginReceive (buffer, 0, buffer.Length, SocketFlags.None, out socketError, asyncResult => {
+				SocketError innerSocketError;
+				int length = Socket.EndReceive (asyncResult, out innerSocketError);
 				if (length < 1) {
 					Disconnect ();
 					return;

@@ -9,7 +9,7 @@
             聊天机器人
             </summary>
         </member>
-        <member name="F:Eruru.ChatRobotRPC.ChatRobot.ProtocolVersision">
+        <member name="F:Eruru.ChatRobotRPC.ChatRobot.ProtocolVersion">
             <summary>
             协议版本
             </summary>
@@ -117,6 +117,11 @@
         <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnWasRemovedByFriend">
             <summary>
             被好友删除
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.OnReceivedOtherEvent">
+            <summary>
+            其他事件
             </summary>
         </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobot.#ctor">
@@ -1429,6 +1434,20 @@
             </summary>
             <param name="robot">收到此事件机器人的QQ</param>
             <param name="qq">将响应QQ从好友列表中删除的QQ号</param>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotOtherEventEventHandler">
+            <summary>
+            其他事件
+            </summary>
+            <param name="robot">收到此事件机器人的QQ</param>
+            <param name="eventType">事件类型</param>
+            <param name="subType">事件子类型</param>
+            <param name="source">事件来源</param>
+            <param name="active">主动对象</param>
+            <param name="passive">被动对象</param>
+            <param name="message">消息内容</param>
+            <param name="messageNumber">消息序号</param>
+            <param name="messageID">消息ID</param>
         </member>
         <member name="T:Eruru.ChatRobotRPC.ChatRobotAPI">
             <summary>

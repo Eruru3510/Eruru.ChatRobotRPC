@@ -14,16 +14,20 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// 协议版本
 		/// </summary>
-		public const string ProtocolVersision = "1.0.0.3";
+		public const string ProtocolVersion = "1.0.0.4";
 
 		/// <summary>
 		/// 心跳包发送间隔（秒）
 		/// </summary>
 		public int HeartbeatInterval {
 
-			get => SocketClient.HeartbeatInterval;
+			get {
+				return SocketClient.HeartbeatInterval;
+			}
 
-			set => SocketClient.HeartbeatInterval = value;
+			set {
+				SocketClient.HeartbeatInterval = value;
+			}
 
 		}
 		/// <summary>
@@ -116,6 +120,10 @@ namespace Eruru.ChatRobotRPC {
 		/// 被好友删除
 		/// </summary>
 		public ChatRobotWasRemovedByFriendEventHandler OnWasRemovedByFriend { get; set; }
+		/// <summary>
+		/// 其他事件
+		/// </summary>
+		public ChatRobotOtherEventEventHandler OnReceivedOtherEvent { get; set; }
 
 		readonly SocketClient SocketClient;
 		readonly WaitSystem WaitSystem = new WaitSystem ();
@@ -127,8 +135,16 @@ namespace Eruru.ChatRobotRPC {
 		public ChatRobot () {
 			SocketClient = new SocketClient () {
 				OnReceived = SocketClient_OnReceived,
-				OnSend = bytes => OnSend?.Invoke (Encoding.GetString (bytes)),
-				OnDisconnected = () => OnDisconnected?.Invoke ()
+				OnSend = bytes => {
+					if (OnSend != null) {
+						OnSend (Encoding.GetString (bytes));
+					}
+				},
+				OnDisconnected = () => {
+					if (OnDisconnected != null) {
+						OnDisconnected ();
+					}
+				}
 			};
 		}
 
@@ -175,7 +191,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string TEAEncryption (string content, string key) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (TEAEncryption) },
+				{ "Type", "TEAEncryption" },
 				{ "Content", content },
 				{ "Key", key }
 			});
@@ -189,7 +205,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string TEADecryption (string content, string key) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (TEADecryption) },
+				{ "Type", "TEADecryption" },
 				{ "Content", content },
 				{ "Key", key }
 			});
@@ -202,7 +218,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns>礼物列表</returns>
 		public ChatRobotGiftInformation[] QueryGroupGiftInformations (long robot) {
 			return WaitSystemGet<ChatRobotGiftInformation[]> (new JObject () {
-				{ "Type", nameof (QueryGroupGiftInformations) },
+				{ "Type", "QueryGroupGiftInformations" },
 				{ "Robot", robot }
 			});
 		}
@@ -217,7 +233,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string RevokeGroupMessage (long robot, long group, long messageNumber, long messageID) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (RevokeGroupMessage) },
+				{ "Type", "RevokeGroupMessage" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "MessageNumber", messageNumber },
@@ -233,7 +249,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long DrawGroupGift (long robot, long group) {
 			return WaitSystemGet<long> (new JObject () {
-				{ "Type", nameof (DrawGroupGift) },
+				{ "Type", "DrawGroupGift" },
 				{ "Robot", robot },
 				{ "Group", group }
 			});
@@ -248,7 +264,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="information">拒绝添加好友 附加信息</param>
 		public void HandleFriendAddRequest (long robot, long qq, ChatRobotRequestType treatmentMethod, string information) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (HandleFriendAddRequest) },
+				{ "Type", "HandleFriendAddRequest" },
 				{ "Robot", robot },
 				{ "QQ", qq },
 				{ "TreatmentMethod", (int)treatmentMethod },
@@ -270,7 +286,7 @@ namespace Eruru.ChatRobotRPC {
 			ChatRobotRequestType treatmentMethod, string information
 		) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (HandleGroupAddRequest) },
+				{ "Type", "HandleGroupAddRequest" },
 				{ "Robot", robot },
 				{ "RequestType", (int)requestType },
 				{ "QQ", qq },
@@ -289,7 +305,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string CreateDiscuss (long robot, long qq) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (CreateDiscuss) },
+				{ "Type", "CreateDiscuss" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -301,7 +317,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="robot">机器人QQ</param>
 		public void LoginRobot (long robot) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (LoginRobot) },
+				{ "Type", "LoginRobot" },
 				{ "Robot", robot }
 			});
 		}
@@ -314,7 +330,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string Like (long robot, long qq) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (Like) },
+				{ "Type", "Like" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -330,7 +346,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string PublishGroupAnnouncement (long robot, long group, string title, string content) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (PublishGroupAnnouncement) },
+				{ "Type", "PublishGroupAnnouncement" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "Title", title },
@@ -349,7 +365,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string PublishGroupJob (long robot, long group, string name, string title, string content) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (PublishGroupJob) },
+				{ "Type", "PublishGroupJob" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "Name", name },
@@ -386,7 +402,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool SendFriendWindowJitter (long robot, long qq) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (SendFriendWindowJitter) },
+				{ "Type", "SendFriendWindowJitter" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -441,7 +457,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool SendFriendVoice (long robot, long qq, string base64) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (SendFriendVoice) },
+				{ "Type", "SendFriendVoice" },
 				{ "Robot", robot },
 				{ "QQ", qq },
 				{ "Data", base64 }
@@ -490,7 +506,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool SendGroupGift (long robot, long group, long qq, long gift) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (SendGroupGift) },
+				{ "Type", "SendGroupGift" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "QQ", qq },
@@ -541,7 +557,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool SendGroupSignIn (long robot, long group, string place, string content) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (SendGroupSignIn) },
+				{ "Type", "SendGroupSignIn" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "Place", place },
@@ -568,7 +584,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string SendData (long robot, string data) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (SendData) },
+				{ "Type", "SendData" },
 				{ "Robot", robot },
 				{ "Data", data }
 			});
@@ -675,7 +691,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string FriendPictureToGroupPicture (long robot, string picture) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (FriendPictureToGroupPicture) },
+				{ "Type", "FriendPictureToGroupPicture" },
 				{ "Robot", robot },
 				{ "Picture", picture }
 			});
@@ -689,7 +705,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string JoinDiscussByUrl (long robot, string url) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (JoinDiscussByUrl) },
+				{ "Type", "JoinDiscussByUrl" },
 				{ "Robot", robot },
 				{ "Url", url }
 			});
@@ -700,7 +716,7 @@ namespace Eruru.ChatRobotRPC {
 		/// </summary>
 		public void DisablePlugin () {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (DisablePlugin) }
+				{ "Type", "DisablePlugin" }
 			});
 		}
 
@@ -711,7 +727,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetBkn (long robot) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetBkn) },
+				{ "Type", "GetBkn" },
 				{ "Robot", robot }
 			});
 		}
@@ -723,7 +739,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetClientKey (long robot) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetClientKey) },
+				{ "Type", "GetClientKey" },
 				{ "Robot", robot }
 			});
 		}
@@ -735,7 +751,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetCookies (long robot) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetCookies) },
+				{ "Type", "GetCookies" },
 				{ "Robot", robot }
 			});
 		}
@@ -748,7 +764,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetPSKey (long robot, string domainName) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetPSKey) },
+				{ "Type", "GetPSKey" },
 				{ "Robot", robot },
 				{ "DomainName", domainName }
 			});
@@ -761,7 +777,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetSessionKey (long robot) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetSessionKey) },
+				{ "Type", "GetSessionKey" },
 				{ "Robot", robot }
 			});
 		}
@@ -773,7 +789,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetLongBkn (long robot) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetLongBkn) },
+				{ "Type", "GetLongBkn" },
 				{ "Robot", robot }
 			});
 		}
@@ -785,7 +801,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetLongClientKey (long robot) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetLongClientKey) },
+				{ "Type", "GetLongClientKey" },
 				{ "Robot", robot }
 			});
 		}
@@ -797,7 +813,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetLongLdw (long robot) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetLongLdw) },
+				{ "Type", "GetLongLdw" },
 				{ "Robot", robot }
 			});
 		}
@@ -811,7 +827,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetMemberGroupChatLevel (long robot, long group, long qq) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetMemberGroupChatLevel) },
+				{ "Type", "GetMemberGroupChatLevel" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "QQ", qq }
@@ -824,7 +840,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long GetCurrentTimeStamp () {
 			return WaitSystemGet<long> (new JObject () {
-				{ "Type", nameof (GetCurrentTimeStamp) }
+				{ "Type", "GetCurrentTimeStamp" }
 			});
 		}
 
@@ -836,7 +852,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool TryGetLevel (long robot, out ChatRobotLevelInformation levelInformation) {
 			return WaitSystemGet<bool, ChatRobotLevelInformation> (new JObject () {
-				{ "Type", nameof (TryGetLevel) },
+				{ "Type", "TryGetLevel" },
 				{ "Robot", robot }
 			}, out levelInformation);
 		}
@@ -849,7 +865,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long GetFriendQQMasterDays (long robot, long qq) {
 			return WaitSystemGet<long> (new JObject () {
-				{ "Type", nameof (GetFriendQQMasterDays) },
+				{ "Type", "GetFriendQQMasterDays" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -863,7 +879,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long GetFriendQAge (long robot, long qq) {
 			return WaitSystemGet<long> (new JObject () {
-				{ "Type", nameof (GetFriendQAge) },
+				{ "Type", "GetFriendQAge" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -877,7 +893,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetFriendNotes (long robot, long qq) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetFriendNotes) },
+				{ "Type", "GetFriendNotes" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -891,7 +907,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long GetFriendLevel (long robot, long qq) {
 			return WaitSystemGet<long> (new JObject () {
-				{ "Type", nameof (GetFriendLevel) },
+				{ "Type", "GetFriendLevel" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -905,7 +921,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetFriendPersonalDescription (long robot, long qq) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetFriendPersonalDescription) },
+				{ "Type", "GetFriendPersonalDescription" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -919,7 +935,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetFriendPersonalSignature (long robot, long qq) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetFriendPersonalSignature) },
+				{ "Type", "GetFriendPersonalSignature" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -932,7 +948,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public ChatRobotFriendListInformation[] GetFriendListInformations (long robot) {
 			return WaitSystemGet<ChatRobotFriendListInformation[]> (new JObject () {
-				{ "Type", nameof (GetFriendListInformations) },
+				{ "Type", "GetFriendListInformations" },
 				{ "Robot", robot }
 			});
 		}
@@ -945,7 +961,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long GetFriendAge (long robot, long qq) {
 			return WaitSystemGet<long> (new JObject () {
-				{ "Type", nameof (GetFriendAge) },
+				{ "Type", "GetFriendAge" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -959,7 +975,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool IsFriendOnline (long robot, long qq) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (IsFriendOnline) },
+				{ "Type", "IsFriendOnline" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -974,7 +990,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool TryGetFriendInformation (long robot, long qq, out ChatRobotFriendInformation friendInformation) {
 			return WaitSystemGet<bool, ChatRobotFriendInformation> (new JObject () {
-				{ "Type", nameof (TryGetFriendInformation) },
+				{ "Type", "TryGetFriendInformation" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			}, out friendInformation);
@@ -988,7 +1004,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long GetFriendGender (long robot, long qq) {
 			return WaitSystemGet<long> (new JObject () {
-				{ "Type", nameof (GetFriendGender) },
+				{ "Type", "GetFriendGender" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -1002,7 +1018,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetFriendEmail (long robot, long qq) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetFriendEmail) },
+				{ "Type", "GetFriendEmail" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -1016,7 +1032,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetFriendOnlineState (long robot, long qq) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetFriendOnlineState) },
+				{ "Type", "GetFriendOnlineState" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -1029,7 +1045,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long[] GetFriends (long robot) {
 			return WaitSystemGet<long[]> (new JObject () {
-				{ "Type", nameof (GetFriends) },
+				{ "Type", "GetFriends" },
 				{ "Robot", robot }
 			});
 		}
@@ -1042,7 +1058,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool TryGetRobotStateInformation (long robot, out ChatRobotStateInformation robotStateInformation) {
 			return WaitSystemGet<bool, ChatRobotStateInformation> (new JObject () {
-				{ "Type", nameof (TryGetRobotStateInformation) },
+				{ "Type", "TryGetRobotStateInformation" },
 				{ "Robot", robot }
 			}, out robotStateInformation);
 		}
@@ -1053,7 +1069,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetFrameVersionNumber () {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetFrameVersionNumber) }
+				{ "Type", "GetFrameVersionNumber" }
 			});
 		}
 
@@ -1063,7 +1079,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetFrameVersionName () {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetFrameVersionName) }
+				{ "Type", "GetFrameVersionName" }
 			});
 		}
 
@@ -1073,7 +1089,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long[] GetOfflineRobots () {
 			return WaitSystemGet<long[]> (new JObject () {
-				{ "Type", nameof (GetOfflineRobots) }
+				{ "Type", "GetOfflineRobots" }
 			});
 		}
 
@@ -1083,7 +1099,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long[] GetRobots () {
 			return WaitSystemGet<long[]> (new JObject () {
-				{ "Type", nameof (GetRobots) }
+				{ "Type", "GetRobots" }
 			});
 		}
 
@@ -1093,7 +1109,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetFrameLog () {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetFrameLog) }
+				{ "Type", "GetFrameLog" }
 			});
 		}
 
@@ -1103,7 +1119,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long[] GetOnlineRobots () {
 			return WaitSystemGet<long[]> (new JObject () {
-				{ "Type", nameof (GetOnlineRobots) }
+				{ "Type", "GetOnlineRobots" }
 			});
 		}
 
@@ -1115,7 +1131,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public ChatRobotFriendAddMethod GetTargetFriendAddMethod (long robot, long qq) {
 			return WaitSystemGet<ChatRobotFriendAddMethod> (new JObject () {
-				{ "Type", nameof (GetTargetFriendAddMethod) },
+				{ "Type", "GetTargetFriendAddMethod" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -1128,7 +1144,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long GetGroupID (long group) {
 			return WaitSystemGet<long> (new JObject () {
-				{ "Type", nameof (GetGroupID) },
+				{ "Type", "GetGroupID" },
 				{ "Group", group }
 			});
 		}
@@ -1144,7 +1160,7 @@ namespace Eruru.ChatRobotRPC {
 			out ChatRobotGroupMemberInformation[] groupMemberInformations
 		) {
 			return WaitSystemGet<ChatRobotGroupMemberListInformation, ChatRobotGroupMemberInformation[]> (new JObject () {
-				{ "Type", nameof (GetGroupMemberListInformation) },
+				{ "Type", "GetGroupMemberListInformation" },
 				{ "Robot", robot },
 				{ "Group", group }
 			}, out groupMemberInformations);
@@ -1159,7 +1175,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetGroupMemberBusinessCard (long robot, long group, long qq) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetGroupMemberBusinessCard) },
+				{ "Type", "GetGroupMemberBusinessCard" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "QQ", qq }
@@ -1175,7 +1191,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool IsGroupMemberBanSpeak (long robot, long group, long qq) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (IsGroupMemberBanSpeak) },
+				{ "Type", "IsGroupMemberBanSpeak" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "QQ", qq }
@@ -1190,7 +1206,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long[] GetGroupMembers (long robot, long group) {
 			return WaitSystemGet<long[]> (new JObject () {
-				{ "Type", nameof (GetGroupMembers) },
+				{ "Type", "GetGroupMembers" },
 				{ "Robot", robot },
 				{ "Group", group }
 			});
@@ -1204,7 +1220,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetGroupAnnouncement (long robot, long group) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetGroupAnnouncement) },
+				{ "Type", "GetGroupAnnouncement" },
 				{ "Robot", robot },
 				{ "Group", group }
 			});
@@ -1218,7 +1234,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long[] GetGroupAdministrators (long robot, long group) {
 			return WaitSystemGet<long[]> (new JObject () {
-				{ "Type", nameof (GetGroupAdministrators) },
+				{ "Type", "GetGroupAdministrators" },
 				{ "Robot", robot },
 				{ "Group", group }
 			});
@@ -1231,7 +1247,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long GetGroupQQ (long id) {
 			return WaitSystemGet<long> (new JObject () {
-				{ "Type", nameof (GetGroupQQ) },
+				{ "Type", "GetGroupQQ" },
 				{ "GroupID", id }
 			});
 		}
@@ -1243,7 +1259,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long[] GetGroups (long robot) {
 			return WaitSystemGet<long[]> (new JObject () {
-				{ "Type", nameof (GetGroups) },
+				{ "Type", "GetGroups" },
 				{ "Robot", robot }
 			});
 		}
@@ -1255,7 +1271,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public ChatRobotGroupInformation[] GetGroupInformations (long robot) {
 			return WaitSystemGet<ChatRobotGroupInformation[]> (new JObject () {
-				{ "Type", nameof (GetGroupInformations) },
+				{ "Type", "GetGroupInformations" },
 				{ "Robot", robot }
 			});
 		}
@@ -1268,7 +1284,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetGroupName (long robot, long group) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetGroupName) },
+				{ "Type", "GetGroupName" },
 				{ "Robot", robot },
 				{ "Group", group }
 			});
@@ -1283,7 +1299,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public int GetGroupMemberNumber (long robot, long group, out int maxMemberNumber) {
 			return WaitSystemGet<int, int> (new JObject () {
-				{ "Type", nameof (GetGroupMemberNumber) },
+				{ "Type", "GetGroupMemberNumber" },
 				{ "Robot", robot },
 				{ "Group", group }
 			}, out maxMemberNumber);
@@ -1295,7 +1311,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool IsGroupAnonymousEnabled (long robot, long group) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (IsGroupAnonymousEnabled) },
+				{ "Type", "IsGroupAnonymousEnabled" },
 				{ "Robot", robot },
 				{ "Group", group }
 			});
@@ -1309,7 +1325,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long[] GetDiscussMembers (long robot, long discuss) {
 			return WaitSystemGet<long[]> (new JObject () {
-				{ "Type", nameof (GetDiscussMembers) },
+				{ "Type", "GetDiscussMembers" },
 				{ "Robot", robot },
 				{ "Discuss", discuss }
 			});
@@ -1322,7 +1338,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public long[] GetDiscusss (long robot) {
 			return WaitSystemGet<long[]> (new JObject () {
-				{ "Type", nameof (GetDiscusss) },
+				{ "Type", "GetDiscusss" },
 				{ "Robot", robot }
 			});
 		}
@@ -1335,7 +1351,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetDiscussURL (long robot, long discuss) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetDiscussURL) },
+				{ "Type", "GetDiscussURL" },
 				{ "Robot", robot },
 				{ "Discuss", discuss }
 			});
@@ -1349,7 +1365,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetDiscussName (long robot, long discuss) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetDiscussName) },
+				{ "Type", "GetDiscussName" },
 				{ "Robot", robot },
 				{ "Discuss", discuss }
 			});
@@ -1364,7 +1380,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetImageURL (long robot, long group, string code) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetImageURL) },
+				{ "Type", "GetImageURL" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "Code", code }
@@ -1379,7 +1395,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetVoiceURL (long robot, string code) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetVoiceURL) },
+				{ "Type", "GetVoiceURL" },
 				{ "Robot", robot },
 				{ "Code", code }
 			});
@@ -1393,7 +1409,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GetName (long robot, long qq) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GetName) },
+				{ "Type", "GetName" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -1407,7 +1423,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string GroupPictureToFriendPicture (long robot, string picture) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (GroupPictureToFriendPicture) },
+				{ "Type", "GroupPictureToFriendPicture" },
 				{ "Robot", robot },
 				{ "Picture", picture }
 			});
@@ -1421,7 +1437,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool RemoveFriend (long robot, long qq) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (RemoveFriend) },
+				{ "Type", "RemoveFriend" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -1436,7 +1452,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool RemoveFriendByOneWay (long robot, long qq, long operatorType) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (RemoveFriendByOneWay) },
+				{ "Type", "RemoveFriendByOneWay" },
 				{ "Robot", robot },
 				{ "QQ", qq },
 				{ "OperatorType", operatorType }
@@ -1449,7 +1465,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="robot">机器人QQ</param>
 		public void RemoveRobot (long robot) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (RemoveRobot) },
+				{ "Type", "RemoveRobot" },
 				{ "Robot", robot }
 			});
 		}
@@ -1463,7 +1479,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string UploadGroupChatImage (long robot, long group, string base64) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (UploadGroupChatImage) },
+				{ "Type", "UploadGroupChatImage" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "Data", base64 }
@@ -1489,7 +1505,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool UploadGroupFile (long robot, long group, string filePath) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (UploadGroupFile) },
+				{ "Type", "UploadGroupFile" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "Path", filePath }
@@ -1505,7 +1521,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string UploadGroupChatVoice (long robot, long group, string base64) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (UploadGroupChatVoice) },
+				{ "Type", "UploadGroupChatVoice" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "Data", base64 }
@@ -1531,7 +1547,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string UploadPrivateChatImage (long robot, long qq, string base64) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (UploadPrivateChatImage) },
+				{ "Type", "UploadPrivateChatImage" },
 				{ "Robot", robot },
 				{ "QQ", qq },
 				{ "Data", base64 }
@@ -1557,7 +1573,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string RequestAddFriend (long robot, long qq, string message) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (RequestAddFriend) },
+				{ "Type", "RequestAddFriend" },
 				{ "Robot", robot },
 				{ "QQ", qq },
 				{ "Message", message }
@@ -1573,7 +1589,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public string RequestAddGroup (long robot, long group, string message) {
 			return WaitSystemGet<string> (new JObject () {
-				{ "Type", nameof (RequestAddGroup) },
+				{ "Type", "RequestAddGroup" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "Message", message }
@@ -1587,7 +1603,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool IsMaskSendMessage (long robot) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (IsMaskSendMessage) },
+				{ "Type", "IsMaskSendMessage" },
 				{ "Robot", robot }
 			});
 		}
@@ -1598,7 +1614,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool IsEnable () {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (IsEnable) }
+				{ "Type", "IsEnable" }
 			});
 		}
 
@@ -1610,7 +1626,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool IsFriend (long robot, long qq) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (IsFriend) },
+				{ "Type", "IsFriend" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -1624,7 +1640,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool IsAllowGroupTempMessage (long robot, long group) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (IsAllowGroupTempMessage) },
+				{ "Type", "IsAllowGroupTempMessage" },
 				{ "Robot", robot },
 				{ "Group", group }
 			});
@@ -1638,7 +1654,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool IsAllowWebpageTempMessage (long robot, long qq) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (IsAllowWebpageTempMessage) },
+				{ "Type", "IsAllowWebpageTempMessage" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -1653,7 +1669,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool AddRobot (long robot, string password, bool autoLogin) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (AddRobot) },
+				{ "Type", "AddRobot" },
 				{ "Robot", robot },
 				{ "Password", password },
 				{ "AutoLogin", autoLogin }
@@ -1667,7 +1683,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="group">欲退出的群号</param>
 		public void RemoveGroup (long robot, long group) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (RemoveGroup) },
+				{ "Type", "RemoveGroup" },
 				{ "Robot", robot },
 				{ "Group", group }
 			});
@@ -1680,7 +1696,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="discuss">需退出的讨论组ID</param>
 		public void RemoveDiscuss (long robot, long discuss) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (RemoveDiscuss) },
+				{ "Type", "RemoveDiscuss" },
 				{ "Robot", robot },
 				{ "Discuss", discuss }
 			});
@@ -1692,7 +1708,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="robot">机器人QQ</param>
 		public void LogoutRobot (long robot) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (LogoutRobot) },
+				{ "Type", "LogoutRobot" },
 				{ "Robot", robot }
 			});
 		}
@@ -1706,7 +1722,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool InviteFriendJoinDiscuss (long robot, long discuss, long qq) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (InviteFriendJoinDiscuss) },
+				{ "Type", "InviteFriendJoinDiscuss" },
 				{ "Robot", robot },
 				{ "Discuss", discuss },
 				{ "QQ", qq }
@@ -1721,7 +1737,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="qq">被邀请人QQ号码</param>
 		public void InviteFriendJoinGroupByAdministrator (long robot, long group, long qq) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (InviteFriendJoinGroupByAdministrator) },
+				{ "Type", "InviteFriendJoinGroupByAdministrator" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "QQ", qq }
@@ -1736,7 +1752,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="qq">被邀请人QQ号码</param>
 		public void InviteFriendJoinGroupNonAdministrator (long robot, long group, long qq) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (InviteFriendJoinGroupNonAdministrator) },
+				{ "Type", "InviteFriendJoinGroupNonAdministrator" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "QQ", qq }
@@ -1751,7 +1767,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool SetCover (long robot, string base64) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (SetCover) },
+				{ "Type", "SetCover" },
 				{ "Robot", robot },
 				{ "Data", base64 }
 			});
@@ -1773,7 +1789,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="personalSignature">签名</param>
 		public void SetPersonalSignature (long robot, string personalSignature) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (SetPersonalSignature) },
+				{ "Type", "SetPersonalSignature" },
 				{ "Robot", robot },
 				{ "PersonalSignature", personalSignature }
 			});
@@ -1787,7 +1803,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="notes">需要修改的备注姓名</param>
 		public void SetFriendNotes (long robot, long qq, string notes) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (SetFriendNotes) },
+				{ "Type", "SetFriendNotes" },
 				{ "Robot", robot },
 				{ "QQ", qq },
 				{ "Notes", notes }
@@ -1802,7 +1818,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="enable">真拉黑,假取消拉黑</param>
 		public void SetFriendBlacklist (long robot, long qq, bool enable) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (SetFriendBlacklist) },
+				{ "Type", "SetFriendBlacklist" },
 				{ "Robot", robot },
 				{ "QQ", qq },
 				{ "Enable", enable }
@@ -1819,7 +1835,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool SetFriendAuthenticationMethod (long robot, ChatRobotFriendAddMethod VerificationMethod, string question, string answer) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (SetFriendAuthenticationMethod) },
+				{ "Type", "SetFriendAuthenticationMethod" },
 				{ "Robot", robot },
 				{ "VerificationMethod", (int)VerificationMethod },
 				{ "Question", question },
@@ -1834,7 +1850,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="gender">1为男 2为女</param>
 		public void SetRobotGender (long robot, long gender) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (SetRobotGender) },
+				{ "Type", "SetRobotGender" },
 				{ "Robot", robot },
 				{ "Gender", gender }
 			});
@@ -1848,7 +1864,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="information">最大255字节</param>
 		public void SetRobotState (long robot, long state, string information) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (SetRobotState) },
+				{ "Type", "SetRobotState" },
 				{ "Robot", robot },
 				{ "State", state },
 				{ "Information", information }
@@ -1862,7 +1878,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="name">需要设置的昵称</param>
 		public void SetRobotName (long robot, string name) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (SetRobotName) },
+				{ "Type", "SetRobotName" },
 				{ "Robot", robot },
 				{ "Name", name },
 			});
@@ -1878,7 +1894,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool SetAnonymousMemberBanSpeak (long robot, long group, string anonymousInformation, long duration) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (SetAnonymousMemberBanSpeak) },
+				{ "Type", "SetAnonymousMemberBanSpeak" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "AnonymousInformation", anonymousInformation },
@@ -1895,7 +1911,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool SetGroupBanSpeak (long robot, long group, bool enable) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (SetGroupBanSpeak) },
+				{ "Type", "SetGroupBanSpeak" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "Enable", enable }
@@ -1912,7 +1928,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool SetGroupMemberBanSpeak (long robot, long group, long qq, long seconds) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (SetGroupMemberBanSpeak) },
+				{ "Type", "SetGroupMemberBanSpeak" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "QQ", qq },
@@ -1930,7 +1946,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool SetGroupMemberBusinessCard (long robot, long group, long qq, string businessCard) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (SetGroupMemberBusinessCard) },
+				{ "Type", "SetGroupMemberBusinessCard" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "QQ", qq },
@@ -1947,7 +1963,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="noLongerAccept">真为不再接收，假为接收，默认为假</param>
 		public void KickGroupMember (long robot, long group, long qq, bool noLongerAccept) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (KickGroupMember) },
+				{ "Type", "KickGroupMember" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "QQ", qq },
@@ -1965,7 +1981,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool SetGroupAdministrator (long robot, long group, long qq, bool enable) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (SetGroupAdministrator) },
+				{ "Type", "SetGroupAdministrator" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "QQ", qq },
@@ -1982,7 +1998,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public bool SetGroupAnonymousEnable (long robot, long group, bool enable) {
 			return WaitSystemGet<bool> (new JObject () {
-				{ "Type", nameof (SetGroupAnonymousEnable) },
+				{ "Type", "SetGroupAnonymousEnable" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "Enable", enable }
@@ -1997,7 +2013,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="enable">真 为屏蔽接收 假为接收并提醒</param>
 		public void SetMaskGroupMessage (long robot, long group, bool enable) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (SetMaskGroupMessage) },
+				{ "Type", "SetMaskGroupMessage" },
 				{ "Robot", robot },
 				{ "Group", group },
 				{ "Enable", enable }
@@ -2010,7 +2026,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="content">输出的内容</param>
 		public void Log (string content) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (Log) },
+				{ "Type", "Log" },
 				{ "Content", content }
 			});
 		}
@@ -2022,7 +2038,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="qq">置正在输入状态接收对象QQ号</param>
 		public void SetInputting (long robot, long qq) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (SetInputting) },
+				{ "Type", "SetInputting" },
 				{ "Robot", robot },
 				{ "QQ", qq }
 			});
@@ -2036,7 +2052,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="qq">被执行对象</param>
 		public void KickDiscussMember (long robot, long discuss, long qq) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (KickDiscussMember) },
+				{ "Type", "KickDiscussMember" },
 				{ "Robot", robot },
 				{ "Discuss", discuss },
 				{ "QQ", qq }
@@ -2051,7 +2067,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="name">需修改的名称</param>
 		public void SetDiscussName (long robot, long discuss, string name) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (SetDiscussName) },
+				{ "Type", "SetDiscussName" },
 				{ "Robot", robot },
 				{ "Discuss", discuss },
 				{ "Name", name }
@@ -2065,7 +2081,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="base64">图片base64文本</param>
 		public void SetAvatar (long robot, string base64) {
 			SocketClientSendAsync (new JObject () {
-				{ "Type", nameof (SetAvatar) },
+				{ "Type", "SetAvatar" },
 				{ "Robot", robot },
 				{ "Data", base64 }
 			});
@@ -2082,16 +2098,18 @@ namespace Eruru.ChatRobotRPC {
 		void SocketClient_OnReceived (byte[] bytes) {
 			string text = Encoding.UTF8.GetString (bytes);
 			try {
-				OnReceived?.Invoke (text);
+				if (OnReceived != null) {
+					OnReceived (text);
+				}
 				JObject jObject = JObject.Parse (text);
 				string type = jObject.Value<string> ("Type");
 				switch (type) {
 					default:
-						throw new NotImplementedException ($"未知的消息类型：{type}");
+						throw new NotImplementedException (string.Format ("未知的消息类型：{0}", type));
 					case "Protocol": {
 						string targetProtocolVersion = jObject.Value<string> ("Version");
-						if (targetProtocolVersion != ProtocolVersision) {
-							throw new Exception ($"SDK协议版本：{ProtocolVersision} 与机器人框架插件的协议版本：{targetProtocolVersion} 不符");
+						if (targetProtocolVersion != ProtocolVersion) {
+							throw new Exception (string.Format ("SDK协议版本：{0} 与机器人框架插件的协议版本：{1} 不符", ProtocolVersion, targetProtocolVersion));
 						}
 						break;
 					}
@@ -2099,142 +2117,189 @@ namespace Eruru.ChatRobotRPC {
 						WaitSystem.Set (jObject.Value<long> ("ID"), jObject.Value<string> ("Result"));
 						break;
 					case "Message":
-						OnReceivedMessage?.Invoke (new ChatRobotMessage (
-							this,
-							EnumParse<ChatRobotMessageType> (jObject.Value<string> ("SubType")),
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("Group"),
-							jObject.Value<long> ("QQ"),
-							jObject.Value<string> ("Message"),
-							jObject.Value<long> ("MessageNumber"),
-							jObject.Value<long> ("MessageID")
-						));
+						if (OnReceivedMessage != null) {
+							OnReceivedMessage (new ChatRobotMessage (
+								this,
+								EnumParse<ChatRobotMessageType> (jObject.Value<string> ("SubType")),
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("Group"),
+								jObject.Value<long> ("QQ"),
+								jObject.Value<string> ("Message"),
+								jObject.Value<long> ("MessageNumber"),
+								jObject.Value<long> ("MessageID")
+							));
+						}
 						break;
 					case "GroupAddRequest":
-						OnReceivedGroupAddRequest?.Invoke (
-							EnumParse<ChatRobotGroupAddRequestType> (jObject.Value<string> ("SubType")),
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("Group"),
-							jObject.Value<long> ("QQ"),
-							jObject.Value<long> ("InviterQQ"),
-							jObject.Value<long> ("Sign"),
-							jObject.Value<string> ("Message")
-						);
+						if (OnReceivedGroupAddRequest != null) {
+							OnReceivedGroupAddRequest (
+								EnumParse<ChatRobotGroupAddRequestType> (jObject.Value<string> ("SubType")),
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("Group"),
+								jObject.Value<long> ("QQ"),
+								jObject.Value<long> ("InviterQQ"),
+								jObject.Value<long> ("Sign"),
+								jObject.Value<string> ("Message")
+							);
+						}
 						break;
 					case "FriendAddResponse":
-						OnReceivedFriendAddResponse?.Invoke (
-							jObject.Value<bool> ("Agree"),
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("QQ"),
-							jObject.Value<string> ("Message")
-						);
+						if (OnReceivedFriendAddResponse != null) {
+							OnReceivedFriendAddResponse (
+								jObject.Value<bool> ("Agree"),
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("QQ"),
+								jObject.Value<string> ("Message")
+							);
+						}
 						break;
 					case "FriendAddRequest":
-						OnReceivedFriendAddRequest?.Invoke (
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("QQ"),
-							jObject.Value<string> ("Message")
-						);
+						if (OnReceivedFriendAddRequest != null) {
+							OnReceivedFriendAddRequest (
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("QQ"),
+								jObject.Value<string> ("Message")
+							);
+						}
 						break;
 					case "GroupMessageRevoke":
-						OnGroupMessageRevoked?.Invoke (
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("Group"),
-							jObject.Value<long> ("QQ"),
-							jObject.Value<long> ("MessageNumber"),
-							jObject.Value<long> ("MessageID")
-						);
+						if (OnGroupMessageRevoked != null) {
+							OnGroupMessageRevoked (
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("Group"),
+								jObject.Value<long> ("QQ"),
+								jObject.Value<long> ("MessageNumber"),
+								jObject.Value<long> ("MessageID")
+							);
+						}
 						break;
 					case "GroupAnonymousSwitch":
-						OnGroupAnonymousSwitched?.Invoke (
-							jObject.Value<bool> ("Enable"),
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("Group"),
-							jObject.Value<long> ("QQ")
-						);
+						if (OnGroupAnonymousSwitched != null) {
+							OnGroupAnonymousSwitched (
+								jObject.Value<bool> ("Enable"),
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("Group"),
+								jObject.Value<long> ("QQ")
+							);
+						}
 						break;
 					case "GroupNameChange":
-						OnGroupNameChanged?.Invoke (
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("Group"),
-							jObject.Value<string> ("Name")
-						);
+						if (OnGroupNameChanged != null) {
+							OnGroupNameChanged (
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("Group"),
+								jObject.Value<string> ("Name")
+							);
+						}
 						break;
 					case "GroupBanSpeak":
-						OnGroupBannedSpeak?.Invoke (
-							jObject.Value<bool> ("Enable"),
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("Group"),
-							jObject.Value<long> ("QQ")
-						);
+						if (OnGroupBannedSpeak != null) {
+							OnGroupBannedSpeak (
+								jObject.Value<bool> ("Enable"),
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("Group"),
+								jObject.Value<long> ("QQ")
+							);
+						}
 						break;
 					case "GroupAdminChange":
-						OnGroupAdministratorChanged?.Invoke (
-							jObject.Value<bool> ("Enable"),
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("Group"),
-							jObject.Value<long> ("QQ")
-						);
+						if (OnGroupAdministratorChanged != null) {
+							OnGroupAdministratorChanged (
+								jObject.Value<bool> ("Enable"),
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("Group"),
+								jObject.Value<long> ("QQ")
+							);
+						}
 						break;
 					case "GroupMemberBusinessCardChange":
-						OnGroupMemberBusinessCardChanged?.Invoke (
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("Group"),
-							jObject.Value<long> ("QQ"),
-							jObject.Value<string> ("BusinessCard")
-						);
+						if (OnGroupMemberBusinessCardChanged != null) {
+							OnGroupMemberBusinessCardChanged (
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("Group"),
+								jObject.Value<long> ("QQ"),
+								jObject.Value<string> ("BusinessCard")
+							);
+						}
 						break;
 					case "GroupMemberLeave":
-						OnGroupMemberLeft?.Invoke (
-							jObject.Value<bool> ("Kick"),
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("Group"),
-							jObject.Value<long> ("QQ"),
-							jObject.Value<long> ("OperatorQQ")
-						);
+						if (OnGroupMemberLeft != null) {
+							OnGroupMemberLeft (
+								jObject.Value<bool> ("Kick"),
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("Group"),
+								jObject.Value<long> ("QQ"),
+								jObject.Value<long> ("OperatorQQ")
+							);
+						}
 						break;
 					case "GroupMemberBanSpeak":
-						OnGroupMemberBannedSpeak?.Invoke (
-							jObject.Value<bool> ("Enable"),
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("Group"),
-							jObject.Value<long> ("QQ"),
-							jObject.Value<long> ("OperatorQQ"),
-							jObject.Value<int> ("Seconds")
-						);
+						if (OnGroupMemberBannedSpeak != null) {
+							OnGroupMemberBannedSpeak (
+								jObject.Value<bool> ("Enable"),
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("Group"),
+								jObject.Value<long> ("QQ"),
+								jObject.Value<long> ("OperatorQQ"),
+								jObject.Value<int> ("Seconds")
+							);
+						}
 						break;
 					case "GroupMemberJoin":
-						OnGroupMemberJoined?.Invoke (
-							EnumParse<ChatRobotGroupMemberJoinType> (jObject.Value<string> ("SubType")),
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("Group"),
-							jObject.Value<long> ("QQ"),
-							jObject.Value<long> ("OperatorQQ")
-						);
+						if (OnGroupMemberJoined != null) {
+							OnGroupMemberJoined (
+								EnumParse<ChatRobotGroupMemberJoinType> (jObject.Value<string> ("SubType")),
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("Group"),
+								jObject.Value<long> ("QQ"),
+								jObject.Value<long> ("OperatorQQ")
+							);
+						}
 						break;
 					case "GroupDisband":
-						OnGroupDisbanded?.Invoke (
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("Group"),
-							jObject.Value<long> ("QQ")
-						);
+						if (OnGroupDisbanded != null) {
+							OnGroupDisbanded (
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("Group"),
+								jObject.Value<long> ("QQ")
+							);
+						}
 						break;
 					case "FriendStateChange":
-						OnFriendStateChanged?.Invoke (
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("QQ"),
-							jObject.Value<string> ("State")
-						);
+						if (OnFriendStateChanged != null) {
+							OnFriendStateChanged (
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("QQ"),
+								jObject.Value<string> ("State")
+							);
+						}
 						break;
 					case "WasRemoveByFriend":
-						OnWasRemovedByFriend?.Invoke (
-							jObject.Value<long> ("Robot"),
-							jObject.Value<long> ("QQ")
-						);
+						if (OnWasRemovedByFriend != null) {
+							OnWasRemovedByFriend (
+								jObject.Value<long> ("Robot"),
+								jObject.Value<long> ("QQ")
+							);
+						}
+						break;
+					case "OtherEvent":
+						if (OnReceivedOtherEvent != null) {
+							OnReceivedOtherEvent (
+								jObject.Value<long> ("Robot"),
+								jObject.Value<int> ("Event"),
+								jObject.Value<int> ("SubType"),
+								jObject.Value<long> ("Source"),
+								jObject.Value<long> ("Active"),
+								jObject.Value<long> ("Passive"),
+								jObject.Value<string> ("Message"),
+								jObject.Value<long> ("MessageNumber"),
+								jObject.Value<long> ("MessageIDr")
+							);
+						};
 						break;
 				}
 			} catch (Exception exception) {
-				Console.WriteLine ($"{DateTime.Now} 处理消息：{text} 时出现异常：{exception}");
+				Console.WriteLine (string.Format ("{0} 处理消息：{1} 时出现异常：{2}", DateTime.Now, text, exception));
 			}
 		}
 
@@ -2280,7 +2345,8 @@ namespace Eruru.ChatRobotRPC {
 
 		T WaitSystemConvert<T> (string result) {
 			if (typeof (T).IsEnum) {
-				if (int.TryParse (result, out int enumIndex)) {
+				int enumIndex;
+				if (int.TryParse (result, out enumIndex)) {
 					return (T)Enum.ToObject (typeof (T), enumIndex);
 				}
 				return (T)Enum.Parse (typeof (T), result);

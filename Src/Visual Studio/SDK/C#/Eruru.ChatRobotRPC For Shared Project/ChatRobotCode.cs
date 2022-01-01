@@ -74,7 +74,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="id"></param>
 		/// <returns></returns>
 		public static string Emoji (string id) {
-			return $"[emoji={id}]";
+			return string.Format ("[emoji={0}]", id);
 		}
 
 		/// <summary>
@@ -83,7 +83,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="id">0-170共计171个表情（2014年8月28日为止 将来腾讯方面还会继续添加）</param>
 		/// <returns></returns>
 		public static string Face (int id) {
-			return $"[Face{id}.gif]";
+			return string.Format ("[Face{0}.gif]", id);
 		}
 
 		/// <summary>
@@ -91,7 +91,7 @@ namespace Eruru.ChatRobotRPC {
 		/// </summary>
 		/// <returns></returns>
 		public static string Bubble (int id) {
-			return $"[气泡{id}]";
+			return string.Format ("[气泡{0}]", id);
 		}
 
 		/// <summary>
@@ -100,7 +100,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="pathOrURL">本地绝对路径或网络直链路径</param>
 		/// <returns></returns>
 		public static string Picture (string pathOrURL) {
-			return $"[pic={pathOrURL}]";
+			return string.Format ("[pic={0}]", pathOrURL);
 		}
 
 		/// <summary>
@@ -110,7 +110,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="size">字体大小</param>
 		/// <returns></returns>
 		public static string Font (int color, int size) {
-			return $"字体[颜色={color},大小={size}]";
+			return string.Format ("字体[颜色={0},大小={1}]", color, size);
 		}
 
 	}

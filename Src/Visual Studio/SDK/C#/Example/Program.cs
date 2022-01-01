@@ -10,7 +10,7 @@ namespace Example {
 
 		static void Main (string[] args) {
 			AppDomain.CurrentDomain.UnhandledException += (sender, e) => {//全局捕获未捕获异常，方便排查
-				Console.WriteLine ($"{DateTime.Now} {nameof (sender)} = {sender}, {nameof (Exception)} = {e.ExceptionObject}");
+				Console.WriteLine ($"{DateTime.Now} {"sender"} = {sender}, {"Exception"} = {e.ExceptionObject}");
 			};
 			Console.Title = string.Empty;
 			ChatRobot.OnReceivedMessage = message => {//当收到消息

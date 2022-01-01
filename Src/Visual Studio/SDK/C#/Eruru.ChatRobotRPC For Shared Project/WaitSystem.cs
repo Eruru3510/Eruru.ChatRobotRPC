@@ -6,7 +6,17 @@ namespace Eruru.ChatRobotRPC {
 
 	class WaitSystem : IDisposable {
 
-		public int MillisecondsTimeout { get; set; } = 60 * 1000;
+		public int MillisecondsTimeout {
+
+			get {
+				return _MillisecondsTimeout;
+			}
+
+			set {
+				_MillisecondsTimeout = value;
+			}
+
+		}
 
 		readonly Queue<Wait> WaitPool = new Queue<Wait> ();
 		readonly List<Wait> Waits = new List<Wait> ();
@@ -14,6 +24,7 @@ namespace Eruru.ChatRobotRPC {
 		readonly object WaitsLock = new object ();
 
 		long ID;
+		int _MillisecondsTimeout = 60 * 1000;
 
 		public long GetID () {
 			lock (GetIDLock) {
@@ -35,7 +46,7 @@ namespace Eruru.ChatRobotRPC {
 						return;
 					}
 				}
-				throw new Exception ($"没有找到ID为{id}的Wait");
+				throw new Exception (string.Format ("没有找到ID为{0}的Wait", id));
 			}
 		}
 

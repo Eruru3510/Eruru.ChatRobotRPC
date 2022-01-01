@@ -3,11 +3,12 @@
 	<PropertyGroup>
 		<TargetFrameworks>net20;net35;net40;net45;net48;netstandard2.0</TargetFrameworks>
 		<Version>1.0.0.14</Version>
+		<LangVersion>4</LangVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net20|AnyCPU'">
-	  <DocumentationFile>D:\Eruru\Projects\GitHub\Eruru.ChatRobotRPC\Src\Visual Studio\SDK\C#\Eruru.ChatRobotRPC\Eruru.ChatRobotRPC.xml</DocumentationFile>
-	  <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+		<DocumentationFile>D:\Eruru\Projects\GitHub\Eruru.ChatRobotRPC\Src\Visual Studio\SDK\C#\Eruru.ChatRobotRPC\Eruru.ChatRobotRPC.xml</DocumentationFile>
+		<GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
 	</PropertyGroup>
 
 	<ItemGroup>
