@@ -4,20 +4,20 @@ import org.eruru.chatrobotrpc.enums.ChatRobotGender;
 
 public class ChatRobotFriendInformation {
 
-	private  long qq;
+	private long qq;
 	private String name;
 	private ChatRobotGender gender;
-	private  int age;
-	private String  country;
+	private int age;
+	private String country;
 	private String province;
 	private String city;
 	private String avaterURL;
 
-	public long getQq () {
+	public long getQQ () {
 		return qq;
 	}
 
-	public void setQq (long qq) {
+	public void setQQ (long qq) {
 		this.qq = qq;
 	}
 
@@ -76,4 +76,5 @@ public class ChatRobotFriendInformation {
 	public void setAvaterURL (String avaterURL) {
 		this.avaterURL = avaterURL;
 	}
+
 }

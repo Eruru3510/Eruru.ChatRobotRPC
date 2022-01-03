@@ -1,13 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net20;net35;net40;net45;net48;netstandard2.0</TargetFrameworks>
-		<Version>1.0.0.14</Version>
+		<TargetFrameworks>net20;net35;net40;net45;net48;netstandard2.0;netcoreapp2.1;netcoreapp3.1;netcoreapp5.0;</TargetFrameworks>
+		<Version>1.0.0.16</Version>
 		<LangVersion>4</LangVersion>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net20|AnyCPU'">
-		<DocumentationFile>D:\Eruru\Projects\GitHub\Eruru.ChatRobotRPC\Src\Visual Studio\SDK\C#\Eruru.ChatRobotRPC\Eruru.ChatRobotRPC.xml</DocumentationFile>
+		<DocumentationFile>Eruru.ChatRobotRPC.xml</DocumentationFile>
+		<GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net35|AnyCPU'">
+		<DocumentationFile>Eruru.ChatRobotRPC.xml</DocumentationFile>
+		<GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net40|AnyCPU'">
+		<DocumentationFile>Eruru.ChatRobotRPC.xml</DocumentationFile>
+		<GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
+		<DocumentationFile>Eruru.ChatRobotRPC.xml</DocumentationFile>
+		<GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net48|AnyCPU'">
+		<DocumentationFile>Eruru.ChatRobotRPC.xml</DocumentationFile>
+		<GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+		<DocumentationFile>Eruru.ChatRobotRPC.xml</DocumentationFile>
 		<GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
 	</PropertyGroup>
 

@@ -20,7 +20,7 @@ public enum ChatRobotMessageType {
 		return value;
 	}
 
-	public ChatRobotMessageType get (int value) {
+	public static ChatRobotMessageType get (int value) {
 		for (ChatRobotMessageType item : ChatRobotMessageType.values ()) {
 			if (item.value == value) {
 				return item;

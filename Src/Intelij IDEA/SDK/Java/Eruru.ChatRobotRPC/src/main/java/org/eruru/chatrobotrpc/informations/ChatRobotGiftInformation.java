@@ -3,16 +3,16 @@ package org.eruru.chatrobotrpc.informations;
 public class ChatRobotGiftInformation {
 
 	private int id;
-	private  String name;
-	private  int value;
-	private  int getTimestamp;
-	private  int expirationTimestamp;
+	private String name;
+	private int value;
+	private int getTimestamp;
+	private int expirationTimestamp;
 
-	public int getId () {
+	public int getID () {
 		return id;
 	}
 
-	public void setId (int id) {
+	public void setID (int id) {
 		this.id = id;
 	}
 

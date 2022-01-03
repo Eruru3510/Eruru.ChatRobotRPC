@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
+#if NETCOREAPP || NET5_0_OR_GREATER
+using System.Threading.Tasks;
+#endif
 
 namespace Eruru.ChatRobotRPC {
 
@@ -60,9 +63,13 @@ namespace Eruru.ChatRobotRPC {
 
 		const int PacketHeaderLength = 4;
 
+#if NET5_0_OR_GREATER
+		readonly byte[] EmptyBytes = Array.Empty<byte> ();
+#else
 		readonly byte[] EmptyBytes = new byte[0];
+#endif
 		readonly Queue<byte> Buffer = new Queue<byte> ();
-		readonly object SocketLock = new object ();
+		readonly object Lock = new object ();
 
 		Socket Socket;
 		Thread HeartbeatThread;
@@ -74,7 +81,7 @@ namespace Eruru.ChatRobotRPC {
 		int _BufferLength = 1024 * 1024;
 
 		public void Connect (string ip, int port) {
-			lock (SocketLock) {
+			lock (Lock) {
 				try {
 					State = SocketClientState.Connecting;
 					Socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -93,28 +100,41 @@ namespace Eruru.ChatRobotRPC {
 		}
 
 		public void SendAsync (byte[] bytes) {
-			HeartbeatSendTime = DateTime.Now;
-			byte[] buffer = ToPacket (bytes);
-			if (bytes.Length > 0) {
-				if (OnSend != null) {
-					OnSend (bytes);
+			try {
+				HeartbeatSendTime = DateTime.Now;
+				byte[] buffer = ToPacket (bytes);
+				if (bytes.Length > 0) {
+					if (OnSend != null) {
+						OnSend (bytes);
+					}
 				}
+				Socket.BeginSend (buffer, 0, buffer.Length, SocketFlags.None, asyncResult => {
+					try {
+						SocketError socketError;
+						Socket.EndSend (asyncResult, out socketError);
+					} catch (ObjectDisposedException) {
+
+					}
+				}, null);
+			} catch (ObjectDisposedException) {
+
 			}
-			Socket.BeginSend (buffer, 0, buffer.Length, SocketFlags.None, asyncResult => {
-				SocketError socketError;
-				Socket.EndSend (asyncResult, out socketError);
-			}, null);
 		}
 
 		public void Disconnect () {
-			lock (SocketLock) {
+			lock (Lock) {
 				try {
 					Socket.Shutdown (SocketShutdown.Both);
 				} finally {
 					Socket.Close ();
 					Buffer.Clear ();
 					PacketBodyLength = -1;
+#if NETCOREAPP || NET5_0_OR_GREATER
+					HeartbeatThread.Interrupt ();
+#else
 					HeartbeatThread.Abort ();
+#endif
+
 					if (OnDisconnected != null) {
 						OnDisconnected ();
 					}
@@ -126,43 +146,62 @@ namespace Eruru.ChatRobotRPC {
 			Disconnect ();
 		}
 
+		static byte[] ToPacket (byte[] bytes) {
+			byte[] buffer = new byte[bytes.Length + PacketHeaderLength];
+			Array.Copy (BitConverter.GetBytes (bytes.Length), buffer, PacketHeaderLength);
+			Array.Copy (bytes, 0, buffer, PacketHeaderLength, bytes.Length);
+			return buffer;
+		}
+
 		void BeginReceive () {
-			byte[] buffer = new byte[BufferLength];
-			SocketError socketError;
-			Socket.BeginReceive (buffer, 0, buffer.Length, SocketFlags.None, out socketError, asyncResult => {
-				SocketError innerSocketError;
-				int length = Socket.EndReceive (asyncResult, out innerSocketError);
-				if (length < 1) {
-					Disconnect ();
-					return;
-				}
-				for (int i = 0; i < length; i++) {
-					Buffer.Enqueue (buffer[i]);
-				}
-				while (true) {
-					if (PacketBodyLength == -1) {
-						if (Buffer.Count < PacketHeaderLength) {
-							break;
+			try {
+				byte[] buffer = new byte[BufferLength];
+				SocketError socketError;
+				Socket.BeginReceive (buffer, 0, buffer.Length, SocketFlags.None, out socketError, asyncResult => {
+					try {
+						SocketError innerSocketError;
+						int length = Socket.EndReceive (asyncResult, out innerSocketError);
+						if (length < 1) {
+							Disconnect ();
+							return;
 						}
-						byte[] bytes = new byte[PacketHeaderLength];
-						for (int i = 0; i < bytes.Length; i++) {
-							bytes[i] = Buffer.Dequeue ();
+						for (int i = 0; i < length; i++) {
+							Buffer.Enqueue (buffer[i]);
 						}
-						PacketBodyLength = BitConverter.ToInt32 (bytes, 0);
-					} else {
-						if (Buffer.Count < PacketBodyLength) {
-							break;
+						while (true) {
+							if (PacketBodyLength < 0) {
+								if (Buffer.Count < PacketHeaderLength) {
+									break;
+								}
+								byte[] bytes = new byte[PacketHeaderLength];
+								for (int i = 0; i < bytes.Length; i++) {
+									bytes[i] = Buffer.Dequeue ();
+								}
+								PacketBodyLength = BitConverter.ToInt32 (bytes, 0);
+							} else {
+								if (Buffer.Count < PacketBodyLength) {
+									break;
+								}
+								if (PacketBodyLength > 0) {
+									byte[] bytes = new byte[PacketBodyLength];
+									for (int i = 0; i < bytes.Length; i++) {
+										bytes[i] = Buffer.Dequeue ();
+									}
+									PerformOnReceived (bytes);
+								} else {
+									PerformOnReceived (EmptyBytes);
+								}
+								PacketBodyLength = -1;
+							}
 						}
-						byte[] bytes = new byte[PacketBodyLength];
-						for (int i = 0; i < bytes.Length; i++) {
-							bytes[i] = Buffer.Dequeue ();
-						}
-						PacketBodyLength = -1;
-						PerformOnReceived (bytes);
+						BeginReceive ();
+					} catch (ObjectDisposedException) {
+
 					}
-				}
-				BeginReceive ();
-			}, null);
+				}, null);
+			} catch (ObjectDisposedException) {
+
+			}
 		}
 
 		void BeginHeartbeat () {
@@ -175,23 +214,22 @@ namespace Eruru.ChatRobotRPC {
 				}
 			} catch (ThreadAbortException) {
 
-			}
-		}
+			} catch (ThreadInterruptedException) {
 
-		byte[] ToPacket (byte[] bytes) {
-			byte[] buffer = new byte[bytes.Length + PacketHeaderLength];
-			Array.Copy (BitConverter.GetBytes (bytes.Length), buffer, PacketHeaderLength);
-			Array.Copy (bytes, 0, buffer, PacketHeaderLength, bytes.Length);
-			return buffer;
+			}
 		}
 
 		void PerformOnReceived (byte[] bytes) {
 			if (OnReceived != null) {
 				if (UseAsyncOnReceived) {
+#if NETCOREAPP || NET5_0_OR_GREATER
+					Task.Run (() => OnReceived (bytes));
+#else
 					OnReceived.BeginInvoke (bytes, asyncResult => OnReceived.EndInvoke (asyncResult), null);
+#endif
 					return;
 				}
-				OnReceived.Invoke (bytes);//todo 如果有阻塞方法就会导致无法继续接收数据，这里必须得是异步的
+				OnReceived (bytes);//todo 如果有阻塞方法就会导致无法继续接收数据，这里必须得是异步的
 			}
 		}
 

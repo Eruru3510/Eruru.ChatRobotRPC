@@ -75,11 +75,11 @@ public class ChatRobotMessage {
 		this.number = number;
 	}
 
-	public long getId () {
+	public long getID () {
 		return id;
 	}
 
-	public void setId (long id) {
+	public void setID (long id) {
 		this.id = id;
 	}
 
@@ -208,7 +208,7 @@ public class ChatRobotMessage {
 	public boolean isFlashPicture () {
 		return ChatRobotAPI.isFlashPictureMessage (text);
 	}
-	
+
 	public static void send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, String message, long group, long qq,
 							 boolean isAnonymous, ChatRobotSendMessageType sendType
 	) {

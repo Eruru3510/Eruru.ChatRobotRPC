@@ -32,7 +32,7 @@ public class Program {
 					return;
 			}
 			if (text.startsWith ("测试")) {
-				message.reply (message.getText ());
+
 			}
 		});
 		chatRobot.setOnDisconnected (() -> {

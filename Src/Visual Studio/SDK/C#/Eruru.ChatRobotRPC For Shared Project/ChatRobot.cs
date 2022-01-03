@@ -176,7 +176,7 @@ namespace Eruru.ChatRobotRPC {
 
 #if DEBUG
 		public void Test (long robot) {
-			ClientBeginSend (new JObject () {
+			SocketClientSendAsync (new JObject () {
 				{ "Type", "Test" },
 				{ "Robot",robot  }
 			});
@@ -2095,6 +2095,32 @@ namespace Eruru.ChatRobotRPC {
 			SetAvatar (robot, Convert.ToBase64String (bytes));
 		}
 
+		static T EnumParse<T> (string value) {
+			return (T)Enum.Parse (typeof (T), value);
+		}
+
+		static T WaitSystemConvert<T> (string result) {
+			if (typeof (T).IsEnum) {
+				int enumIndex;
+				if (int.TryParse (result, out enumIndex)) {
+					return (T)Enum.ToObject (typeof (T), enumIndex);
+				}
+				return (T)Enum.Parse (typeof (T), result);
+			}
+			if (typeof (T) == typeof (bool)) {
+				if (result == "真") {
+					result = "true";
+				} else if (result == "假") {
+					result = "false";
+				}
+				return (T)Convert.ChangeType (result, typeof (T));
+			}
+			if (typeof (T).IsValueType || typeof (T) == typeof (string)) {
+				return (T)Convert.ChangeType (result, typeof (T));
+			}
+			return JsonConvert.DeserializeObject<T> (result);
+		}
+
 		void SocketClient_OnReceived (byte[] bytes) {
 			string text = Encoding.UTF8.GetString (bytes);
 			try {
@@ -2105,7 +2131,7 @@ namespace Eruru.ChatRobotRPC {
 				string type = jObject.Value<string> ("Type");
 				switch (type) {
 					default:
-						throw new NotImplementedException (string.Format ("未知的消息类型：{0}", type));
+						throw new NotImplementedException (string.Format ("未知的消息：{0}", text));
 					case "Protocol": {
 						string targetProtocolVersion = jObject.Value<string> ("Version");
 						if (targetProtocolVersion != ProtocolVersion) {
@@ -2286,7 +2312,7 @@ namespace Eruru.ChatRobotRPC {
 						if (OnReceivedOtherEvent != null) {
 							OnReceivedOtherEvent (
 								jObject.Value<long> ("Robot"),
-								jObject.Value<int> ("Event"),
+								(ChatRobotEventType)jObject.Value<int> ("Event"),
 								jObject.Value<int> ("SubType"),
 								jObject.Value<long> ("Source"),
 								jObject.Value<long> ("Active"),
@@ -2332,37 +2358,11 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
-		T EnumParse<T> (string value) {
-			return (T)Enum.Parse (typeof (T), value);
-		}
-
 		long WaitSystemSend (JObject jObject) {
 			long id = WaitSystem.GetID ();
 			jObject["ID"] = id;
 			SocketClientSendAsync (jObject);
 			return id;
-		}
-
-		T WaitSystemConvert<T> (string result) {
-			if (typeof (T).IsEnum) {
-				int enumIndex;
-				if (int.TryParse (result, out enumIndex)) {
-					return (T)Enum.ToObject (typeof (T), enumIndex);
-				}
-				return (T)Enum.Parse (typeof (T), result);
-			}
-			if (typeof (T) == typeof (bool)) {
-				if (result == "真") {
-					result = "true";
-				} else if (result == "假") {
-					result = "false";
-				}
-				return (T)Convert.ChangeType (result, typeof (T));
-			}
-			if (typeof (T).IsValueType || typeof (T) == typeof (string)) {
-				return (T)Convert.ChangeType (result, typeof (T));
-			}
-			return JsonConvert.DeserializeObject<T> (result);
 		}
 
 		T WaitSystemGet<T> (JObject jObject) {
@@ -2371,12 +2371,6 @@ namespace Eruru.ChatRobotRPC {
 		Result WaitSystemGet<Result, T> (JObject jObject, out T arg) {
 			JArray result = JArray.Parse (WaitSystem.Get (WaitSystemSend (jObject)));
 			arg = WaitSystemConvert<T> (result[1].Value<string> ());
-			return WaitSystemConvert<Result> (result[0].Value<string> ());
-		}
-		Result WaitSystemGet<Result, T1, T2> (JObject jObject, out T1 arg1, out T2 arg2) {
-			JArray result = JArray.Parse (WaitSystem.Get (WaitSystemSend (jObject)));
-			arg1 = WaitSystemConvert<T1> (result[1].Value<string> ());
-			arg2 = WaitSystemConvert<T2> (result[2].Value<string> ());
 			return WaitSystemConvert<Result> (result[0].Value<string> ());
 		}
 

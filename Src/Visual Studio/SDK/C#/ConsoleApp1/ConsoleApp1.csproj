@@ -33,14 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Eruru.Html, Version=1.0.0.13, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Eruru.Html.1.0.0.13\lib\net45\Eruru.Html.dll</HintPath>
+    <Reference Include="Eruru.Html, Version=1.0.0.14, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Eruru.Html.1.0.0.14\lib\net45\Eruru.Html.dll</HintPath>
     </Reference>
-    <Reference Include="Eruru.Http, Version=1.0.0.8, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Eruru.Http.1.0.0.8\lib\net45\Eruru.Http.dll</HintPath>
+    <Reference Include="Eruru.Http, Version=1.0.0.12, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Eruru.Http.1.0.0.12\lib\net45\Eruru.Http.dll</HintPath>
     </Reference>
-    <Reference Include="Eruru.Json, Version=1.0.0.17, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Eruru.Json.1.0.0.17\lib\net45\Eruru.Json.dll</HintPath>
+    <Reference Include="Eruru.Json, Version=1.0.0.18, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Eruru.Json.1.0.0.18\lib\net45\Eruru.Json.dll</HintPath>
     </Reference>
     <Reference Include="Eruru.LexicalAnalyzer, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Eruru.LexicalAnalyzer.1.0.0.1\lib\net45\Eruru.LexicalAnalyzer.dll</HintPath>
@@ -48,8 +48,8 @@
     <Reference Include="Eruru.ReaderWriterLockHelper, Version=1.0.0.6, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Eruru.ReaderWriterLockHelper.1.0.0.6\lib\net45\Eruru.ReaderWriterLockHelper.dll</HintPath>
     </Reference>
-    <Reference Include="Eruru.TextCommand, Version=1.0.0.6, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Eruru.TextCommand.1.0.0.6\lib\net45\Eruru.TextCommand.dll</HintPath>
+    <Reference Include="Eruru.TextCommand, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Eruru.TextCommand.1.0.0.7\lib\net45\Eruru.TextCommand.dll</HintPath>
     </Reference>
     <Reference Include="Eruru.TextTokenizer, Version=1.0.0.3, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Eruru.TextTokenizer.1.0.0.3\lib\net45\Eruru.TextTokenizer.dll</HintPath>

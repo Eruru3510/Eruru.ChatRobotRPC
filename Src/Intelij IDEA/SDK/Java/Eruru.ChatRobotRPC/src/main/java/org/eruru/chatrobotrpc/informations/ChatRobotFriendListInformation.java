@@ -4,13 +4,13 @@ public class ChatRobotFriendListInformation {
 
 	private long qq;
 	private String notes;
-	private String  group;
+	private String group;
 
-	public long getQq () {
+	public long getQQ () {
 		return qq;
 	}
 
-	public void setQq (long qq) {
+	public void setQQ (long qq) {
 		this.qq = qq;
 	}
 

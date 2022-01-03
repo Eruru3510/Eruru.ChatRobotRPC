@@ -25,12 +25,12 @@ class SocketClient implements Closeable {
 	private ChatRobotAction onDisconnected;
 	private Charset charset = StandardCharsets.UTF_8;
 	private int heartbeatInterval = 60;
-	private int bufferLength = 1024;
+	private int bufferLength = 1024 * 1024;
 
 	private final int packetHeadLength = 4;
 	private final byte[] emptyBytes = new byte[0];
 	private final Queue<Byte> buffer = new LinkedList<> ();
-	private final Object socketLock = new Object ();
+	private final Object lock = new Object ();
 
 	private InputStream inputStream;
 	private OutputStream outputStream;
@@ -102,7 +102,7 @@ class SocketClient implements Closeable {
 	}
 
 	public void connect (String ip, int port) throws IOException {
-		synchronized (socketLock) {
+		synchronized (lock) {
 			try {
 				state = SocketClientState.Connecting;
 				socket = new Socket ();
@@ -139,7 +139,7 @@ class SocketClient implements Closeable {
 	}
 
 	public void Disconnect () throws IOException {
-		synchronized (socketLock) {
+		synchronized (lock) {
 			try {
 				socket.close ();
 			} finally {
@@ -164,7 +164,7 @@ class SocketClient implements Closeable {
 				while (state == SocketClientState.Connected) {
 					byte[] buffer = new byte[bufferLength];
 					int length = inputStream.read (buffer, 0, buffer.length);
-					if (length == 0) {
+					if (length < 1) {
 						Disconnect ();
 						return;
 					}
@@ -172,7 +172,7 @@ class SocketClient implements Closeable {
 						this.buffer.add (buffer[i]);
 					}
 					while (true) {
-						if (packetBodyLength == -1) {
+						if (packetBodyLength < 0) {
 							if (this.buffer.size () < packetHeadLength) {
 								break;
 							}
@@ -185,12 +185,16 @@ class SocketClient implements Closeable {
 							if (this.buffer.size () < packetBodyLength) {
 								break;
 							}
-							byte[] bytes = new byte[packetBodyLength];
-							for (int i = 0; i < bytes.length; i++) {
-								bytes[i] = this.buffer.remove ();
+							if (packetBodyLength > 0) {
+								byte[] bytes = new byte[packetBodyLength];
+								for (int i = 0; i < bytes.length; i++) {
+									bytes[i] = this.buffer.remove ();
+								}
+								performOnReceived (bytes);
+							} else {
+								performOnReceived (emptyBytes);
 							}
 							packetBodyLength = -1;
-							performOnReceived (bytes);
 						}
 					}
 				}

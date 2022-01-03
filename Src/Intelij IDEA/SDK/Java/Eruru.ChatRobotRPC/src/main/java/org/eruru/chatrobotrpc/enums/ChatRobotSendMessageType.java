@@ -16,7 +16,7 @@ public enum ChatRobotSendMessageType {
 		return value;
 	}
 
-	public ChatRobotSendMessageType get (int value) {
+	public static ChatRobotSendMessageType get (int value) {
 		for (ChatRobotSendMessageType item : ChatRobotSendMessageType.values ()) {
 			if (item.value == value) {
 				return item;

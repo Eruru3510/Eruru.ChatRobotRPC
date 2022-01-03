@@ -16,7 +16,7 @@ public enum ChatRobotRequestType {
 		return value;
 	}
 
-	public ChatRobotRequestType get (int value) {
+	public static ChatRobotRequestType get (int value) {
 		for (ChatRobotRequestType item : ChatRobotRequestType.values ()) {
 			if (item.value == value) {
 				return item;

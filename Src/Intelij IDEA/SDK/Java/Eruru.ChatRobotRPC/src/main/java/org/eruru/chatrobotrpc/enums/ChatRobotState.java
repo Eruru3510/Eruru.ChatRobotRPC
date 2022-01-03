@@ -19,7 +19,7 @@ public enum ChatRobotState {
 		return value;
 	}
 
-	public ChatRobotState get (int value) {
+	public static ChatRobotState get (int value) {
 		for (ChatRobotState item : ChatRobotState.values ()) {
 			if (item.value == value) {
 				return item;

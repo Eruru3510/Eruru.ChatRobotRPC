@@ -143,7 +143,7 @@ namespace Eruru.ChatRobotRPC {
 	/// <param name="message">消息内容</param>
 	/// <param name="messageNumber">消息序号</param>
 	/// <param name="messageID">消息ID</param>
-	public delegate void ChatRobotOtherEventEventHandler (long robot, int eventType, int subType, long source, long active, long passive, string message,
+	public delegate void ChatRobotOtherEventEventHandler (long robot, ChatRobotEventType eventType, int subType, long source, long active, long passive, string message,
 		long messageNumber, long messageID
 	);
 

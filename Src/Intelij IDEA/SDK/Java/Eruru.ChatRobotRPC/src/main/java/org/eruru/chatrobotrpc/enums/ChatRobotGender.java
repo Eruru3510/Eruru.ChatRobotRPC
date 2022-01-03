@@ -16,7 +16,7 @@ public enum ChatRobotGender {
 		return value;
 	}
 
-	public ChatRobotGender get (int value) {
+	public static ChatRobotGender get (int value) {
 		for (ChatRobotGender item : ChatRobotGender.values ()) {
 			if (item.value == value) {
 				return item;

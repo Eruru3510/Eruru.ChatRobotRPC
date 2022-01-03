@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class ChatRobot {
 
-	public static final String protocolVersion = "1.0.0.3";
+	public static final String protocolVersion = "1.0.0.4";
 
 	private ChatRobotAction onDisconnected;
 	private ChatRobotReceivedEventHandler onReceived;
@@ -41,6 +41,7 @@ public class ChatRobot {
 	private ChatRobotGroupDisbandedEventHandler onGroupDisbanded;
 	private ChatRobotFriendStateChangedEventHandler onFriendStateChanged;
 	private ChatRobotWasRemovedByFriendEventHandler onWasRemovedByFriend;
+	private ChatRobotOtherEventEventHandler onReceivedOtherEvent;
 
 	private final WaitSystem waitSystem = new WaitSystem ();
 	private final SocketClient socketClient;
@@ -212,6 +213,14 @@ public class ChatRobot {
 
 	public void setOnWasRemovedByFriend (ChatRobotWasRemovedByFriendEventHandler onWasRemovedByFriend) {
 		this.onWasRemovedByFriend = onWasRemovedByFriend;
+	}
+
+	public ChatRobotOtherEventEventHandler getOnReceivedOtherEvent () {
+		return onReceivedOtherEvent;
+	}
+
+	public void setOnReceivedOtherEvent (ChatRobotOtherEventEventHandler onReceivedOtherEvent) {
+		this.onReceivedOtherEvent = onReceivedOtherEvent;
 	}
 
 	public ChatRobot () {
@@ -2177,7 +2186,7 @@ public class ChatRobot {
 			String type = jsonObject.getString ("Type");
 			switch (type) {
 				default:
-					throw new Exception (String.format ("未知的消息类型：%s", type));
+					throw new Exception (String.format ("未知的消息：%s", text));
 				case "Protocol": {
 					String targetProtocolVersion = jsonObject.getString ("Version");
 					if (!targetProtocolVersion.equals (protocolVersion)) {
@@ -2354,6 +2363,22 @@ public class ChatRobot {
 								jsonObject.getLongValue ("QQ")
 						);
 					}
+					break;
+				case "OtherEvent":
+					if (onReceivedOtherEvent != null) {
+						onReceivedOtherEvent.invoke (
+								jsonObject.getLongValue ("Robot"),
+								jsonObject.getIntValue ("Event"),
+								jsonObject.getIntValue ("SubType"),
+								jsonObject.getLongValue ("Source"),
+								jsonObject.getLongValue ("Active"),
+								jsonObject.getLongValue ("Passive"),
+								jsonObject.getString ("Message"),
+								jsonObject.getLongValue ("MessageNumber"),
+								jsonObject.getLongValue ("MessageIDr")
+						);
+					}
+					;
 					break;
 			}
 		} catch (Exception exception) {

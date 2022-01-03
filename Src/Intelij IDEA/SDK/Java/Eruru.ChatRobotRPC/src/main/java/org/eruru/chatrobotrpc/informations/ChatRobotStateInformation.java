@@ -2,19 +2,19 @@ package org.eruru.chatrobotrpc.informations;
 
 public class ChatRobotStateInformation {
 
-	private  long qq;
-	private  String name;
-	private  String state;
-	private  String messageSpeed;
-	private  int receiveMessageNumber;
-	private  int  sendMessageNumber;
-	private  String onlineTime;
+	private long qq;
+	private String name;
+	private String state;
+	private String messageSpeed;
+	private int receiveMessageNumber;
+	private int sendMessageNumber;
+	private String onlineTime;
 
-	public long getQq () {
+	public long getQQ () {
 		return qq;
 	}
 
-	public void setQq (long qq) {
+	public void setQQ (long qq) {
 		this.qq = qq;
 	}
 

@@ -16,7 +16,7 @@ public enum ChatRobotGroupMemberJoinType {
 		return value;
 	}
 
-	public ChatRobotGroupMemberJoinType get (int value) {
+	public static ChatRobotGroupMemberJoinType get (int value) {
 		for (ChatRobotGroupMemberJoinType item : ChatRobotGroupMemberJoinType.values ()) {
 			if (item.value == value) {
 				return item;

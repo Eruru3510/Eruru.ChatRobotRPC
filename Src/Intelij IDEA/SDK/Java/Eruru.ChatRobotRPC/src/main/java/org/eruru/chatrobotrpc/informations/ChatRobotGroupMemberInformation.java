@@ -2,21 +2,21 @@ package org.eruru.chatrobotrpc.informations;
 
 public class ChatRobotGroupMemberInformation {
 
-	private  long qq;
-	private  String name;
-	private  String businessCard;
-	private  int activeIntegral;
-	private  int activeLevel;
-	private  long joinTimeStamp;
-	private  long lastSpeakTimeStamp;
-	private  int banSpeakSeconds;
-	private  boolean isFriend;
+	private long qq;
+	private String name;
+	private String businessCard;
+	private int activeIntegral;
+	private int activeLevel;
+	private long joinTimeStamp;
+	private long lastSpeakTimeStamp;
+	private int banSpeakSeconds;
+	private boolean isFriend;
 
-	public long getQq () {
+	public long getQQ () {
 		return qq;
 	}
 
-	public void setQq (long qq) {
+	public void setQQ (long qq) {
 		this.qq = qq;
 	}
 

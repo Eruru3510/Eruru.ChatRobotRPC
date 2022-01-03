@@ -18,7 +18,7 @@ public enum ChatRobotFriendAddMethod {
 		return value;
 	}
 
-	public ChatRobotFriendAddMethod get (int value) {
+	public static ChatRobotFriendAddMethod get (int value) {
 		for (ChatRobotFriendAddMethod item : ChatRobotFriendAddMethod.values ()) {
 			if (item.value == value) {
 				return item;
