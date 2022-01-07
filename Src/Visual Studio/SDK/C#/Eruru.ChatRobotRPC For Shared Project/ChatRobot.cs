@@ -14,7 +14,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// 协议版本
 		/// </summary>
-		public const string ProtocolVersion = "1.0.0.4";
+		public const string ProtocolVersion = "1.0.0.5";
 
 		/// <summary>
 		/// 心跳包发送间隔（秒）
@@ -2095,32 +2095,6 @@ namespace Eruru.ChatRobotRPC {
 			SetAvatar (robot, Convert.ToBase64String (bytes));
 		}
 
-		static T EnumParse<T> (string value) {
-			return (T)Enum.Parse (typeof (T), value);
-		}
-
-		static T WaitSystemConvert<T> (string result) {
-			if (typeof (T).IsEnum) {
-				int enumIndex;
-				if (int.TryParse (result, out enumIndex)) {
-					return (T)Enum.ToObject (typeof (T), enumIndex);
-				}
-				return (T)Enum.Parse (typeof (T), result);
-			}
-			if (typeof (T) == typeof (bool)) {
-				if (result == "真") {
-					result = "true";
-				} else if (result == "假") {
-					result = "false";
-				}
-				return (T)Convert.ChangeType (result, typeof (T));
-			}
-			if (typeof (T).IsValueType || typeof (T) == typeof (string)) {
-				return (T)Convert.ChangeType (result, typeof (T));
-			}
-			return JsonConvert.DeserializeObject<T> (result);
-		}
-
 		void SocketClient_OnReceived (byte[] bytes) {
 			string text = Encoding.UTF8.GetString (bytes);
 			try {
@@ -2321,7 +2295,7 @@ namespace Eruru.ChatRobotRPC {
 								jObject.Value<long> ("MessageNumber"),
 								jObject.Value<long> ("MessageIDr")
 							);
-						};
+						}
 						break;
 				}
 			} catch (Exception exception) {
@@ -2358,11 +2332,37 @@ namespace Eruru.ChatRobotRPC {
 			});
 		}
 
+		static T EnumParse<T> (string value) {
+			return (T)Enum.Parse (typeof (T), value);
+		}
+
 		long WaitSystemSend (JObject jObject) {
 			long id = WaitSystem.GetID ();
 			jObject["ID"] = id;
 			SocketClientSendAsync (jObject);
 			return id;
+		}
+
+		static T WaitSystemConvert<T> (string result) {
+			if (typeof (T).IsEnum) {
+				int enumIndex;
+				if (int.TryParse (result, out enumIndex)) {
+					return (T)Enum.ToObject (typeof (T), enumIndex);
+				}
+				return (T)Enum.Parse (typeof (T), result);
+			}
+			if (typeof (T) == typeof (bool)) {
+				if (result == "真") {
+					result = "true";
+				} else if (result == "假") {
+					result = "false";
+				}
+				return (T)Convert.ChangeType (result, typeof (T));
+			}
+			if (typeof (T).IsValueType || typeof (T) == typeof (string)) {
+				return (T)Convert.ChangeType (result, typeof (T));
+			}
+			return JsonConvert.DeserializeObject<T> (result);
 		}
 
 		T WaitSystemGet<T> (JObject jObject) {

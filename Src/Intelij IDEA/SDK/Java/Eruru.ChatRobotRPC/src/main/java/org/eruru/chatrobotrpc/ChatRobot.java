@@ -8,7 +8,7 @@ import org.eruru.chatrobotrpc.enums.ChatRobotFriendAddMethod;
 import org.eruru.chatrobotrpc.enums.ChatRobotGroupAddRequestType;
 import org.eruru.chatrobotrpc.enums.ChatRobotGroupMemberJoinType;
 import org.eruru.chatrobotrpc.enums.ChatRobotMessageType;
-import org.eruru.chatrobotrpc.eventHandlers.*;
+import org.eruru.chatrobotrpc.eventhandlers.*;
 import org.eruru.chatrobotrpc.informations.*;
 
 import javax.security.sasl.AuthenticationException;
@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class ChatRobot {
 
-	public static final String protocolVersion = "1.0.0.4";
+	public static final String protocolVersion = "1.0.0.5";
 
 	private ChatRobotAction onDisconnected;
 	private ChatRobotReceivedEventHandler onReceived;
@@ -261,7 +261,7 @@ public class ChatRobot {
 	/// <param name="content">需加密的内容</param>
 	/// <param name="key"></param>
 	/// <returns></returns>
-	public String TEAEncryption (String content, String key) {
+	public String teaEncryption (String content, String key) {
 		return waitSystemGet (String.class, new JSONObject () {{
 			put ("Type", "TEAEncryption");
 			put ("Content", content);
@@ -275,7 +275,7 @@ public class ChatRobot {
 	/// <param name="content">需解密的内容</param>
 	/// <param name="key"></param>
 	/// <returns></returns>
-	public String TEADecryption (String content, String key) {
+	public String teaDecryption (String content, String key) {
 		return waitSystemGet (String.class, new JSONObject () {{
 			put ("Type", "TEADecryption");
 			put ("Content", content);
@@ -2378,7 +2378,6 @@ public class ChatRobot {
 								jsonObject.getLongValue ("MessageIDr")
 						);
 					}
-					;
 					break;
 			}
 		} catch (Exception exception) {

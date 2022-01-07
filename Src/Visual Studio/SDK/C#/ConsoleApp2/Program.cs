@@ -39,9 +39,6 @@ namespace ConsoleApp2 {
 				}
 				textCommandSystem.Execute (text, message);
 			};
-			ChatRobot.OnReceivedOtherEvent = (robot, eventType, subType, source, active, passive, message, messageNumber, messageID) => {
-				Console.WriteLine (eventType);
-			};
 			ChatRobot.OnDisconnected = () => {
 				Console.WriteLine ("连接断开");
 				Connect ();

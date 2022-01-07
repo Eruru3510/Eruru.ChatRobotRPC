@@ -1,6 +1,6 @@
 package org.eruru.chatrobotrpc;
 
-import org.eruru.chatrobotrpc.eventHandlers.ChatRobotAction;
+import org.eruru.chatrobotrpc.eventhandlers.ChatRobotAction;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -207,7 +207,7 @@ class SocketClient implements Closeable {
 	private void beginHeartbeat () {
 		try {
 			while (state == SocketClientState.Connected) {
-				if (heartbeatSendTime.getTime () <= new Date ().getTime () - heartbeatInterval * 1000L) {
+				if (new Date ().getTime () - heartbeatSendTime.getTime () >= heartbeatInterval * 1000L) {
 					sendAsync (emptyBytes);
 				}
 				Thread.sleep (1000);

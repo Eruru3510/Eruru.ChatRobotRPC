@@ -1,4 +1,4 @@
-package org.eruru.chatrobotrpc.eventHandlers;
+package org.eruru.chatrobotrpc.eventhandlers;
 
 import org.eruru.chatrobotrpc.enums.ChatRobotGroupAddRequestType;
 

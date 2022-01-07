@@ -1,7 +1,7 @@
 ﻿namespace Eruru.ChatRobotRPC {
 
 	/// <summary>
-	/// 消息类型
+	/// 事件类型
 	/// </summary>
 	public enum ChatRobotEventType {
 

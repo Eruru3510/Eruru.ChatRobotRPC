@@ -162,7 +162,7 @@ namespace Eruru.ChatRobotRPC {
 		public static bool IsVoiceMessage (string message, out string guid, out string identifyResult) {
 			guid = null;
 			identifyResult = null;
-			Match match = Regex.Match (message, @"(\[Voi=\{.*?\}.*?\])(\[识别结果:(.*?)\])?");
+			Match match = Regex.Match (message, @"(\[Voi=\{.+?\}.+?\])(\[识别结果:(.+?)\])?");
 			if (match.Success) {
 				guid = match.Groups[1].Value;
 				identifyResult = match.Groups.Count > 1 ? match.Groups[3].Value : null;
@@ -179,7 +179,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public static bool ContainsPictureInMessage (string message, out List<string> guids) {
 			guids = null;
-			MatchCollection matchCollection = Regex.Matches (message, @"\[pic=\{.*?\}.*?\]");
+			MatchCollection matchCollection = Regex.Matches (message, @"\[pic=\{.+?\}.+?\]");
 			if (matchCollection.Count == 0) {
 				return false;
 			}
@@ -196,10 +196,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="message">消息文本</param>
 		/// <returns></returns>
 		public static bool IsFlashPictureMessage (string message) {
-			if (Regex.IsMatch (message, @"\[FlashPic=\{.*?\}.*?\]")) {
-				return true;
-			}
-			return false;
+			return Regex.IsMatch (message, @"\[FlashPic=\{.+?\}.+?\]");
 		}
 
 		/// <summary>

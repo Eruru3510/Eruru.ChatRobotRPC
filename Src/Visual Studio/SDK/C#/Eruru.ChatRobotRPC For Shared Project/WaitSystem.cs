@@ -53,12 +53,8 @@ namespace Eruru.ChatRobotRPC {
 		public string Get (long id) {
 			Wait wait;
 			lock (WaitsLock) {
-				if (WaitPool.Count == 0) {
-					wait = new Wait (id);
-				} else {
-					wait = WaitPool.Dequeue ();
-					wait.ID = id;
-				}
+				wait = WaitPool.Count == 0 ? new Wait () : WaitPool.Dequeue ();
+				wait.ID = id;
 				Waits.Add (wait);
 			}
 			wait.AutoResetEvent.WaitOne (MillisecondsTimeout);
@@ -81,10 +77,6 @@ namespace Eruru.ChatRobotRPC {
 			public long ID;
 			public AutoResetEvent AutoResetEvent = new AutoResetEvent (false);
 			public string Result;
-
-			public Wait (long id) {
-				ID = id;
-			}
 
 		}
 

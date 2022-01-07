@@ -18,7 +18,7 @@ public class ChatRobotAPI {
 	/// <param name="identifyResult">提取出来的语音识别结果</param>
 	/// <returns></returns>
 	public static ChatRobotVoiceMessageResult isVoiceMessage (String message) {
-		Matcher matcher = Pattern.compile ("(\\[Voi=\\{.*?}.*?])(\\[识别结果:(.*?)])?").matcher (message);
+		Matcher matcher = Pattern.compile ("(\\[Voi=\\{.+?}.+?])(\\[识别结果:(.+?)])?").matcher (message);
 		if (matcher.find ()) {
 			return new ChatRobotVoiceMessageResult (matcher.group (1), matcher.group (2));
 		}
@@ -32,11 +32,11 @@ public class ChatRobotAPI {
 	/// <param name="guids">提取出来的图片GUID</param>
 	/// <returns></returns>
 	public static Pair<Boolean, List<String>> containsPictureInMessage (String message) {
-		Matcher matcher = Pattern.compile ("\\[pic=\\{.*?}.*?]").matcher (message);
+		Matcher matcher = Pattern.compile ("\\[pic=\\{.+?}.+?]").matcher (message);
 		if (!matcher.find (0)) {
 			return new Pair<> (false, null);
 		}
-		int offset = matcher.end ();
+		int offset;
 		List<String> guids = new ArrayList<> ();
 		do {
 			guids.add (matcher.group (0));
@@ -51,7 +51,7 @@ public class ChatRobotAPI {
 	/// <param name="message">消息文本</param>
 	/// <returns></returns>
 	public static boolean isFlashPictureMessage (String message) {
-		return Pattern.matches ("\\[FlashPic=\\{.*?}.*?]", message);
+		return Pattern.matches ("\\[FlashPic=\\{.+?}.+?]", message);
 	}
 
 	/// <summary>

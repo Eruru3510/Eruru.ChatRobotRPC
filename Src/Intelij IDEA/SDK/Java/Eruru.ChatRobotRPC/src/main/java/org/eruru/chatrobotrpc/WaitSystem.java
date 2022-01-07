@@ -43,15 +43,11 @@ class WaitSystem implements Closeable {
 	public String get (long id) throws InterruptedException {
 		Wait wait;
 		synchronized (waitsLock) {
-			if (waitPool.size () == 0) {
-				wait = new Wait (id);
-			} else {
-				wait = waitPool.poll ();
-				wait.id = id;
-			}
+			wait = waitPool.size () == 0 ? new Wait () : waitPool.poll ();
+			wait.id = id;
 			waits.add (wait);
 		}
-		wait.autoResetEvent.waitOne ();
+		wait.autoResetEvent.waitOne (60 * 1000);
 		return wait.result;
 	}
 
@@ -71,10 +67,6 @@ class WaitSystem implements Closeable {
 		public long id;
 		public AutoResetEvent autoResetEvent = new AutoResetEvent (false);
 		public String result;
-
-		public Wait (long id) {
-			this.id = id;
-		}
 
 	}
 

@@ -43,4 +43,5 @@ public class ChatRobotVoiceMessageResult {
 	public void setSuccess (boolean success) {
 		this.success = success;
 	}
+
 }
