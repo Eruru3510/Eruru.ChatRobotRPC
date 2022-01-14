@@ -200,6 +200,10 @@ public class ChatRobotMessage {
 		return ChatRobotAPI.containsPictureInMessage (text);
 	}
 
+	public Pair<Boolean, List<Long>> containsAt () {
+		return ChatRobotAPI.containsAtInMessage (text);
+	}
+
 	/// <summary>
 	/// 是否为闪照消息
 	/// </summary>

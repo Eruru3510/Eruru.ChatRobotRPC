@@ -40,8 +40,7 @@ public class Program {
 			connect ();
 		});
 		connect ();
-		Scanner scanner = new Scanner (System.in);
-		scanner.nextLine ();
+		new Scanner (System.in).nextLine ();
 	}
 
 	static void connect () {

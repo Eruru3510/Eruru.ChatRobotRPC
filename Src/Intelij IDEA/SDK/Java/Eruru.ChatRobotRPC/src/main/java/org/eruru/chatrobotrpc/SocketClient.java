@@ -31,6 +31,7 @@ class SocketClient implements Closeable {
 	private final byte[] emptyBytes = new byte[0];
 	private final Queue<Byte> buffer = new LinkedList<> ();
 	private final Object lock = new Object ();
+	private final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor (0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<> ());
 
 	private InputStream inputStream;
 	private OutputStream outputStream;
@@ -39,7 +40,6 @@ class SocketClient implements Closeable {
 	private int packetBodyLength = -1;
 	private Date heartbeatSendTime;
 	private boolean UseAsyncOnReceived = true;
-	private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor (0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<> ());
 
 	public SocketClientState getState () {
 		return state;

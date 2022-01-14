@@ -162,10 +162,10 @@ namespace Eruru.ChatRobotRPC {
 		public static bool IsVoiceMessage (string message, out string guid, out string identifyResult) {
 			guid = null;
 			identifyResult = null;
-			Match match = Regex.Match (message, @"(\[Voi=\{.+?\}.+?\])(\[识别结果:(.+?)\])?");
+			Match match = Regex.Match (message, @"(\[Voi=\{[0-9A-Za-z-]+?}\..+?])(\[识别结果:([\s\S]+?)])?");
 			if (match.Success) {
 				guid = match.Groups[1].Value;
-				identifyResult = match.Groups.Count > 1 ? match.Groups[3].Value : null;
+				identifyResult = match.Groups[3].Value;
 				return true;
 			}
 			return false;
@@ -179,7 +179,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <returns></returns>
 		public static bool ContainsPictureInMessage (string message, out List<string> guids) {
 			guids = null;
-			MatchCollection matchCollection = Regex.Matches (message, @"\[pic=\{.+?\}.+?\]");
+			MatchCollection matchCollection = Regex.Matches (message, @"\[pic=\{[0-9A-Za-z-]+?}\..+?]");
 			if (matchCollection.Count == 0) {
 				return false;
 			}
@@ -191,12 +191,34 @@ namespace Eruru.ChatRobotRPC {
 		}
 
 		/// <summary>
+		/// 消息中是否包含艾特
+		/// </summary>
+		/// <param name="message">消息文本</param>
+		/// <param name="qqs">被艾特的人</param>
+		/// <returns></returns>
+		public static bool ContainsAtInMessage (string message, out List<long> qqs) {
+			qqs = null;
+			MatchCollection matchCollection = Regex.Matches (message, @"\[@([0-9]+?)]");
+			if (matchCollection.Count == 0) {
+				return false;
+			}
+			qqs = new List<long> ();
+			long qq;
+			foreach (Match match in matchCollection) {
+				if (long.TryParse (match.Groups[1].Value, out qq)) {
+					qqs.Add (qq);
+				}
+			}
+			return true;
+		}
+
+		/// <summary>
 		/// 是否为闪照消息
 		/// </summary>
 		/// <param name="message">消息文本</param>
 		/// <returns></returns>
 		public static bool IsFlashPictureMessage (string message) {
-			return Regex.IsMatch (message, @"\[FlashPic=\{.+?\}.+?\]");
+			return Regex.IsMatch (message, @"\[FlashPic=\{[0-9A-Za-z-]+?}\..+?]");
 		}
 
 		/// <summary>

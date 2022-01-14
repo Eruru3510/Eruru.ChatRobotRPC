@@ -19,8 +19,7 @@ public class Program {
 			connect ();//重连
 		});
 		connect ();//连接机器人框架的Chat Robot RPC插件
-		Scanner scanner = new Scanner (System.in);
-		scanner.nextLine ();//保持运行
+		new Scanner (System.in).nextLine ();//保持运行
 	}
 
 	static void connect () {

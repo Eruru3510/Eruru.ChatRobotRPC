@@ -18,9 +18,9 @@ public class ChatRobotAPI {
 	/// <param name="identifyResult">提取出来的语音识别结果</param>
 	/// <returns></returns>
 	public static ChatRobotVoiceMessageResult isVoiceMessage (String message) {
-		Matcher matcher = Pattern.compile ("(\\[Voi=\\{.+?}.+?])(\\[识别结果:(.+?)])?").matcher (message);
+		Matcher matcher = Pattern.compile ("(\\[Voi=\\{[0-9A-Za-z-]+?}\\..+?])(\\[识别结果:([\\s\\S]+?)])?").matcher (message);
 		if (matcher.find ()) {
-			return new ChatRobotVoiceMessageResult (matcher.group (1), matcher.group (2));
+			return new ChatRobotVoiceMessageResult (matcher.group (1), matcher.group (3));
 		}
 		return new ChatRobotVoiceMessageResult ();
 	}
@@ -32,7 +32,7 @@ public class ChatRobotAPI {
 	/// <param name="guids">提取出来的图片GUID</param>
 	/// <returns></returns>
 	public static Pair<Boolean, List<String>> containsPictureInMessage (String message) {
-		Matcher matcher = Pattern.compile ("\\[pic=\\{.+?}.+?]").matcher (message);
+		Matcher matcher = Pattern.compile ("\\[pic=\\{[0-9A-Za-z-]+?}\\..+?]").matcher (message);
 		if (!matcher.find (0)) {
 			return new Pair<> (false, null);
 		}
@@ -45,13 +45,37 @@ public class ChatRobotAPI {
 		return new Pair<> (true, guids);
 	}
 
+	/**
+	 * 消息中是否包含艾特
+	 *
+	 * @param message 消息文本
+	 * @return 是否包含, 被艾特的人
+	 */
+	public static Pair<Boolean, List<Long>> containsAtInMessage (String message) {
+		Matcher matcher = Pattern.compile ("\\[@([0-9]+?)]").matcher (message);
+		if (!matcher.find (0)) {
+			return new Pair<> (false, null);
+		}
+		int offset;
+		List<Long> qqs = new ArrayList<> ();
+		do {
+			try {
+				qqs.add (Long.parseLong (matcher.group (1)));
+			} catch (NumberFormatException ignored) {
+
+			}
+			offset = matcher.end ();
+		} while (matcher.find (offset));
+		return new Pair<> (true, qqs);
+	}
+
 	/// <summary>
 	/// 是否为闪照消息
 	/// </summary>
 	/// <param name="message">消息文本</param>
 	/// <returns></returns>
 	public static boolean isFlashPictureMessage (String message) {
-		return Pattern.matches ("\\[FlashPic=\\{.+?}.+?]", message);
+		return Pattern.matches ("\\[FlashPic=\\{[0-9A-Za-z-]+?}\\..+?]", message);
 	}
 
 	/// <summary>

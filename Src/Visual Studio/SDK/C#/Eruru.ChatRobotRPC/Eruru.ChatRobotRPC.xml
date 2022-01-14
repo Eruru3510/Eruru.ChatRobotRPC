@@ -1471,6 +1471,14 @@
             <param name="guids">提取出来的图片GUID</param>
             <returns></returns>
         </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotAPI.ContainsAtInMessage(System.String,System.Collections.Generic.List{System.Int64}@)">
+            <summary>
+            消息中是否包含艾特
+            </summary>
+            <param name="message">消息文本</param>
+            <param name="qqs">被艾特的人</param>
+            <returns></returns>
+        </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobotAPI.IsFlashPictureMessage(System.String)">
             <summary>
             是否为闪照消息
@@ -2149,6 +2157,13 @@
             消息中是否包含图片
             </summary>
             <param name="guids">提取出来的图片GUID</param>
+            <returns></returns>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.ContainsAt(System.Collections.Generic.List{System.Int64}@)">
+            <summary>
+            消息中是否包含艾特
+            </summary>
+            <param name="qqs">被艾特的人</param>
             <returns></returns>
         </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobotMessage.IsFlashPicture">

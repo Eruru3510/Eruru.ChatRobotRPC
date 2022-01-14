@@ -166,6 +166,15 @@ namespace Eruru.ChatRobotRPC {
 		}
 
 		/// <summary>
+		/// 消息中是否包含艾特
+		/// </summary>
+		/// <param name="qqs">被艾特的人</param>
+		/// <returns></returns>
+		public bool ContainsAt (out List<long> qqs) {
+			return ChatRobotAPI.ContainsAtInMessage (Text, out qqs);
+		}
+
+		/// <summary>
 		/// 是否为闪照消息
 		/// </summary>
 		/// <returns></returns>

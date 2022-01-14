@@ -1,7 +1,6 @@
 package org.eruru.chatrobotrpc;
 
 import java.io.Closeable;
-import java.io.IOException;
 
 class AutoResetEvent implements Closeable {
 
@@ -33,7 +32,7 @@ class AutoResetEvent implements Closeable {
 	}
 
 	@Override
-	public void close () throws IOException {
+	public void close () {
 
 	}
 

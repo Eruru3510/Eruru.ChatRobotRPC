@@ -20,6 +20,7 @@ import java.util.Date;
 
 public class ChatRobot {
 
+	public static final String version = "1.0.0.4";
 	public static final String protocolVersion = "1.0.0.5";
 
 	private ChatRobotAction onDisconnected;

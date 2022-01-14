@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+		<script src="Eruru.ChatRobotRPC.js"></script>
+	</head>
+	<body>
+		<script>
+			var ChatRobotRPC = Eruru.ChatRobotRPC;
+			var chatRobot = new ChatRobotRPC.ChatRobot ();
+			chatRobot.onConnected = function () {
+				console.log ("连接成功");
+			};
+			chatRobot.onConnectFailed = function () {
+				console.log ("连接失败");
+				connect ();
+			};
+			chatRobot.onReceived = function (message) {
+				console.log ("收到消息：" + message);
+			};
+			chatRobot.onSend = function (message) {
+				console.log ("发送消息：" + message);
+			};
+			chatRobot.onReceivedMessage = function (message) {
+				switch (message.type) {
+					default:
+						return;
+					case ChatRobotRPC.ChatRobotMessageType.friend:
+						break;
+					case ChatRobotRPC.ChatRobotMessageType.group:
+						if (message.group === 312509747) {
+							break;
+						}
+						return;
+				}
+				if (message.text === "测试") {
+					var parallel = new ChatRobotRPC.ChatRobotParallel ();
+					parallel.add (chatRobot.getGroupName, message.robot, message.group);
+					parallel.add (chatRobot.getFriendListInformations, message.robot);
+					parallel.add (chatRobot.getName, message.robot, message.qq);
+					parallel.add (chatRobot.getFrameVersionNumber);
+					parallel.invoke (function (groupName, name, frameVersion, friendListInformations) {
+						message.reply (groupName + ' ' + name + " " + frameVersion + " " + JSON.stringify (friendListInformations));
+					});
+				}
+			};
+			chatRobot.onDisconnected = function () {
+				console.log ("连接断开");
+				connect ();
+			};
+			connect ();
+			
+			function connect () {
+				console.log ("开始连接");
+				chatRobot.connect ("127.0.0.1", 19730, "root", "root");
+			}
+		</script>
+	</body>
+</html>
