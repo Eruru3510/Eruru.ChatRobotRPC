@@ -10,13 +10,11 @@ import java.util.regex.Pattern;
 
 public class ChatRobotAPI {
 
-	/// <summary>
-	/// 是否为语音消息
-	/// </summary>
-	/// <param name="message">消息文本</param>
-	/// <param name="guid">提取出来的语音GUID</param>
-	/// <param name="identifyResult">提取出来的语音识别结果</param>
-	/// <returns></returns>
+	/**
+	 * 是否为语音消息
+	 *
+	 * @param message 消息文本
+	 */
 	public static ChatRobotVoiceMessageResult isVoiceMessage (String message) {
 		Matcher matcher = Pattern.compile ("(\\[Voi=\\{[0-9A-Za-z-]+?}\\..+?])(\\[识别结果:([\\s\\S]+?)])?").matcher (message);
 		if (matcher.find ()) {
@@ -25,12 +23,12 @@ public class ChatRobotAPI {
 		return new ChatRobotVoiceMessageResult ();
 	}
 
-	/// <summary>
-	/// 消息中是否包含图片
-	/// </summary>
-	/// <param name="message">消息文本</param>
-	/// <param name="guids">提取出来的图片GUID</param>
-	/// <returns></returns>
+	/**
+	 * 消息中是否包含图片
+	 *
+	 * @param message 消息文本
+	 * @return 是否包含, 提取出来的图片GUID
+	 */
 	public static Pair<Boolean, List<String>> containsPictureInMessage (String message) {
 		Matcher matcher = Pattern.compile ("\\[pic=\\{[0-9A-Za-z-]+?}\\..+?]").matcher (message);
 		if (!matcher.find (0)) {
@@ -69,20 +67,20 @@ public class ChatRobotAPI {
 		return new Pair<> (true, qqs);
 	}
 
-	/// <summary>
-	/// 是否为闪照消息
-	/// </summary>
-	/// <param name="message">消息文本</param>
-	/// <returns></returns>
+	/**
+	 * 是否为闪照消息
+	 *
+	 * @param message 消息文本
+	 */
 	public static boolean isFlashPictureMessage (String message) {
 		return Pattern.matches ("\\[FlashPic=\\{[0-9A-Za-z-]+?}\\..+?]", message);
 	}
 
-	/// <summary>
-	/// 将闪照转为图片
-	/// </summary>
-	/// <param name="flashPictureGUID"></param>
-	/// <returns></returns>
+	/**
+	 * 将闪照转为图片
+	 *
+	 * @param flashPictureGUID 闪照GUID
+	 */
 	public static String flashPictureToPicture (String flashPictureGUID) {
 		return flashPictureGUID.replace ("FlashPic", "pic");
 	}

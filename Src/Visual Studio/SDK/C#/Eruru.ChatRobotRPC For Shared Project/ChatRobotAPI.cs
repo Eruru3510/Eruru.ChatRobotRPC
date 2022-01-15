@@ -224,7 +224,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// 将闪照转为图片
 		/// </summary>
-		/// <param name="flashPictureGUID"></param>
+		/// <param name="flashPictureGUID">闪照GUID</param>
 		/// <returns></returns>
 		public static string FlashPictureToPicture (string flashPictureGUID) {
 			return flashPictureGUID.Replace ("FlashPic", "pic");

@@ -1,55 +1,61 @@
 package org.eruru.chatrobotrpc.enums;
 
+/**
+ * 事件类型
+ */
 public enum ChatRobotEventType {
 
+	/**
+	 * 收到自身消息
+	 */
 	receivedOwnMessage (2099),
-	/// <summary>
-	/// 群公告改变
-	/// </summary>
+	/**
+	 * 群公告改变
+	 */
 	groupAnnouncementChanged (2013),
-	/// <summary>
-	/// 好友签名改变
-	/// </summary>
+	/**
+	 * 好友签名改变
+	 */
 	friendSignatureChanged (1004),
-	/// <summary>
-	/// 说说被评论
-	/// </summary>
+	/**
+	 * 说说被评论
+	 */
 	talkWasCommented (1005),
-	/// <summary>
-	/// 好友正在输入
-	/// </summary>
+	/**
+	 * 好友正在输入
+	 */
 	friendIsTyping (1006),
-	/// <summary>
-	/// 好友今天首次发起会话
-	/// </summary>
+	/**
+	 * 好友今天首次发起会话
+	 */
 	friendFirstChatToday (1007),
-	/// <summary>
-	/// 被好友抖动
-	/// </summary>
+	/**
+	 * 被好友抖动
+	 */
 	wasJitterByFriend (1008),
-	/// <summary>
-	/// 收到财付通转账
-	/// </summary>
+	/**
+	 * 收到财付通转账
+	 */
 	receivedTenPayTransfer (80001),
-	/// <summary>
-	/// 添加了新账号
-	/// </summary>
+	/**
+	 * 添加了新账号
+	 */
 	addedNewAccount (11000),
-	/// <summary>
-	/// QQ登录完成
-	/// </summary>
+	/**
+	 * QQ登录完成
+	 */
 	qqloggedIn (11001),
-	/// <summary>
-	/// QQ被手动离线
-	/// </summary>
+	/**
+	 * QQ被手动离线
+	 */
 	qqWasOfflineByManual (11002),
-	/// <summary>
-	/// QQ被强制离线
-	/// </summary>
+	/**
+	 * QQ被强制离线
+	 */
 	qqWasOfflineByForce (11003),
-	/// <summary>
-	/// QQ长时间无响应或掉线
-	/// </summary>
+	/**
+	 * QQ长时间无响应或掉线
+	 */
 	qqNoResponseForLongTimeOrOffline (11004);
 
 	private final int value;
@@ -58,10 +64,16 @@ public enum ChatRobotEventType {
 		this.value = value;
 	}
 
+	/**
+	 * 获取枚举对应的整形
+	 */
 	public int getValue () {
 		return value;
 	}
 
+	/**
+	 * 通过整形获取对应的枚举
+	 */
 	public static ChatRobotEventType get (int value) {
 		for (ChatRobotEventType item : ChatRobotEventType.values ()) {
 			if (item.value == value) {

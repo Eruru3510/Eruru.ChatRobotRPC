@@ -11,12 +11,14 @@ class AutoResetEvent implements Closeable {
 		this.open = initialState;
 	}
 
-	public void waitOne (long millisecondsTimeout) throws InterruptedException {
+	public boolean waitOne (long millisecondsTimeout) throws InterruptedException {
 		synchronized (monitor) {
-			while (!open) {
-				monitor.wait (millisecondsTimeout);
+			monitor.wait (millisecondsTimeout);
+			try {
+				return open;
+			} finally {
+				open = false;
 			}
-			open = false;
 		}
 	}
 
@@ -28,12 +30,14 @@ class AutoResetEvent implements Closeable {
 	}
 
 	public void reset () {
-		open = false;
+		synchronized (monitor) {
+			open = false;
+		}
 	}
 
 	@Override
 	public void close () {
-
+		
 	}
 
 }

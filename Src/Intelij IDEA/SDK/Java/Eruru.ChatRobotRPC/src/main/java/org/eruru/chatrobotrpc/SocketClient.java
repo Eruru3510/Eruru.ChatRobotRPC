@@ -114,9 +114,9 @@ class SocketClient implements Closeable {
 				heartbeatThread = new Thread (this::beginHeartbeat);
 				heartbeatThread.start ();
 				beginReceive ();
-			} catch (Exception exception) {
+			} catch (IOException e) {
 				state = SocketClientState.NotConnected;
-				throw exception;
+				throw e;
 			}
 		}
 	}
@@ -138,10 +138,12 @@ class SocketClient implements Closeable {
 		});
 	}
 
-	public void Disconnect () throws IOException {
+	public void Disconnect () {
 		synchronized (lock) {
 			try {
 				socket.close ();
+			} catch (IOException e) {
+				e.printStackTrace ();
 			} finally {
 				buffer.clear ();
 				packetBodyLength = -1;

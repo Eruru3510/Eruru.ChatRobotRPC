@@ -3,6 +3,7 @@ import org.eruru.chatrobotrpc.enums.ChatRobotMessageType;
 
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.concurrent.TimeoutException;
 
 public class Program {
 
@@ -28,8 +29,11 @@ public class Program {
 			chatRobot.connect ("localhost", 19730, "root", "root");
 			System.out.println ("连接成功");
 		} catch (IOException ioException) {
-			System.out.println ("连接失败");
 			ioException.printStackTrace ();
+			connect ();
+		} catch (TimeoutException timeoutException) {
+			System.out.println ("连接成功，但是响应登录请求超时");
+			timeoutException.printStackTrace ();
 			connect ();
 		} catch (Exception exception) {
 			exception.printStackTrace ();

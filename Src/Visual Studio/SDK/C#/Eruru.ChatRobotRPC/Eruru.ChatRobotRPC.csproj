@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net20;net35;net40;net45;net48;netstandard2.0;netcoreapp2.1;netcoreapp3.1;netcoreapp5.0;</TargetFrameworks>
-		<Version>1.0.0.17</Version>
+		<Version>1.0.18</Version>
 		<LangVersion>4</LangVersion>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>

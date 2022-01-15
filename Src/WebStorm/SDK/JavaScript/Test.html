@@ -37,11 +37,11 @@
 				if (message.text === "测试") {
 					var parallel = new ChatRobotRPC.ChatRobotParallel ();
 					parallel.add (chatRobot.getGroupName, message.robot, message.group);
-					parallel.add (chatRobot.getFriendListInformations, message.robot);
 					parallel.add (chatRobot.getName, message.robot, message.qq);
 					parallel.add (chatRobot.getFrameVersionNumber);
-					parallel.invoke (function (groupName, name, frameVersion, friendListInformations) {
-						message.reply (groupName + ' ' + name + " " + frameVersion + " " + JSON.stringify (friendListInformations));
+					parallel.add (chatRobot.getFriendListInformations, message.robot);
+					parallel.invoke (function (groupName, name, frameVersionNumber, friendListInformations) {
+						message.reply (groupName + ' ' + name + " " + frameVersionNumber + " " + friendListInformations);
 					});
 				}
 			};

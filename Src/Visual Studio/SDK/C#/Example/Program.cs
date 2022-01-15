@@ -31,6 +31,10 @@ namespace Example {
 				Console.WriteLine ("连接失败");
 				Console.WriteLine (socketException);
 				Connect ();
+			} catch (TimeoutException timeoutException) {
+				Console.WriteLine ("连接成功，但是响应登录请求超时");
+				Console.WriteLine (timeoutException);
+				Connect ();
 			} catch (Exception exception) {
 				Console.WriteLine (exception);
 			}

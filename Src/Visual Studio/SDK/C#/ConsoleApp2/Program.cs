@@ -1,5 +1,6 @@
 ﻿using Eruru.ChatRobotRPC;
 using Eruru.TextCommand;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace ConsoleApp2 {
 	class Program {
 
 		static readonly ChatRobot ChatRobot = new ChatRobot ();
+		static readonly object Lock = new object ();
 
 		static void Main (string[] args) {
 			Console.Title = string.Empty;
@@ -17,12 +19,10 @@ namespace ConsoleApp2 {
 			textCommandSystem.Register<Program> ();
 			textCommandSystem.MatchParameterType = false;
 			ChatRobot.OnReceived = message => {
-				Console.ForegroundColor = ConsoleColor.White;
-				Console.WriteLine ($"收到消息：{message}");
+				WriteLine ($"收到消息：{message}");
 			};
 			ChatRobot.OnSend = message => {
-				Console.ForegroundColor = ConsoleColor.Green;
-				Console.WriteLine ($"发送消息：{message}");
+				WriteLine ($"发送消息：{message}", ConsoleColor.Green);
 			};
 			ChatRobot.OnReceivedMessage = message => {
 				string text = message.Text;
@@ -40,7 +40,7 @@ namespace ConsoleApp2 {
 				textCommandSystem.Execute (text, message);
 			};
 			ChatRobot.OnDisconnected = () => {
-				Console.WriteLine ("连接断开");
+				WriteLine ("连接断开");
 				Connect ();
 			};
 			Connect ();
@@ -49,14 +49,27 @@ namespace ConsoleApp2 {
 
 		static void Connect () {
 			try {
-				Console.WriteLine ("开始连接");
+				WriteLine ("开始连接");
 				ChatRobot.Connect ("localhost", 19730, "root", "root");
-				Console.WriteLine ("连接成功");
+				WriteLine ("连接成功");
 			} catch (SocketException socketException) {
-				Console.WriteLine (socketException);
+				WriteLine (socketException, ConsoleColor.Red);
+				Connect ();
+			} catch (TimeoutException timeoutException) {
+				Console.WriteLine ("连接成功，但是响应登录请求超时");
+				Console.WriteLine (timeoutException);
 				Connect ();
 			} catch (Exception exception) {
-				Console.WriteLine (exception);
+				WriteLine (exception, ConsoleColor.Red);
+			}
+		}
+
+		static void WriteLine (object text, ConsoleColor consoleColor = ConsoleColor.White) {
+			lock (Lock) {
+				ConsoleColor oldConsoleColor = Console.ForegroundColor;
+				Console.ForegroundColor = consoleColor;
+				Console.WriteLine (text);
+				Console.ForegroundColor = oldConsoleColor;
 			}
 		}
 

@@ -1,6 +1,6 @@
 package org.eruru.chatrobotrpc;
 
-public enum SocketClientState {
+enum SocketClientState {
 
 	NotConnected,
 	Connecting,

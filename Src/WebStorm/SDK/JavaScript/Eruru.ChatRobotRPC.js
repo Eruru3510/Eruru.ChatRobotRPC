@@ -3,95 +3,253 @@ if (typeof (Eruru) == "undefined") {
 }
 Eruru.ChatRobotRPC = {};
 
+/**
+ * 事件类型
+ */
 Eruru.ChatRobotRPC.ChatRobotEventType = {
 
-	ReceivedOwnMessage: 2099,
-	GroupAnnouncementChanged: 2013,
-	FriendSignatureChanged: 1004,
-	TalkWasCommented: 1005,
-	FriendIsTyping: 1006,
-	FriendFirstChatToday: 1007,
-	WasJitterByFriend: 1008,
-	ReceivedTenPayTransfer: 80001,
-	AddedNewAccount: 11000,
-	QQloggedIn: 11001,
-	QQWasOfflineByManual: 11002,
-	QQWasOfflineByForce: 11003,
-	QQNoResponseForLongTimeOrOffline: 11004
+	/**
+	 * 收到自身消息
+	 */
+	receivedOwnMessage: 2099,
+	/**
+	 * 群公告改变
+	 */
+	groupAnnouncementChanged: 2013,
+	/**
+	 * 好友签名改变
+	 */
+	friendSignatureChanged: 1004,
+	/**
+	 * 说说被评论
+	 */
+	talkWasCommented: 1005,
+	/**
+	 * 好友正在输入
+	 */
+	friendIsTyping: 1006,
+	/**
+	 * 好友今天首次发起会话
+	 */
+	friendFirstChatToday: 1007,
+	/**
+	 * 被好友抖动
+	 */
+	wasJitterByFriend: 1008,
+	/**
+	 * 收到财付通转账
+	 */
+	receivedTenPayTransfer: 80001,
+	/**
+	 * 添加了新账号
+	 */
+	addedNewAccount: 11000,
+	/**
+	 * QQ登录完成
+	 */
+	qqloggedIn: 11001,
+	/**
+	 * QQ被手动离线
+	 */
+	qqWasOfflineByManual: 11002,
+	/**
+	 * QQ被强制离线
+	 */
+	qqWasOfflineByForce: 11003,
+	/**
+	 * QQ长时间无响应或掉线
+	 */
+	qqNoResponseForLongTimeOrOffline: 11004
 
 };
 
+/**
+ * 好友添加方式
+ */
 Eruru.ChatRobotRPC.ChatRobotFriendAddMethod = {
 
-
-	AllowAny: 0,
-	NeedValidation: 1,
-	NeedRightAnswer: 3,
-	NeedAnswerQuestion: 4,
-	AlreadyFriend: 99
+	/**
+	 * 允许任何人
+	 */
+	allowAny: 0,
+	/**
+	 * 需要验证
+	 */
+	needValidation: 1,
+	/**
+	 * 需要正确答案
+	 */
+	needRightAnswer: 3,
+	/**
+	 * 需要回答问题
+	 */
+	needAnswerQuestion: 4,
+	/**
+	 * 已经是好友
+	 */
+	alreadyFriend: 99
 
 };
 
+/**
+ * 性别
+ */
 Eruru.ChatRobotRPC.ChatRobotGender = {
 
-	Male: 0,
-	Female: 1,
-	Hide: 255
+	/**
+	 * 男
+	 */
+	male: 0,
+	/**
+	 * 女
+	 */
+	female: 1,
+	/**
+	 * 隐藏
+	 */
+	hide: 255
 
 }
 
+/**
+ * 群添加请求类型
+ */
 Eruru.ChatRobotRPC.ChatRobotGroupAddRequestType = {
 
-	Request: 1,
-	InviteMe: 2,
-	MemberInvite: 3
+	/**
+	 * 有人申请加群
+	 */
+	request: 1,
+	/**
+	 * 某人邀请我加群
+	 */
+	inviteMe: 2,
+	/**
+	 * 群员邀请某人加群
+	 */
+	memberInvite: 3
 
 }
 
+/**
+ * 群成员加入类型
+ */
 Eruru.ChatRobotRPC.ChatRobotGroupMemberJoinType = {
 
-	Approve: 1,
-	IJoin: 2,
-	Invite: 3
+	/**
+	 * 某人被批准加入
+	 */
+	approve: 1,
+	/**
+	 * 我加入某个群
+	 */
+	iJoin: 2,
+	/**
+	 * 某人被邀请加入了群
+	 */
+	invite: 3
 
 }
 
+/**
+ * 消息类型
+ */
 Eruru.ChatRobotRPC.ChatRobotMessageType = {
 
+	/**
+	 * 好友
+	 */
 	friend: 1,
+	/**
+	 * 群临时
+	 */
 	groupTemp: 2,
+	/**
+	 * 讨论组临时
+	 */
 	discussTemp: 3,
+	/**
+	 * 网页临时
+	 */
 	webpageTemp: 4,
+	/**
+	 * 好友验证回复
+	 */
 	friendVerificationReply: 5,
+	/**
+	 * 群
+	 */
 	group: 6,
+	/**
+	 * 讨论组
+	 */
 	discuss: 7
 
 };
 
+/**
+ * 请求类型
+ */
 Eruru.ChatRobotRPC.ChatRobotRequestType = {
 
-	Ignore: 30,
-	Agree: 10,
-	Refuse: 20
+	/**
+	 * 忽略
+	 */
+	ignore: 30,
+	/**
+	 * 通过
+	 */
+	agree: 10,
+	/**
+	 * 拒绝
+	 */
+	refuse: 20
 
 }
 
+/**
+ * 发送消息类型
+ */
 Eruru.ChatRobotRPC.ChatRobotSendMessageType = {
 
+	/**
+	 * 文本
+	 */
 	text: 1,
 	json: 2,
 	xml: 3
 
 };
 
+/**
+ * 在线状态
+ */
 Eruru.ChatRobotRPC.ChatRobotState = {
 
-	Online: 1,
-	QMe: 2,
-	Leave: 3,
-	Busy: 4,
-	DoNotDisturb: 5,
-	Invisible: 6
+	/**
+	 * 在线
+	 */
+	online: 1,
+	/**
+	 * Q我吧
+	 */
+	qMe: 2,
+	/**
+	 * 离开
+	 */
+	leave: 3,
+	/**
+	 * 忙碌
+	 */
+	busy: 4,
+	/**
+	 * 勿扰
+	 */
+	doNotDisturb: 5,
+	/**
+	 * 隐身
+	 */
+	invisible: 6
 
 }
 
@@ -364,6 +522,12 @@ Eruru.ChatRobotRPC.ChatRobot = function () {
 		throw "WebSocket出错";
 	};
 
+	/**
+	 * 连接机器人框架RPC插件（使用ChatRobot.OnDisconnected事件获知断开连接）
+	 *
+	 * @throws IOException             连接失败
+	 * @throws AuthenticationException 账号或密码错误
+	 */
 	this.connect = function (ip, port, account, password) {
 		_account = account;
 		_password = password;
@@ -1523,7 +1687,7 @@ Eruru.ChatRobotRPC.ChatRobot = function () {
 		var waits = [];
 
 		this.getID = function () {
-			if (id > 10000) {
+			if (id > 100000) {
 				id = 0;
 			}
 			return id++;
@@ -1532,9 +1696,11 @@ Eruru.ChatRobotRPC.ChatRobot = function () {
 		this.set = function (id, result) {
 			for (var i = 0; i < waits.length; i++) {
 				if (waits[i].id === id) {
-					waits[i].callback (result);
-					waitPool.push (waits[i]);
+					var wait = waits[i];
+					clearTimeout (wait.callbackID);
+					waitPool.push (wait);
 					waits.splice (i, 1);
+					wait.callback (result);
 					return;
 				}
 			}
@@ -1542,14 +1708,19 @@ Eruru.ChatRobotRPC.ChatRobot = function () {
 		};
 
 		this.get = function (id, callback) {
-			var wait;
-			if (waitPool.length === 0) {
-				wait = new Wait ();
-			} else {
-				wait = waitPool.pop ();
-			}
+			var wait = waitPool.length === 0 ? new Wait () : waitPool.pop ();
 			wait.id = id;
 			wait.callback = callback;
+			wait.callbackID = setTimeout (function () {
+				for (var i = 0; i < waits.length; i++) {
+					if (waits[i].id === this.id) {
+						waitPool.push (this);
+						waits.splice (i, 1);
+						break;
+					}
+				}
+				throw "ID为" + this.id + "的Wait等待超时";
+			}.bind (wait), 10 * 1000);
 			waits.push (wait);
 		};
 
@@ -1557,13 +1728,14 @@ Eruru.ChatRobotRPC.ChatRobot = function () {
 
 			this.id = null;
 			this.callback = null;
+			this.callbackID = null;
 
 		}
 
 	}
 
 };
-Eruru.ChatRobotRPC.ChatRobot.version = "1.0.0";
+Eruru.ChatRobotRPC.ChatRobot.version = "1.0.1";
 Eruru.ChatRobotRPC.ChatRobot.protocolVersion = "1.0.0.5";
 
 Eruru.ChatRobotRPC.ChatRobotMessage = function (chatRobot, type, robot, group, qq, text, number, id, receivedTime) {

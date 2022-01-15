@@ -184,7 +184,7 @@ namespace Eruru.ChatRobotRPC {
 #endif
 
 		/// <summary>
-		/// Tea加密
+		/// TEA加密
 		/// </summary>
 		/// <param name="content">需加密的内容</param>
 		/// <param name="key"></param>
@@ -198,7 +198,7 @@ namespace Eruru.ChatRobotRPC {
 		}
 
 		/// <summary>
-		/// Tea解密
+		/// TEA解密
 		/// </summary>
 		/// <param name="content">需解密的内容</param>
 		/// <param name="key"></param>
@@ -703,7 +703,7 @@ namespace Eruru.ChatRobotRPC {
 		/// <param name="robot">机器人QQ</param>
 		/// <param name="url">讨论组链接</param>
 		/// <returns></returns>
-		public string JoinDiscussByUrl (long robot, string url) {
+		public string JoinDiscussByURL (long robot, string url) {
 			return WaitSystemGet<string> (new JObject () {
 				{ "Type", "JoinDiscussByUrl" },
 				{ "Robot", robot },

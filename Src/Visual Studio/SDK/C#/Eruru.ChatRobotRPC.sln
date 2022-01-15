@@ -11,7 +11,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Eruru.ChatRobotRPC For Shar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{87D28816-D06F-4B1A-B9A5-2D43D910BF2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp2", "ConsoleApp2\ConsoleApp2.csproj", "{75D825CE-3F48-4669-8A8F-E4E376F27E19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2", "ConsoleApp2\ConsoleApp2.csproj", "{75D825CE-3F48-4669-8A8F-E4E376F27E19}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
