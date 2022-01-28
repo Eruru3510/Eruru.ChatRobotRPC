@@ -14,11 +14,9 @@ class AutoResetEvent implements Closeable {
 	public boolean waitOne (long millisecondsTimeout) throws InterruptedException {
 		synchronized (monitor) {
 			monitor.wait (millisecondsTimeout);
-			try {
-				return open;
-			} finally {
-				open = false;
-			}
+			boolean isOpen = open;
+			open = false;
+			return isOpen;
 		}
 	}
 
@@ -37,7 +35,7 @@ class AutoResetEvent implements Closeable {
 
 	@Override
 	public void close () {
-		
+
 	}
 
 }

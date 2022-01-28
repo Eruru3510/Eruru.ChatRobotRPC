@@ -2351,14 +2351,6 @@ namespace Eruru.ChatRobotRPC {
 				}
 				return (T)Enum.Parse (typeof (T), result);
 			}
-			if (typeof (T) == typeof (bool)) {
-				if (result == "真") {
-					result = "true";
-				} else if (result == "假") {
-					result = "false";
-				}
-				return (T)Convert.ChangeType (result, typeof (T));
-			}
 			if (typeof (T).IsValueType || typeof (T) == typeof (string)) {
 				return (T)Convert.ChangeType (result, typeof (T));
 			}

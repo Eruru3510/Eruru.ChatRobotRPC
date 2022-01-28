@@ -28,7 +28,7 @@ namespace Eruru.ChatRobotRPC {
 
 		public long GetID () {
 			lock (GetIDLock) {
-				if (ID >= 100000) {
+				if (ID > 100000) {
 					ID = 0;
 				}
 				return ID++;

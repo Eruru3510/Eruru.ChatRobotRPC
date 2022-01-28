@@ -16,7 +16,7 @@ class WaitSystem implements Closeable {
 	private final Object waitsLock = new Object ();
 
 	private long millisecondsTimeout = 10 * 1000;
-	private Long id = 0L;
+	private long id = 0;
 
 	public long getMillisecondsTimeout () {
 		return millisecondsTimeout;
@@ -28,7 +28,7 @@ class WaitSystem implements Closeable {
 
 	public long getID () {
 		synchronized (getIDLock) {
-			if (id == 100000) {
+			if (id > 100000) {
 				id = 0L;
 			}
 			return id++;
