@@ -23,10 +23,10 @@ namespace Eruru.ChatRobotRPC {
 		readonly object GetIDLock = new object ();
 		readonly object WaitsLock = new object ();
 
-		long ID;
+		int ID;
 		int _MillisecondsTimeout = 10 * 1000;
 
-		public long GetID () {
+		public int GetID () {
 			lock (GetIDLock) {
 				if (ID > 100000) {
 					ID = 0;
@@ -35,49 +35,71 @@ namespace Eruru.ChatRobotRPC {
 			}
 		}
 
-		public void Set (long id, string result) {
+		public void Set (int id, string result) {
 			lock (WaitsLock) {
-				for (int i = 0; i < Waits.Count; i++) {
-					if (Waits[i].ID == id) {
-						Waits[i].Result = result;
-						Waits[i].AutoResetEvent.Set ();
-						return;
-					}
+				Wait wait = Waits.Find (item => item.ID == id);
+				if (wait == null) {
+					wait = NewWait (id);
+					Waits.Add (wait);
 				}
-				throw new KeyNotFoundException (string.Format ("没有找到ID为{0}的Wait，Result：{1}", id, result));
+				wait.Result = result;
+				wait.Signal = true;
+				Monitor.PulseAll (WaitsLock);
+				//throw new KeyNotFoundException (string.Format ("没有找到ID为{0}的Wait，Result：{1}", id, result));
 			}
 		}
 
-		public string Get (long id) {
-			Wait wait;
+		public string Get (int id) {
 			lock (WaitsLock) {
-				wait = WaitPool.Count == 0 ? new Wait () : WaitPool.Dequeue ();
-				wait.ID = id;
-				wait.Result = null;
-				wait.AutoResetEvent.Reset ();
-				Waits.Add (wait);
-			}
-			try {
-				if (!wait.AutoResetEvent.WaitOne (MillisecondsTimeout)) {
-					throw new TimeoutException (string.Format ("ID为{0}的Wait等待超时", id));
+				Wait wait = Waits.Find (item => item.ID == id);
+				if (wait == null) {
+					wait = NewWait (id);
+					Waits.Add (wait);
 				}
-			} finally {
-				lock (WaitsLock) {
-					WaitPool.Enqueue (wait);
-					Waits.Remove (wait);
+				while (true) {
+					if (wait.Signal) {
+						break;
+					}
+					if (!Monitor.Wait (WaitsLock, MillisecondsTimeout)) {
+						throw new TimeoutException (string.Format ("ID为{0}的Wait等待超时", id));
+					}
 				}
+				WaitPool.Enqueue (wait);
+				Waits.Remove (wait);
+				if (Waits.Count <= 0) {
+					Monitor.PulseAll (WaitsLock);
+				}
+				return wait.Result;
 			}
-			return wait.Result;
 		}
 
 		public void Dispose () {
 			lock (WaitsLock) {
 				ID = 0;
-				foreach (var wait in Waits) {
-					wait.AutoResetEvent.Close ();
-					WaitPool.Enqueue (wait);
+				while (Waits.Count > 0) {
+					foreach (var wait in Waits) {
+						wait.Signal = true;
+					}
+					Monitor.PulseAll (WaitsLock);
+					if (!Monitor.Wait (WaitsLock, MillisecondsTimeout)) {
+						throw new TimeoutException ();
+					}
 				}
-				Waits.Clear ();
+			}
+		}
+
+		Wait NewWait (int id) {
+			lock (WaitsLock) {
+				Wait wait;
+				if (WaitPool.Count == 0) {
+					wait = new Wait ();
+				} else {
+					wait = WaitPool.Dequeue ();
+					wait.Result = null;
+					wait.Signal = false;
+				}
+				wait.ID = id;
+				return wait;
 			}
 		}
 
@@ -85,7 +107,7 @@ namespace Eruru.ChatRobotRPC {
 
 			public long ID;
 			public string Result;
-			public AutoResetEvent AutoResetEvent = new AutoResetEvent (false);
+			public bool Signal;
 
 		}
 

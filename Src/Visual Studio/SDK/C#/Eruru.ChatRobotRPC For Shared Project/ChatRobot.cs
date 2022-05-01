@@ -14,8 +14,27 @@ namespace Eruru.ChatRobotRPC {
 		/// <summary>
 		/// 协议版本
 		/// </summary>
-		public const string ProtocolVersion = "1.0.0.5";
+		public const string ProtocolVersion = "1.1.0";
+		/// <summary>
+		/// SDK版本
+		/// </summary>
+		public const string Version = "1.1.0";
 
+		/// <summary>
+		/// 调试模式
+		/// </summary>
+		public bool DebugMode {
+
+			get {
+				return _DebugMode;
+			}
+
+			set {
+				_DebugMode = value;
+				SocketClient.DebugMode = value;
+			}
+
+		}
 		/// <summary>
 		/// 心跳包发送间隔（秒）
 		/// </summary>
@@ -129,6 +148,8 @@ namespace Eruru.ChatRobotRPC {
 		readonly WaitSystem WaitSystem = new WaitSystem ();
 		readonly Encoding Encoding = Encoding.UTF8;
 
+		bool _DebugMode;
+
 		/// <summary>
 		/// 默认构造函数
 		/// </summary>
@@ -178,7 +199,7 @@ namespace Eruru.ChatRobotRPC {
 		public void Test (long robot) {
 			SocketClientSendAsync (new JObject () {
 				{ "Type", "Test" },
-				{ "Robot",robot  }
+				{ "Robot", robot  }
 			});
 		}
 #endif
@@ -1990,6 +2011,22 @@ namespace Eruru.ChatRobotRPC {
 		}
 
 		/// <summary>
+		/// 设置/修改群名 成功返回0 失败返回1或错误原因
+		/// </summary>
+		/// <param name="robot">机器人QQ</param>
+		/// <param name="group">群号.机器人需为管理员</param>
+		/// <param name="name">要设置的群名</param>
+		/// <returns></returns>
+		public string SetGroupName (long robot, long group, string name) {
+			return WaitSystemGet<string> (new JObject () {
+				{ "Type", "SetGroupName" },
+				{ "Robot", robot },
+				{ "Group", group },
+				{ "Name", name }
+			});
+		}
+
+		/// <summary>
 		/// 开关群匿名消息发送功能 成功返回真 失败返回假
 		/// </summary>
 		/// <param name="robot">机器人QQ</param>
@@ -2095,6 +2132,26 @@ namespace Eruru.ChatRobotRPC {
 			SetAvatar (robot, Convert.ToBase64String (bytes));
 		}
 
+		/// <summary>
+		/// 使用软件自带的UI信息框提醒。返回真 则代表用户按下确定 假则代表用户按下取消
+		/// </summary>
+		/// <param name="title">推送信息框的标题</param>
+		/// <param name="content">需要推送的内容</param>
+		/// <param name="icon">1正确 2错误 3询问 4警告</param>
+		/// <param name="button">真=确定+取消 假=确定 </param>
+		/// <param name="top">是否在最前显示</param>
+		/// <returns></returns>
+		public bool ShowMessageBox (string title, string content, ChatRobotMessageBoxIconType icon, bool button, bool top) {
+			return WaitSystemGet<bool> (new JObject () {
+				{ "Type", "ShowMessageBox" },
+				{ "Title", title },
+				{ "Content", content },
+				{ "Icon", (int)icon },
+				{ "Button", button },
+				{ "Top", top }
+			});
+		}
+
 		void SocketClient_OnReceived (byte[] bytes) {
 			string text = Encoding.UTF8.GetString (bytes);
 			try {
@@ -2114,7 +2171,7 @@ namespace Eruru.ChatRobotRPC {
 						break;
 					}
 					case "Return":
-						WaitSystem.Set (jObject.Value<long> ("ID"), jObject.Value<string> ("Result"));
+						WaitSystem.Set (jObject.Value<int> ("ID"), jObject.Value<string> ("Result"));
 						break;
 					case "Message":
 						if (OnReceivedMessage != null) {
@@ -2336,8 +2393,8 @@ namespace Eruru.ChatRobotRPC {
 			return (T)Enum.Parse (typeof (T), value);
 		}
 
-		long WaitSystemSend (JObject jObject) {
-			long id = WaitSystem.GetID ();
+		int WaitSystemSend (JObject jObject) {
+			int id = WaitSystem.GetID ();
 			jObject["ID"] = id;
 			SocketClientSendAsync (jObject);
 			return id;

@@ -320,7 +320,7 @@ namespace Eruru.ChatRobotRPC {
 		public static void Send (ChatRobot chatRobot, ChatRobotMessageType type, long robot, object message, long group = default (long), long qq = default (long),
 			bool isAnonymous = false, ChatRobotSendMessageType sendType = ChatRobotSendMessageType.Text
 		) {
-			Send (chatRobot, type, robot, message == null ? default (object) : message.ToString (), group, qq, isAnonymous, sendType);
+			Send (chatRobot, type, robot, message == null ? null : message.ToString (), group, qq, isAnonymous, sendType);
 		}
 
 		/// <summary>

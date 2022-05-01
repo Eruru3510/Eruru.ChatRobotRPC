@@ -47,7 +47,13 @@
 			chatRobot.onReceivedMessage = function (message) {
 				if (message.type === ChatRobotRPC.ChatRobotMessageType.friend) {
 					chatRobot.getName (message.robot, message.qq, function (name) {
-						message.reply (name + "发送了：" + message);
+						message.reply (name + " 发送了：" + message);
+					});
+					var parallel = new ChatRobotRPC.ChatRobotParallel ();
+					parallel.add (chatRobot.getFrameVersionName);
+					parallel.add (chatRobot.getName, message.robot, message.qq);
+					parallel.invoke (function (frameVersionName, name) {
+						message.reply (name + " 发送了：" + message + "\nMiniBot 机器人框架版本：" + frameVersionName);
 					});
 				}
 			};

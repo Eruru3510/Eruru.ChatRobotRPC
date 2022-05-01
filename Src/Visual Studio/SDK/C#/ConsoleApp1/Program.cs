@@ -1,10 +1,10 @@
 ﻿using Eruru.ChatRobotRPC;
 using Eruru.TextCommand;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Text;
 
 namespace ConsoleApp1 {
 
@@ -18,6 +18,7 @@ namespace ConsoleApp1 {
 			TextCommandSystem<ChatRobotMessage> textCommandSystem = new TextCommandSystem<ChatRobotMessage> ();
 			textCommandSystem.Register<Program> ();
 			textCommandSystem.MatchParameterType = false;
+			ChatRobot.DebugMode = true;
 			ChatRobot.OnReceived = message => {
 				WriteLine ($"收到消息：{message}");
 			};
@@ -75,7 +76,8 @@ namespace ConsoleApp1 {
 
 		[TextCommand ("测试")]
 		static void Test (ChatRobotMessage message) {
-			message.Reply (message);
+			message.Reply (ChatRobot.SetGroupName (message.Robot, message.Group, ChatRobot.GetGroupName (message.Robot, message.Group) + "1"));
+			message.Reply (ChatRobot.ShowMessageBox ("标题", "内容", ChatRobotMessageBoxIconType.Correct, true, true));
 		}
 
 	}

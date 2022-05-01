@@ -14,6 +14,16 @@
             协议版本
             </summary>
         </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobot.Version">
+            <summary>
+            SDK版本
+            </summary>
+        </member>
+        <member name="P:Eruru.ChatRobotRPC.ChatRobot.DebugMode">
+            <summary>
+            调试模式
+            </summary>
+        </member>
         <member name="P:Eruru.ChatRobotRPC.ChatRobot.HeartbeatInterval">
             <summary>
             心跳包发送间隔（秒）
@@ -1233,6 +1243,15 @@
             <param name="enable">真 为设置管理 假为取消管理</param>
             <returns></returns>
         </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.SetGroupName(System.Int64,System.Int64,System.String)">
+            <summary>
+            设置/修改群名 成功返回0 失败返回1或错误原因
+            </summary>
+            <param name="robot">机器人QQ</param>
+            <param name="group">群号.机器人需为管理员</param>
+            <param name="name">要设置的群名</param>
+            <returns></returns>
+        </member>
         <member name="M:Eruru.ChatRobotRPC.ChatRobot.SetGroupAnonymousEnable(System.Int64,System.Int64,System.Boolean)">
             <summary>
             开关群匿名消息发送功能 成功返回真 失败返回假
@@ -1292,6 +1311,17 @@
             </summary>
             <param name="robot">机器人QQ</param>
             <param name="bytes">图片数据</param>
+        </member>
+        <member name="M:Eruru.ChatRobotRPC.ChatRobot.ShowMessageBox(System.String,System.String,Eruru.ChatRobotRPC.ChatRobotMessageBoxIconType,System.Boolean,System.Boolean)">
+            <summary>
+            使用软件自带的UI信息框提醒。返回真 则代表用户按下确定 假则代表用户按下取消
+            </summary>
+            <param name="title">推送信息框的标题</param>
+            <param name="content">需要推送的内容</param>
+            <param name="icon">1正确 2错误 3询问 4警告</param>
+            <param name="button">真=确定+取消 假=确定 </param>
+            <param name="top">是否在最前显示</param>
+            <returns></returns>
         </member>
         <member name="T:Eruru.ChatRobotRPC.ChatRobotAction">
             <summary>
@@ -1716,6 +1746,31 @@
         <member name="F:Eruru.ChatRobotRPC.ChatRobotRequestType.Refuse">
             <summary>
             拒绝
+            </summary>
+        </member>
+        <member name="T:Eruru.ChatRobotRPC.ChatRobotMessageBoxIconType">
+            <summary>
+            消息框图标类型
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotMessageBoxIconType.Correct">
+            <summary>
+            正确
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotMessageBoxIconType.Error">
+            <summary>
+            错误
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotMessageBoxIconType.Inquiry">
+            <summary>
+            询问
+            </summary>
+        </member>
+        <member name="F:Eruru.ChatRobotRPC.ChatRobotMessageBoxIconType.Warning">
+            <summary>
+            警告
             </summary>
         </member>
         <member name="T:Eruru.ChatRobotRPC.ChatRobotState">

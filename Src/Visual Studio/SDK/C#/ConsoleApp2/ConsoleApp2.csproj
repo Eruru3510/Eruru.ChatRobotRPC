@@ -1,16 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Eruru.TextCommand" Version="1.0.0.7" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Eruru.TextCommand" Version="1.0.0.7" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Eruru.ChatRobotRPC\Eruru.ChatRobotRPC.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Eruru.ChatRobotRPC\Eruru.ChatRobotRPC.csproj" />
+	</ItemGroup>
 
 </Project>

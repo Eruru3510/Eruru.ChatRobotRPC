@@ -60,6 +60,17 @@ namespace Eruru.ChatRobotRPC {
 			}
 
 		}
+		public bool DebugMode {
+
+			get {
+				return _DebugMode;
+			}
+
+			set {
+				_DebugMode = value;
+			}
+
+		}
 
 		const int PacketHeaderLength = 4;
 
@@ -78,7 +89,8 @@ namespace Eruru.ChatRobotRPC {
 		SocketClientState _State = SocketClientState.NotConnected;
 		bool _UseAsyncOnReceived = true;
 		int _HeartbeatInterval = 60;
-		int _BufferLength = 1024 * 1024;
+		int _BufferLength = 1024;
+		bool _DebugMode;
 
 		public void Connect (string ip, int port) {
 			lock (Lock) {
@@ -209,6 +221,9 @@ namespace Eruru.ChatRobotRPC {
 				while (State == SocketClientState.Connected) {
 					Thread.Sleep (1000);
 					if (HeartbeatSendTime <= DateTime.Now.AddSeconds (-HeartbeatInterval)) {
+						if (DebugMode) {
+							Console.WriteLine ("{0} 发送心跳包", DateTime.Now);
+						}
 						SendAsync (EmptyBytes);
 					}
 				}

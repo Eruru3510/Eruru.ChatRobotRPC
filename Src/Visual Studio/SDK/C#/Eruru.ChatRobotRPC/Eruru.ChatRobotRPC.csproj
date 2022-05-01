@@ -1,10 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net20;net30;net35;net40;net45;net48;netstandard2.0;netcoreapp2.1;netcoreapp3.1;netcoreapp5.0;</TargetFrameworks>
-		<Version>1.0.18</Version>
+		<TargetFrameworks>net20;net30;net35;net40;net45;net48;netstandard2.0;netstandard2.1;netcoreapp2.1;netcoreapp3.1;netcoreapp5.0;</TargetFrameworks>
+		<Version>2</Version>
 		<LangVersion>4</LangVersion>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<AssemblyName>Eruru.ChatRobotRPC</AssemblyName>
+		<RootNamespace>Eruru.ChatRobotRPC</RootNamespace>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net20|AnyCPU'">
@@ -31,11 +33,15 @@
 		<DocumentationFile>Eruru.ChatRobotRPC.xml</DocumentationFile>
 		<GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net20|AnyCPU'">
+		<DocumentationFile>Eruru.ChatRobotRPC.xml</DocumentationFile>
+		<GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+	</PropertyGroup>
+
+	<Import Project="..\Eruru.ChatRobotRPC For Shared Project\Eruru.ChatRobotRPC For Shared Project.projitems" Label="Shared" />
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
-
-	<Import Project="..\Eruru.ChatRobotRPC For Shared Project\Eruru.ChatRobotRPC For Shared Project.projitems" Label="Shared" />
 
 </Project>
